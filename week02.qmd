@@ -1,0 +1,23 @@
+---
+title: "Week 2. Learning the Tools"
+---
+
+Welcome to Week 1.
+
+## Learning Objectives
+
+- Understand the course structure.
+- Learn the role of R and Quarto.
+- Understand the importance of data analysis.
+
+## Key Concepts
+
+- Data
+- Empirical analysis
+- Reproducible research
+
+## Exercises
+
+1. Install R.
+2. Install Quarto.
+3. Render your first document.

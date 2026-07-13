@@ -1,0 +1,56 @@
+---
+title: "Week 1. Introduction"
+---
+
+Welcome to Week 1.
+
+## Learning Objectives
+
+- Understand the course structure.
+- Learn the role of R and Quarto.
+- Understand the importance of data analysis.
+
+## Key Concepts
+
+- Data
+- Empirical analysis
+- Reproducible research
+
+## Exercises
+
+1. Install R.
+2. Install Quarto.
+3. Render your first document.
+
+## R Example
+
+```{r}
+#| output: false
+x <- 1:10
+mean(x)
+```
+
+# Equations
+
+$$
+Y = C + I + G + NX
+$$
+
+앞으로는 아마 $a+bX$ 형태를 많이 쓰게 될 것입니다.
+
+
+## Example: GDP Growth
+
+
+```r
+library(WDI)
+
+korea <- WDI(
+  country = "KR",
+  indicator = "NY.GDP.PCAP.KD",
+  start = 2010,
+  end = 2024
+)
+
+plot(korea$year, korea$NY.GDP.PCAP.KD, type = "b")
+```

@@ -1,0 +1,157 @@
+[
+  {
+    "objectID": "week01.html",
+    "href": "week01.html",
+    "title": "Week 1. Introduction",
+    "section": "",
+    "text": "Welcome to Week 1.",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 1. Introduction"
+    ]
+  },
+  {
+    "objectID": "week01.html#learning-objectives",
+    "href": "week01.html#learning-objectives",
+    "title": "Week 1. Introduction",
+    "section": "Learning Objectives",
+    "text": "Learning Objectives\n\nUnderstand the course structure.\nLearn the role of R and Quarto.\nUnderstand the importance of data analysis.",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 1. Introduction"
+    ]
+  },
+  {
+    "objectID": "week01.html#key-concepts",
+    "href": "week01.html#key-concepts",
+    "title": "Week 1. Introduction",
+    "section": "Key Concepts",
+    "text": "Key Concepts\n\nData\nEmpirical analysis\nReproducible research",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 1. Introduction"
+    ]
+  },
+  {
+    "objectID": "week01.html#exercises",
+    "href": "week01.html#exercises",
+    "title": "Week 1. Introduction",
+    "section": "Exercises",
+    "text": "Exercises\n\nInstall R.\nInstall Quarto.\nRender your first document.",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 1. Introduction"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Home",
+    "section": "",
+    "text": "Welcome to the course website.\nThis website contains\n\nLecture notes\nExamples\nExercises\nCourse materials\n\nPlease use the navigation menu to access each week’s lecture notes.\n\n\n\n\n\n\n\n\nNote\n\n\n\nThis is a note.\n\n\n\n\n\nA\nB\n\n\n\n\n1\n2\n\n\n3\n4"
+  },
+  {
+    "objectID": "index.html#notice",
+    "href": "index.html#notice",
+    "title": "Home",
+    "section": "",
+    "text": "Note\n\n\n\nThis is a note.\n\n\n\n\n\nA\nB\n\n\n\n\n1\n2\n\n\n3\n4"
+  },
+  {
+    "objectID": "syllabus.html",
+    "href": "syllabus.html",
+    "title": "Syllabus",
+    "section": "",
+    "text": "수업 개요를 작성합니다."
+  },
+  {
+    "objectID": "syllabus.html#평가",
+    "href": "syllabus.html#평가",
+    "title": "Syllabus",
+    "section": "평가",
+    "text": "평가\n\nMidterm\nFinal\nAttendance"
+  },
+  {
+    "objectID": "syllabus.html#교재",
+    "href": "syllabus.html#교재",
+    "title": "Syllabus",
+    "section": "교재",
+    "text": "교재\nStock & Watson"
+  },
+  {
+    "objectID": "week02.html",
+    "href": "week02.html",
+    "title": "Week 2. Learning the Tools",
+    "section": "",
+    "text": "Welcome to Week 1.",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 2. Learning the Tools"
+    ]
+  },
+  {
+    "objectID": "week02.html#learning-objectives",
+    "href": "week02.html#learning-objectives",
+    "title": "Week 2. Learning the Tools",
+    "section": "Learning Objectives",
+    "text": "Learning Objectives\n\nUnderstand the course structure.\nLearn the role of R and Quarto.\nUnderstand the importance of data analysis.",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 2. Learning the Tools"
+    ]
+  },
+  {
+    "objectID": "week02.html#key-concepts",
+    "href": "week02.html#key-concepts",
+    "title": "Week 2. Learning the Tools",
+    "section": "Key Concepts",
+    "text": "Key Concepts\n\nData\nEmpirical analysis\nReproducible research",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 2. Learning the Tools"
+    ]
+  },
+  {
+    "objectID": "week02.html#exercises",
+    "href": "week02.html#exercises",
+    "title": "Week 2. Learning the Tools",
+    "section": "Exercises",
+    "text": "Exercises\n\nInstall R.\nInstall Quarto.\nRender your first document.",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 2. Learning the Tools"
+    ]
+  },
+  {
+    "objectID": "week01.html#r-example",
+    "href": "week01.html#r-example",
+    "title": "Week 1. Introduction",
+    "section": "R Example",
+    "text": "R Example\n\nx &lt;- 1:10\nmean(x)",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 1. Introduction"
+    ]
+  },
+  {
+    "objectID": "week01.html#example-gdp-growth",
+    "href": "week01.html#example-gdp-growth",
+    "title": "Week 1. Introduction",
+    "section": "Example: GDP Growth",
+    "text": "Example: GDP Growth\nlibrary(WDI)\n\nkorea &lt;- WDI(\n  country = \"KR\",\n  indicator = \"NY.GDP.PCAP.KD\",\n  start = 2010,\n  end = 2024\n)\n\nplot(korea$year, korea$NY.GDP.PCAP.KD, type = \"b\")",
+    "crumbs": [
+      "Home",
+      "Lecture Notes",
+      "Week 1. Introduction"
+    ]
+  }
+]

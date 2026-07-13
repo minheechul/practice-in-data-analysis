@@ -1,0 +1,15 @@
+---
+title: Syllabus
+---
+
+수업 개요를 작성합니다.
+
+## 평가
+
+- Midterm
+- Final
+- Attendance
+
+## 교재
+
+Stock & Watson

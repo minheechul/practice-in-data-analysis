@@ -1,0 +1,27 @@
+---
+title: Home
+---
+
+# Practice in Data Analysis
+
+Welcome to the course website.
+
+This website contains
+
+- Lecture notes
+- Examples
+- Exercises
+- Course materials
+
+Please use the navigation menu to access each week's lecture notes.
+
+## Notice
+
+::: {.callout-note}
+This is a note.
+:::
+
+| A | B |
+|---|---|
+| 1 | 2 |
+| 3 | 4 |
