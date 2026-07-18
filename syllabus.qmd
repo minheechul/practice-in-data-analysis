@@ -1,15 +1,66 @@
 ---
-title: Syllabus
+title: 강의계획서
 ---
 
-수업 개요를 작성합니다.
 
-## 평가
+## 개요
 
-- Midterm
-- Final
-- Attendance
+- 데이터 분석을 실제로 수행하기 위한 기본적인 도구와 방법을 학습 
+    - 프로그래밍 언어 R 학습
+    - 통계적 분석의 사례 연구
+
+- 자료로부터 의미있는 정보를 추출하고 이를 설득력 있게 서술하는 능력을 갖추도록 하는 것이 이 강좌의 목표임
+
+## 주의사항
+
+1. 강의 시간에 개인 노트북을 가져와 실습에 사용하는 것을 적극 권장합니다.
+
+    - 개인 노트북을 가져오지 않은 학생은 당일의 실습 결과물을 따로 보관하기 바랍니다.
+
+2. 이 강좌를 수강하기 위해서는 사전에 Statistics(F05214)를 반드시 이수했어야 합니다.
+
+    - Econometrics and data analysis (D01395)를 수강한 것이 도움이 될 수 있으나 반드시 요구되지는 않습니다.
+
 
 ## 교재
 
-Stock & Watson
+Chester Ismay and Albert Y. Kim (2024), Statistical Inference via Data Science: A ModernDive into R and the Tidyverse, [https://moderndive.com](https://moderndive.com){target="_blank"} [SIDS]
+
+Mine Çetinkaya-Rundel and Johanna Hardin (2024), Introduction to Modern Statistics, 2nd edition, [https://openintro-ims.netlify.app/index.html](https://openintro-ims.netlify.app/index.html){target="_blank"} [IMS]
+
+Kosuke Imai (2018), Quantitative Social Science: An Introduction [QSS]
+
+주) SIDS의 번역본과 QSS는 도서관 지정도서실에도 비치되어 있음
+
+## 참고자료
+
+강의 중 사용하는 사례 중 일부는 아래 책으로부터 가져왔습니다.
+
+Scott Cunningham (2021), Causal Inference: The Mixtape, [https://mixtape.scunning.com/](https://mixtape.scunning.com/){target="_blank"}
+
+Nick Huntinton-Klein (2025), The Effect: An Introduction to Research Design and Causality, 2nd Edition, [https://theeffectbook.net/index.html](https://theeffectbook.net/index.html){target="_blank"}
+
+Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani (2021) An Introduction to Statistical Learning with Applications in R, 2nd Edition, [https://www.statlearning.com/](https://www.statlearning.com/){target="_blank"}
+
+Hadley Wickham, Mine Cetinkaya-Rundel, Garrett Grolemund (2023), R for Data Science: Import, Tidy, Transform, Visualize, and Model Data, 2nd Edition, [https://r4ds.hadley.nz/](https://r4ds.hadley.nz/){target="_blank"}
+
+
+## 평가
+
+1. 이 과목은 Pass/Fail로 평가합니다.
+
+2. 총점 60점 미만은 Fail로 평가되며, 평가항목별 구성은 다음과 같습니다.
+
+  - 중간시험 (30점): 개인별 구술시험 (자세한 내용은 추후 공지)
+
+  - 기말시험 (30점): 팀별 학기말 과제 (자세한 내용은 추후 공지)
+
+  - 출석 (10점): 결석은 2점, 지각 및 조퇴는 1점을 총점에서 차감
+
+  - 과제물 (20점): 4-5회의 과제 예정. 개인별 제출
+
+  - 기타 (10점): 학생의 수업참여도를 강사가 평가
+
+
+자세한 내용은 추후 공지.
+

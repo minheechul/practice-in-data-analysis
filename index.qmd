@@ -1,27 +1,10 @@
 ---
-title: Home
+title: ""
 ---
 
 # Practice in Data Analysis
 
-Welcome to the course website.
+이 웹사이트는 Practice in Data Analysis [D01601101] 강좌의 강의 자료를 제공하기 위해 만들어졌습니다.
 
-This website contains
+강의계획서, 수업 일정, 강의노트, 실습 자료, 과제 등을 순차적으로 게시할 예정입니다.
 
-- Lecture notes
-- Examples
-- Exercises
-- Course materials
-
-Please use the navigation menu to access each week's lecture notes.
-
-## Notice
-
-::: {.callout-note}
-This is a note.
-:::
-
-| A | B |
-|---|---|
-| 1 | 2 |
-| 3 | 4 |

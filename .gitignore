@@ -1,0 +1,12 @@
+/.quarto/
+**/*.quarto_ipynb
+
+_site/
+
+.Rhistory
+.RData
+.Rproj.user/
+
+.claude/settings.local.json
+
+Thumbs.db

@@ -10,13 +10,11 @@ website:
         text: Home
 
       - href: syllabus.qmd
-        text: Syllabus
+        text: 강의계획서
 
-      - href: resources.qmd
-        text: Resources
+      - href: schedules.qmd
+        text: 일정
 
-      - href: about.qmd
-        text: About      
 
 
   sidebar:
@@ -24,7 +22,7 @@ website:
     search: true
 
     contents:
-      - section: "Lecture Notes"
+      - section: "강의자료"
         contents:
           - week01.qmd
           - week02.qmd
@@ -32,5 +30,12 @@ website:
 
 format:
   html:
-    theme: litera
-    toc: true 
+    theme: cosmo
+    toc: true
+    css: styles.css
+    
+    # grid:
+    #   sidebar-width: 340px    
+    #   body-width: 900px      
+    
+  

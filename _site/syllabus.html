@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Syllabus – Practice in Data Analysis</title>
+<title>강의계획서 – Practice in Data Analysis</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -35,14 +32,15 @@ ul.task-list li input[type="checkbox"] {
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-7e6aff39ce668424d3fcb939b106e806.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-43081d808c96cc46af55a3a816ae9eed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,6 +70,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <body class="nav-sidebar docked nav-fixed quarto-light">
@@ -97,15 +96,11 @@ ul.task-list li input[type="checkbox"] {
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./syllabus.html" aria-current="page"> 
-<span class="menu-text">Syllabus</span></a>
+<span class="menu-text">강의계획서</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./resources.qmd"> 
-<span class="menu-text">Resources</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./about.qmd"> 
-<span class="menu-text">About</span></a>
+    <a class="nav-link" href="./schedules.html"> 
+<span class="menu-text">일정</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -118,7 +113,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Syllabus</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">강의계획서</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -141,7 +136,7 @@ ul.task-list li input[type="checkbox"] {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Lecture Notes</span></a>
+ <span class="menu-text">강의자료</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -150,13 +145,13 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./week01.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Week 1. Introduction</span></a>
+ <span class="menu-text">1주차. 도구 배우기 (1): 소개</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./week02.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Week 2. Learning the Tools</span></a>
+ <span class="menu-text">2주차. 도구 배우기 (2): 데이터 변형하기</span></a>
   </div>
 </li>
       </ul>
@@ -171,8 +166,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#평가" id="toc-평가" class="nav-link active" data-scroll-target="#평가">평가</a></li>
+  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요">개요</a></li>
+  <li><a href="#주의사항" id="toc-주의사항" class="nav-link" data-scroll-target="#주의사항">주의사항</a></li>
   <li><a href="#교재" id="toc-교재" class="nav-link" data-scroll-target="#교재">교재</a></li>
+  <li><a href="#참고자료" id="toc-참고자료" class="nav-link" data-scroll-target="#참고자료">참고자료</a></li>
+  <li><a href="#평가" id="toc-평가" class="nav-link" data-scroll-target="#평가">평가</a></li>
   </ul>
 </nav>
     </div>
@@ -181,7 +179,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Syllabus</h1>
+<h1 class="title">강의계획서</h1>
 </div>
 
 
@@ -198,18 +196,59 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>수업 개요를 작성합니다.</p>
-<section id="평가" class="level2">
-<h2 class="anchored" data-anchor-id="평가">평가</h2>
+<section id="개요" class="level2">
+<h2 class="anchored" data-anchor-id="개요">개요</h2>
 <ul>
-<li>Midterm</li>
-<li>Final</li>
-<li>Attendance</li>
+<li>데이터 분석을 실제로 수행하기 위한 기본적인 도구와 방법을 학습
+<ul>
+<li>프로그래밍 언어 R 학습</li>
+<li>통계적 분석의 사례 연구</li>
+</ul></li>
+<li>자료로부터 의미있는 정보를 추출하고 이를 설득력 있게 서술하는 능력을 갖추도록 하는 것이 이 강좌의 목표임</li>
 </ul>
+</section>
+<section id="주의사항" class="level2">
+<h2 class="anchored" data-anchor-id="주의사항">주의사항</h2>
+<ol type="1">
+<li><p>강의 시간에 개인 노트북을 가져와 실습에 사용하는 것을 적극 권장합니다.</p>
+<ul>
+<li>개인 노트북을 가져오지 않은 학생은 당일의 실습 결과물을 따로 보관하기 바랍니다.</li>
+</ul></li>
+<li><p>이 강좌를 수강하기 위해서는 사전에 Statistics(F05214)를 반드시 이수했어야 합니다.</p>
+<ul>
+<li>Econometrics and data analysis (D01395)를 수강한 것이 도움이 될 수 있으나 반드시 요구되지는 않습니다.</li>
+</ul></li>
+</ol>
 </section>
 <section id="교재" class="level2">
 <h2 class="anchored" data-anchor-id="교재">교재</h2>
-<p>Stock &amp; Watson</p>
+<p>Chester Ismay and Albert Y. Kim (2024), Statistical Inference via Data Science: A ModernDive into R and the Tidyverse, <a href="https://moderndive.com" target="_blank">https://moderndive.com</a> [SIDS]</p>
+<p>Mine Çetinkaya-Rundel and Johanna Hardin (2024), Introduction to Modern Statistics, 2nd edition, <a href="https://openintro-ims.netlify.app/index.html" target="_blank">https://openintro-ims.netlify.app/index.html</a> [IMS]</p>
+<p>Kosuke Imai (2018), Quantitative Social Science: An Introduction [QSS]</p>
+<p>주) SIDS의 번역본과 QSS는 도서관 지정도서실에도 비치되어 있음</p>
+</section>
+<section id="참고자료" class="level2">
+<h2 class="anchored" data-anchor-id="참고자료">참고자료</h2>
+<p>강의 중 사용하는 사례 중 일부는 아래 책으로부터 가져왔습니다.</p>
+<p>Scott Cunningham (2021), Causal Inference: The Mixtape, <a href="https://mixtape.scunning.com/" target="_blank">https://mixtape.scunning.com/</a></p>
+<p>Nick Huntinton-Klein (2025), The Effect: An Introduction to Research Design and Causality, 2nd Edition, <a href="https://theeffectbook.net/index.html" target="_blank">https://theeffectbook.net/index.html</a></p>
+<p>Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani (2021) An Introduction to Statistical Learning with Applications in R, 2nd Edition, <a href="https://www.statlearning.com/" target="_blank">https://www.statlearning.com/</a></p>
+<p>Hadley Wickham, Mine Cetinkaya-Rundel, Garrett Grolemund (2023), R for Data Science: Import, Tidy, Transform, Visualize, and Model Data, 2nd Edition, <a href="https://r4ds.hadley.nz/" target="_blank">https://r4ds.hadley.nz/</a></p>
+</section>
+<section id="평가" class="level2">
+<h2 class="anchored" data-anchor-id="평가">평가</h2>
+<ol type="1">
+<li><p>이 과목은 Pass/Fail로 평가합니다.</p></li>
+<li><p>총점 60점 미만은 Fail로 평가되며, 평가항목별 구성은 다음과 같습니다.</p></li>
+</ol>
+<ul>
+<li><p>중간시험 (30점): 개인별 구술시험 (자세한 내용은 추후 공지)</p></li>
+<li><p>기말시험 (30점): 팀별 학기말 과제 (자세한 내용은 추후 공지)</p></li>
+<li><p>출석 (10점): 결석은 2점, 지각 및 조퇴는 1점을 총점에서 차감</p></li>
+<li><p>과제물 (20점): 4-5회의 과제 예정. 개인별 제출</p></li>
+<li><p>기타 (10점): 학생의 수업참여도를 강사가 평가</p></li>
+</ul>
+<p>자세한 내용은 추후 공지.</p>
 
 
 </section>

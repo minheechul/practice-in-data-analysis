@@ -1,23 +1,208 @@
 ---
-title: "Week 2. Learning the Tools"
+title: "2주차. 도구 배우기 (2): 데이터 변형하기"
+number-sections: true
 ---
 
-Welcome to Week 1.
+## 지난 시간 복습
 
-## Learning Objectives
+- R 스크립트를 작성하고 `Ctrl + Enter`로 한 줄씩 실행
+- `library()`로 패키지를 불러와 `skim()`, `ggplot()` 등의 함수 사용
+- `|>` (파이프)를 이용해 여러 동작을 순서대로 연결
 
-- Understand the course structure.
-- Learn the role of R and Quarto.
-- Understand the importance of data analysis.
+## 데이터 변형하기: dplyr 핵심 동사
 
-## Key Concepts
+이번 시간에는 데이터를 원하는 형태로 바꾸는 데 가장 자주 쓰이는 `dplyr` 패키지의 동사(verb)들을 배웁니다.
 
-- Data
-- Empirical analysis
-- Reproducible research
+- `select()`: 필요한 변수(열)만 선택
+- `rename()`: 변수 이름 바꾸기
+- `filter()`: 조건에 맞는 관측치(행)만 선택
+- `arrange()`: 관측치를 특정 변수 기준으로 정렬 (`desc()`로 내림차순)
+- `mutate()`: 기존 변수를 이용해 새로운 변수 생성
+- `group_by()` + `summarize()`: 집단별로 나누어 요약통계 계산
 
-## Exercises
+이 동사들은 모두 `|>`로 연결하여 하나의 흐름으로 작성할 수 있습니다.
 
-1. Install R.
-2. Install Quarto.
-3. Render your first document.
+## R 스크립트 예제
+
+**R 스크립트 예제의 진행 순서**
+
+1. 환경준비
+2. 데이터 불러오기
+    - 1주차와 마찬가지로 `gapminder` 데이터를 계속 사용합니다.
+3. 데이터의 기본적 특성 파악하기
+4. 데이터 변형하기
+    - `select()`, `rename()`으로 필요한 변수만 남기고 이름 정리
+    - `filter()`로 조건에 맞는 관측치 선택
+    - `mutate()`로 새로운 변수 생성
+    - `arrange()`로 관측치 정렬
+    - `group_by()` + `summarize()`로 집단별 요약
+5. 시각화 및 표 작성하기
+6. 모형 추정
+7. 결과 저장
+
+```r
+# ============================================================
+# [Practice in Data Analysis] 2주차 스크립트 예제1
+# 학번: **********
+# 이름: XXX
+# 날짜: 2026-XX-XX
+# ============================================================
+
+
+# ============================================================
+# 1. 환경 준비 ---------------------------------------------------
+# ============================================================
+# 아래 세 패키지는 이 수업의 모든 연습에 항상 사용합니다.
+library(tidyverse)
+library(janitor)
+library(skimr)
+
+# 1주차와 동일하게 gapminder를 사용합니다. 설치는 한번만.
+# install.packages("gapminder")
+library(gapminder)
+
+# ============================================================
+# 2. 데이터 불러오기 ---------------------------------------------
+# ============================================================
+gapminder
+
+# ============================================================
+# 3. 데이터의 기본적 특성 파악 -------------------------------------
+# ============================================================
+skim(gapminder)
+
+# ============================================================
+# 4. 데이터 변형 --------------------------------------------------
+# ============================================================
+
+# 4.1 select(), rename(): 필요한 변수만 남기고 이름 정리 ----------------
+df_small <- gapminder |>
+  select(country, continent, year, lifeExp, gdpPercap) |>
+  rename(life_exp = lifeExp, gdp_percap = gdpPercap)
+
+skim(df_small)
+
+# 4.2 filter(): 조건에 맞는 관측치 선택 --------------------------------
+df_korea <- gapminder |>
+  filter(country == "Korea, Rep.")
+
+df_recent <- gapminder |>
+  filter(year >= 2000)
+
+# 4.3 mutate(): 새로운 변수 생성 --------------------------------------
+df_gdp <- gapminder |>
+  mutate(
+    gdp_total   = gdpPercap * pop,
+    gdp_billion = gdp_total / 1e9
+  )
+
+# 4.4 arrange(): 관측치 정렬 ------------------------------------------
+df_2007_sorted <- gapminder |>
+  filter(year == 2007) |>
+  arrange(desc(lifeExp))
+
+df_2007_sorted
+
+# 4.5 group_by() + summarize(): 집단별 요약 ----------------------------
+continent_summary <- gapminder |>
+  filter(year == 2007) |>
+  group_by(continent) |>
+  summarize(
+    n_countries  = n(),
+    mean_lifeExp = mean(lifeExp),
+    mean_gdp     = mean(gdpPercap)
+  )
+
+continent_summary
+
+# ============================================================
+# 5. 시각화 및 표 작성 ---------------------------------------------
+# ============================================================
+
+# 대륙별 평균 기대수명 막대그래프
+p1 <- ggplot(continent_summary, aes(x = continent, y = mean_lifeExp)) +
+  geom_col() +
+  labs(
+    title = "대륙별 평균 기대수명 (2007)",
+    x = "대륙",
+    y = "평균 기대수명 (년)"
+  )
+
+p1
+
+# 대륙별, 연도별 평균 기대수명 추이
+p2 <- gapminder |>
+  group_by(continent, year) |>
+  summarize(mean_lifeExp = mean(lifeExp)) |>
+  ggplot(aes(x = year, y = mean_lifeExp, color = continent)) +
+  geom_line() +
+  labs(
+    title = "대륙별 평균 기대수명 추이",
+    x = "연도",
+    y = "평균 기대수명 (년)"
+  )
+
+p2
+
+# ============================================================
+# 6. 모형 추정 ----------------------------------------------------
+# ============================================================
+fit <- lm(lifeExp ~ log(gdpPercap), data = gapminder |> filter(year == 2007))
+summary(fit)
+
+# ============================================================
+# 7. 결과 저장 (보고서에서 불러 쓸 것들) ----------------------------
+# ============================================================
+ggsave("figure1.png", plot = p1, width = 7, height = 5)
+ggsave("figure2.png", plot = p2, width = 7, height = 5)
+
+```
+
+## 실습
+
+**주의사항**
+
+- 위의 R 스크립트를 복사하여 RStudio source에 옮긴 후 week02_script_학번.R로 저장합니다. (예를 들어, 학번이 2014035면 week02_script_2014035.R로 저장)
+
+    - 스크립트 상단에 제목, 작성자, 날짜를 적습니다.
+    - 먼저 필요한 패키지를 설치합니다: `tidyverse`, `janitor`, `skimr`, `gapminder`
+
+- R 스크립트의 명령을 `Ctrl + Enter`를 이용하여 한 줄씩 실행하고 결과를 확인합니다.
+
+    - 여러 줄에 걸친 명령은 실행하기 전에 먼저 어디까지가 한 줄인지 파악합니다.
+    - 에러가 발생하면 에러 메시지를 읽고 의미를 확인합니다.
+
+- 아래 실습의 문제와 답은 별도의 Microsoft Word 문서를 만들어 기록합니다. 문서 이름은 week02_answer_학번.docx로 저장합니다.
+(예를 들어, 학번이 2014035면 week02_answer_2014035.docx로 저장)
+
+- 실습이 끝난 후 week02_script_학번.R과 week02_answer_학번.docx를 E-class 과제로 제출하세요.
+
+**실습**
+
+1. `4.1 select(), rename()` 부분을 실행하면서 답하세요.
+
+    (1) `df_small`에는 몇 개의 변수가 남았습니까? 원래 `gapminder`의 변수 개수와 비교하세요.
+    (2) `rename()`을 사용하기 전과 후의 변수 이름을 비교하고, `rename()`의 역할을 설명하세요.
+
+2. `4.2 filter()` 부분을 실행하면서 답하세요.
+
+    (1) `df_korea`의 관측치는 몇 개입니까? 무엇을 기준으로 선택되었습니까?
+    (2) `df_recent`는 몇 개의 관측치를 포함합니까? 조건을 다음과 같이 바꾸어 실행하고 결과를 비교하세요: `year >= 2000` → `year > 2000`.
+
+3. `4.3 mutate()`, `4.4 arrange()` 부분을 실행하면서 답하세요.
+
+    (1) `df_gdp`에 새로 생긴 변수는 무엇이며 어떻게 계산되었습니까?
+    (2) `df_2007_sorted`에서 기대수명이 가장 높은 나라와 가장 낮은 나라는 각각 어디입니까?
+    (3) `arrange(desc(lifeExp))`에서 `desc()`를 지우고 다시 실행하면 결과가 어떻게 달라집니까?
+
+4. `4.5 group_by() + summarize()` 부분을 실행하면서 답하세요.
+
+    (1) `continent_summary`에서 대륙별 국가 수(`n_countries`)를 비교하고, 가장 많은 대륙과 가장 적은 대륙을 말하세요.
+    (2) 평균 기대수명(`mean_lifeExp`)이 가장 높은 대륙과 가장 낮은 대륙은 어디입니까?
+    (3) `summarize()` 안에 `sd_lifeExp = sd(lifeExp)`를 추가하여 대륙별 기대수명의 표준편차를 구하고, 어느 대륙의 편차가 가장 큰지 설명하세요.
+
+5. `5. 시각화 및 표 작성`, `7. 결과 저장` 부분을 실행하면서 답하세요.
+
+    (1) `p1`과 `p2` 그래프를 보고 각각 무엇을 보여주는지 설명하세요.
+    (2) `p2`에서 특정 대륙(예: Asia)만 눈에 띄게 다른 추세를 보이는 구간이 있다면 언급하고, 그 이유를 짐작해 보세요.
+    (3) `figure1.png`과 `figure2.png`가 생성되었는지 확인하고 Word 문서에 삽입해 보세요.

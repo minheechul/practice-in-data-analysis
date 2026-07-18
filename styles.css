@@ -4,8 +4,46 @@ body {
         "Noto Sans KR",
         "Malgun Gothic",
         sans-serif;
+    line-height: 1.8;
 }
 
 h1, h2, h3 {
     font-weight: 600;
+}
+
+/* 페이지 제목 영역 */
+#title-block-header {
+    margin-bottom: 2rem;
+}
+
+.quarto-title {
+    margin-top: 2rem;
+}
+
+/* 섹션 제목 */
+h2 {
+    margin-top: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.8rem;
+}
+
+/* 목록 간격 */
+li {
+    margin-bottom: 0.25rem;
+}
+
+/* 사이드바 메뉴 여백 */
+/* .sidebar-item-text {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+} */
+
+.sidebar .sidebar-item-container > a.sidebar-item-text.sidebar-link .menu-text {
+    display: block !important;
+    white-space: normal !important;
+    line-height: 2 !important;
 }
