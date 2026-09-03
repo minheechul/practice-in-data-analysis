@@ -29,7 +29,7 @@ website:
       - section: "강의자료"
         contents:
           - week01.qmd
-          - week02.qmd
+          # week02.qmd
           
 
 format:
