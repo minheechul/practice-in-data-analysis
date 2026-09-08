@@ -3,36 +3,80 @@ title: "2주차. 도구 배우기 (2): 데이터 변형하기"
 number-sections: true
 ---
 
-## 지난 시간 복습
-
-- R 스크립트를 작성하고 `Ctrl + Enter`로 한 줄씩 실행
-- `library()`로 패키지를 불러와 `skim()`, `ggplot()` 등의 함수 사용
-- `|>` (파이프)를 이용해 여러 동작을 순서대로 연결
-
 ## 작업 방식
 
-- R 스크립트를 제출하기 전에 `Ctrl + Shift + F10`와 `Ctrl + Shift + Enter`를 이어서 실행하여 원하는 결과가 나오는지 확인
+- R 스크립트 한 줄씩 실행 (Run): `Ctrl + Enter`
+
+- R 스크립트 전체를 실행 (Source): `Ctrl + Shift + Enter`
+  - 보통 R 스크립트를 제출하기 전에 `Ctrl + Shift + F10`와 `Ctrl + Shift + Enter`를 이어서 실행하여 원하는 결과가 나오는지 확인
   - `Ctrl + Shift + F10`: R 다시 시작 (Environment의 객체 및 패키지를 초기화)
   - `Ctrl + Shift + Enter`: 스크립트 전체를 실행
 
-- 블록 코멘트 해제
+- 콘솔 (Console) 창에서 실행
 
-- `=`와 `==`의 사용법을 구분
+## 지난 주 R 스크립트에 대한 부가 설명
+
+- 함수 (Function): 특정한 작업을 수행하는 명령어로 인자(argument)를 괄호 안에 넣으면 작업을 수행한 결과물을 보여줌
+
+  - `함수이름(인자1, 인자2, ...)`의 형식
+  
+  ```r
+  round(3.141592, digits = 2)
+  ```
+
+- 할당 연산자 (Assignment operator) `<-`: 오른쪽의 값이나 연산결과를 왼쪽에 있는 변수에 할당 (`Alt + -`)
+
+  - 새로운 객체를 만들거나 값을 대체할 때 사용
+
+  ```r
+  x <- round(3.141592, digits = 2)
+  x
+  ```
+
+  - 대신 `=`을 대신 사용할 수도 있지만 혼동을 막기 위해 `<-`를 사용하는 것이 바람직하며, 우리 강의에서는 함수 안에서 인자의 값을 부여할 때만 `=`를 사용
+
+- 수치형 (Numeric) 자료와 문자형 (Character) 자료
+
+  ```r
+  one <- 1
+  two <- "Two"
+  one + two
+  ```
+
+- 파이프 연산자 (Pipe operator) `|>`: 왼쪽의 결과값을 오른쪽 함수의 인자로 전달 (`Ctrl + Shift + M`)
 
 
-- 그 다음 주
-- 디렉토리 관리를 위해 RStudio Project 활용
-  - 이후 시간에 소개
-- 기타 사소한 사항들
-  - 코드 정렬 단축키: `Ctrl + I`
+- 비교 연산자 (Comparison operators)
 
+  | 연산자 | 명칭 | 
+  | :---: | :--- | 
+  | `==` | 같다 | 
+  | `!=` | 같지 않다 | 
+  | `<` | 작다 | 
+  | `>` | 크다 | 
+
+  ```r
+  age <- 25
+  age != 18
+  age >= 20
+  ```
+
+- R은 문법 규칙만 깨지지 않는다면 공백과 줄바꿈의 개수에 영향을 받지 않음 
+
+  - 스크립트를 읽기 쉽도록 공백과 줄바꿈을 적절하게 활용
+
+  - 한 줄이 문법적으로 문제가 없으면 명령이 끝난 것으로 판단함 
+
+  ```r
+  df2007 <- gapminder
+    |> filter(year == 2007)
+  ```
 
 ## 데이터 변형하기: dplyr 핵심 동사
 
 이번 시간에는 데이터를 원하는 형태로 바꾸는 데 가장 자주 쓰이는 `dplyr` 패키지의 동사(verb)들을 배웁니다.
 
-- `select()`: 필요한 변수(열)만 선택
-- `rename()`: 변수 이름 바꾸기
+- `select()`: 필요한 변수(열)만 선택 
 - `filter()`: 조건에 맞는 관측치(행)만 선택
 - `arrange()`: 관측치를 특정 변수 기준으로 정렬 (`desc()`로 내림차순)
 - `mutate()`: 기존 변수를 이용해 새로운 변수 생성
@@ -40,23 +84,16 @@ number-sections: true
 
 이 동사들은 모두 `|>`로 연결하여 하나의 흐름으로 작성할 수 있습니다.
 
+dplyr 핵심 동사들을 그림으로 비교
+
+- [`filter`](https://moderndive.com/3-wrangling.html#filter){target="_blank"}
+- [`mutate`](https://moderndive.com/3-wrangling.html#mutate){target="_blank"}
+- [`summarize`](https://moderndive.com/3-wrangling.html#summarize){target="_blank"}
+- [`group_by + summarize`](https://moderndive.com/3-wrangling.html#groupby){target="_blank"}
+
+
+
 ## R 스크립트 예제
-
-**R 스크립트 예제의 진행 순서**
-
-1. 환경준비
-2. 데이터 불러오기
-    - 1주차와 마찬가지로 `gapminder` 데이터를 계속 사용합니다.
-3. 데이터의 기본적 특성 파악하기
-4. 데이터 변형하기
-    - `select()`, `rename()`으로 필요한 변수만 남기고 이름 정리
-    - `filter()`로 조건에 맞는 관측치 선택
-    - `mutate()`로 새로운 변수 생성
-    - `arrange()`로 관측치 정렬
-    - `group_by()` + `summarize()`로 집단별 요약
-5. 시각화 및 표 작성하기
-6. 모형 추정
-7. 결과 저장
 
 ```r
 # ============================================================
@@ -75,14 +112,11 @@ library(tidyverse)
 library(janitor)
 library(skimr)
 
-# 1주차와 동일하게 gapminder를 사용합니다. 설치는 한번만.
-# install.packages("gapminder")
-library(gapminder)
-
 # ============================================================
 # 2. 데이터 불러오기 ---------------------------------------------
 # ============================================================
-gapminder
+# 1주차와 동일하게 gapminder를 사용합니다.
+library(gapminder)
 
 # ============================================================
 # 3. 데이터의 기본적 특성 파악 -------------------------------------
@@ -93,10 +127,9 @@ skim(gapminder)
 # 4. 데이터 변형 --------------------------------------------------
 # ============================================================
 
-# 4.1 select(), rename(): 필요한 변수만 남기고 이름 정리 ----------------
+# 4.1 select(): 필요한 변수만 남기기 -----------------------------------
 df_small <- gapminder |>
-  select(country, continent, year, lifeExp, gdpPercap) |>
-  rename(life_exp = lifeExp, gdp_percap = gdpPercap)
+  select(country, continent, year, lifeExp, gdpPercap)
 
 skim(df_small)
 
@@ -162,18 +195,6 @@ p2 <- gapminder |>
 
 p2
 
-# ============================================================
-# 6. 모형 추정 ----------------------------------------------------
-# ============================================================
-fit <- lm(lifeExp ~ log(gdpPercap), data = gapminder |> filter(year == 2007))
-summary(fit)
-
-# ============================================================
-# 7. 결과 저장 (보고서에서 불러 쓸 것들) ----------------------------
-# ============================================================
-ggsave("figure1.png", plot = p1, width = 7, height = 5)
-ggsave("figure2.png", plot = p2, width = 7, height = 5)
-
 ```
 
 ## 실습
@@ -191,10 +212,9 @@ ggsave("figure2.png", plot = p2, width = 7, height = 5)
 
 **실습 1**
 
-1. `4.1 select(), rename()` 부분을 실행하면서 답하세요.
+1. `4.1 select()` 부분을 실행하면서 답하세요.
 
     (1) `df_small`에는 몇 개의 변수가 남았습니까? 원래 `gapminder`의 변수 개수와 비교하세요.
-    (2) `rename()`을 사용하기 전과 후의 변수 이름을 비교하고, `rename()`의 역할을 설명하세요.
 
 2. `4.2 filter()` 부분을 실행하면서 답하세요.
 
