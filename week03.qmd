@@ -1,18 +1,62 @@
 ---
-title: "2주차. 도구 배우기 (2): 데이터 변형하기"
+title: "3주차. 도구 배우기 (3): 그래프 그리기"
 number-sections: true
 ---
 
-## 작업 방식
+## 지난 시간에 이어서 
 
-- R 스크립트 한 줄씩 실행 (Run): `Ctrl + Enter`
+- `Ctrl + Shift + F10`이 객체를 초기화 시키는지에 관한 질문
 
-- R 스크립트 전체를 실행 (Source): `Ctrl + Shift + Enter`
-  - 보통 R 스크립트를 제출하기 전에 `Ctrl + Shift + F10`와 `Ctrl + Shift + Enter`를 이어서 실행하여 원하는 결과가 나오는지 확인
-  - `Ctrl + Shift + F10`: R 다시 시작 (Environment의 객체 및 패키지를 초기화; 객체가 초기화되지 않으면 1주차 RStudio Options 변경이 되었는지 확인)
-  - `Ctrl + Shift + Enter`: 스크립트 전체를 실행
+- 단축키
+  - 할당 연산자 (`<-`): `Alt + -`
+  - 파이프 연산자 (`|>`): `Ctrl + Shift + M`
+  - 스크립트 한줄씩 실행: `Ctrl + Enter`
+  - 주석 토글: `Ctrl + Shift + C`
 
-- 콘솔 (Console) 창에서 실행
+- 코드 편집
+  - 자동 완성 기능: `Tab`
+  - 줄 위치 이동: `Alt + Up/Down`
+
+- 실습실 컴퓨터에 R과 RStudio 최신 버전을 설치 (3주차 강의 종료 직전에)
+
+
+## 수치형 변수의 차트
+
+### 1개 변수
+
+- 히스토그램
+
+- 상자그림 (Box plot)
+
+- 점도표 (Strip chart)
+
+### 2개 변수
+
+- 산점도
+
+## 범주형 변수의 차트
+
+### 1개 변수 
+
+막대그래프 (bar chart)
+
+### 2개 변수
+
+- Contingency table
+
+- 막대그래프의 변형
+
+## 수치형 변수 \times 범주형 변수의 차트
+
+수치형 변수를 범주별로 나타내는 차트
+
+- 분할 차트 (Faceting)
+
+- 중첩 히스토그램 (Overlapped histogram)
+
+- 병렬 상자 그림 (Side-by-side box plot)
+
+- 병렬 점도표 (Side-by-side strip chart)
 
 ## 지난 주 R 스크립트에 대한 부가 설명
 
@@ -74,22 +118,7 @@ number-sections: true
 
 ## 데이터 변형하기: dplyr 핵심 동사
 
-이번 시간에는 데이터를 원하는 형태로 바꾸는 데 가장 자주 쓰이는 `dplyr` 패키지의 동사(verb)들을 배웁니다.
 
-- `select()`: 필요한 변수(열)만 선택 
-- `filter()`: 조건에 맞는 관측치(행)만 선택
-- `arrange()`: 관측치를 특정 변수 기준으로 정렬 (`desc()`로 내림차순)
-- `mutate()`: 기존 변수를 이용해 새로운 변수 생성
-- `group_by()` + `summarize()`: 집단별로 나누어 요약통계 계산
-
-이 동사들은 모두 `|>`로 연결하여 하나의 흐름으로 작성할 수 있습니다.
-
-dplyr 핵심 동사들을 그림으로 비교
-
-- [`filter`](https://moderndive.com/3-wrangling.html#filter){target="_blank"}
-- [`mutate`](https://moderndive.com/3-wrangling.html#mutate){target="_blank"}
-- [`summarize`](https://moderndive.com/3-wrangling.html#summarize){target="_blank"}
-- [`group_by + summarize`](https://moderndive.com/3-wrangling.html#groupby){target="_blank"}
 
 
 
