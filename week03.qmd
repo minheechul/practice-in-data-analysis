@@ -19,6 +19,32 @@ number-sections: true
 
 - 실습실 컴퓨터에 R과 RStudio 최신 버전을 설치 (3주차 강의 종료 직전에)
 
+- 아래 예제에서 사용된 `df2007`은 지난 시간 사용한 `gapminder` 데이터에서 2007년에 해당하는 자료만을 추출한 데이터임
+
+
+## `ggplot2` 패키지
+
+### 구성요소
+
+- 데이터: 시각화할 원본 데이터프레임
+
+- 미적 매핑 (Aesthetic mapping, `aes()`): 데이터의 변수를 시각적 속성 (x축, y축, 크기, 색상, 모양 등)과 연결
+
+- 기하학적 객체 (Geometries, `geom_*`): 데이터를 어떤 형태 (점, 선, 막대 등)로 화면에 표현할지 결정
+
+### 코드구조
+
+1. 캔버스 생성: 데이터와 좌표축 설정
+2. 도형 레이어 추가
+3. 보조 레이어 추가
+
+예)
+```r
+df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  + geom_point()
+  + geom_smooth()
+```
+
 
 ## 수치형 변수의 차트
 
@@ -26,13 +52,53 @@ number-sections: true
 
 - 히스토그램
 
+```r
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_histogram()
+
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_histogram(bins = 10)  
+
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_histogram(binwidth = 10)  
+
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_histogram(breaks = seq(0, 70, by = 10))  
+
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_histogram() 
+```
+
+- (Kernel) Density plot
+
+```r
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_density()
+```
+
 - 상자그림 (Box plot)
 
-- 점도표 (Strip chart)
+```r
+df2007 |> ggplot(aes(x =lifeExp)) +
+  geom_boxplot()
+
+df2007 |> ggplot(aes(y =lifeExp)) +
+  geom_boxplot()
+```
+
 
 ### 2개 변수
 
 - 산점도
+
+```r
+df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+
+df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  scale_x_log10()
+```
 
 ## 범주형 변수의 차트
 
@@ -40,86 +106,86 @@ number-sections: true
 
 막대그래프 (bar chart)
 
+```r
+df2007 |> ggplot(aes(x = continent)) +
+  geom_bar()
+```
+
 ### 2개 변수
 
+이 섹션의 연습을 위해서 우선 다음과 같이 새로운 범주형 변수 `income_group`을 만드세요.
+
+```r
+df2007 <- df2007 |>
+  mutate(income_group = cut(gdpPercap, 
+                            breaks = quantile(gdpPercap, probs = c(0, 1/3, 2/3, 1)),
+                            labels = c("Low", "Medium", "High"),
+                            include.lowest = TRUE
+                        )
+  )
+```
 - Contingency table
+
+```r
+df2007 |> tabyl(continent)
+
+df2007 |> tabyl(income_group)
+
+df2007 |> tabyl(continent, income_group) |>
+  adorn_percentages("row")
+
+df2007 |> tabyl(continent, income_group) |>
+  adorn_percentages("col")
+
+df2007 |> tabyl(continent, income_group) |>
+  adorn_percentages("col") |>
+  adorn_pct_formatting()
+```
 
 - 막대그래프의 변형
 
-## 수치형 변수 \times 범주형 변수의 차트
+## 수치형 변수 $\times$ 범주형 변수 차트
 
-수치형 변수를 범주별로 나타내는 차트
+즉, 수치형 변수를 범주별로 나타내는 차트: 예를 들어 기대수명의 분포를 대륙별로 나누어 제시
 
 - 분할 차트 (Faceting)
 
-- 중첩 히스토그램 (Overlapped histogram)
+```r
+ggplot(df2007, aes(y = lifeExp)) +
+  geom_boxplot() +
+  facet_wrap(~continent)    
+```
 
 - 병렬 상자 그림 (Side-by-side box plot)
 
+```r
+ggplot(df2007, aes(x = continent, y = lifeExp)) +
+  geom_boxplot()    
+```
+
 - 병렬 점도표 (Side-by-side strip chart)
 
-## 지난 주 R 스크립트에 대한 부가 설명
+```r
+ggplot(df2007, aes(x = continent, y = lifeExp)) +
+  geom_jitter()
+```
 
-- 함수 (Function): 특정한 작업을 수행하는 명령어로 인자(argument)를 괄호 안에 넣으면 작업을 수행한 결과물을 보여줌
+- Overlapping density plot
 
-  - `함수이름(인자1, 인자2, ...)`의 형식
-  
-  ```r
-  round(3.141592, digits = 2)
-  ```
+```r
+df2007 |> filter(continent != "Oceania") |>
+  ggplot(aes(x = lifeExp, color = continent, fill = continent)) +
+  geom_density(alpha = 0.1)
+```
 
-- 할당 연산자 (Assignment operator) `<-`: 오른쪽의 값이나 연산결과를 왼쪽에 있는 변수에 할당 (`Alt + -`)
+::: {.callout-important title="주의"}
 
-  - 새로운 객체를 만들거나 값을 대체할 때 사용
+위 예제에서는 편의상 제외하였으나 앞으로 제출하는 모든 과제에 포함된 그래프에는 반드시 적절한 축 이름이 표시되어야 합니다. 1주차 예제 스크립트를 참고하세요.
 
-  ```r
-  x <- round(3.141592, digits = 2)
-  x
-  ```
+:::
 
-  - 대신 `=`을 대신 사용할 수도 있지만 혼동을 막기 위해 `<-`를 사용하는 것이 바람직하며, 우리 강의에서는 함수 안에서 인자의 값을 부여할 때만 `=`를 사용
-
-- 수치형 (Numeric) 자료와 문자형 (Character) 자료
-
-  ```r
-  one <- 1
-  two <- "Two"
-  one + two
-  ```
-
-- 파이프 연산자 (Pipe operator) `|>`: 왼쪽의 결과값을 오른쪽 함수의 인자로 전달 (`Ctrl + Shift + M`)
-
-
-- 비교 연산자 (Comparison operators)
-
-  | 연산자 | 의미 | 
-  | :---: | :--- | 
-  | `==` | 같다 | 
-  | `!=` | 같지 않다 | 
-  | `<` | 작다 | 
-  | `>` | 크다 | 
-
-  ```r
-  age <- 25
-  age != 18
-  age >= 20
-  ```
-
-- R은 문법 규칙만 깨지지 않는다면 공백과 줄바꿈의 개수에 영향을 받지 않음 
-
-  - 스크립트를 읽기 쉽도록 공백과 줄바꿈을 적절하게 활용
-
-  - R 해석기는 한 줄이 문법적으로 문제가 없으면 명령이 끝난 것으로 판단하므로 `|>`, `+` 등의 위치에 주의
-
-  ```r
-  df2007 <- gapminder
-    |> filter(year == 2007)
-  ```
 
 ## 데이터 변형하기: dplyr 핵심 동사
-
-
-
 
 
 ## R 스크립트 예제
