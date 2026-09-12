@@ -19,9 +19,6 @@ number-sections: true
 
 - 실습실 컴퓨터에 R과 RStudio 최신 버전을 설치 (3주차 강의 종료 직전에)
 
-- 아래 예제에서 사용된 `df2007`은 지난 시간 사용한 `gapminder` 데이터에서 2007년에 해당하는 자료만을 추출한 데이터임
-
-
 ## `ggplot2` 패키지
 
 ### 구성요소
@@ -38,11 +35,17 @@ number-sections: true
 2. 도형 레이어 추가
 3. 보조 레이어 추가
 
+::: {.callout-important title="주의"}
+
+이번 주 예제에서 사용된 `df2007`은 지난 시간 사용한 `gapminder` 데이터에서 2007년에 해당하는 자료만을 추출한 데이터프레임입니다.
+
+:::
+
 예)
 ```r
-df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
-  + geom_point()
-  + geom_smooth()
+df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +    # 캔버스 생성
+  + geom_point()                                       # 도형 레이어 추가
+  + geom_smooth()                                      # 보조 레이어 추가
 ```
 
 
