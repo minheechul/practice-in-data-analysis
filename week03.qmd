@@ -101,7 +101,9 @@ df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
 ```r
 p0 <- df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
   geom_point()
+
 p0
+
 p0 + geom_smooth()  
 ```
 
@@ -125,6 +127,7 @@ df2007 <- df2007 |>
 
 ```r
 df2007 |> tabyl(continent)
+
 df2007 |> tabyl(income_group)
 ```
 
@@ -133,6 +136,7 @@ df2007 |> tabyl(income_group)
 ```r
 df2007 |> ggplot(aes(x = continent)) +
   geom_bar()
+
 df2007 |> ggplot(aes(x = income_group)) +
   geom_bar()  
 ```
@@ -143,8 +147,10 @@ df2007 |> ggplot(aes(x = income_group)) +
 
 ```r
 df2007 |> tabyl(continent, income_group)
+
 df2007 |> tabyl(continent, income_group) |> 
   adorn_percentages("row")
+
 df2007 |> tabyl(continent, income_group) |> 
   adorn_percentages("col")  
 ```
@@ -154,8 +160,10 @@ df2007 |> tabyl(continent, income_group) |>
 ```r
 df2007 |> ggplot(aes(x = continent, fill = income_group)) +
   geom_bar()
+
 df2007 |> ggplot(aes(x = continent, fill = income_group)) +
   geom_bar(position = "dodge")
+
 df2007 |> ggplot(aes(x = continent, fill = income_group)) +
   geom_bar(position = "fill")   
 ```
@@ -179,7 +187,7 @@ ggplot(df2007, aes(x = continent, y = lifeExp)) +
   geom_boxplot()    
 ```
 
-### 범주별로 구분하여 두 수치현 변수의 관계를 제시
+### 범주별로 구분하여 두 수치형 변수의 관계를 제시
 
 ```r
 df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
@@ -190,9 +198,12 @@ df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
 
 ```r
 gapminder |> group_by(continent) |>
+  summarize(mean_lifeExp = mean(lifeExp))     
+
+gapminder |> group_by(continent) |>
   summarize(mean_lifeExp = mean(lifeExp)) |>
   ggplot(aes(x = continent, y = mean_lifeExp)) +
-     geom_col()
+     geom_col()  
 ```
 
 ## 시간에 따른 변화를 나타내는 차트
