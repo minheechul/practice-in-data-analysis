@@ -53,7 +53,7 @@ df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +    # 캔버스 생성
 
 ### 수치형 변수 1개의 요약
 
-- 히스토그램
+- 히스토그램 (Histogram)
 
 ```r
 df2007 |> ggplot(aes(x =lifeExp)) +
@@ -67,16 +67,6 @@ df2007 |> ggplot(aes(x =lifeExp)) +
 
 df2007 |> ggplot(aes(x =lifeExp)) +
   geom_histogram(breaks = seq(0, 70, by = 10))  
-
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_histogram() 
-```
-
-- (Kernel) Density plot
-
-```r
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_density()
 ```
 
 - 상자그림 (Box plot)
@@ -89,10 +79,9 @@ df2007 |> ggplot(aes(y =lifeExp)) +
   geom_boxplot()
 ```
 
-
 ### 수치형 변수 2개의 관계 요약
 
-- 산점도
+- 산점도 (Scatter plot)
 
 ```r
 df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
@@ -101,6 +90,19 @@ df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
 df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
   geom_point() +
   scale_x_log10()
+```
+
+### 참고: `ggplot` 객체
+
+- `ggplot` 차트를 변수에 저장하여 다시 호출할 수 있음
+- 반복적으로 사용하는 레이어를 객체로 만들고 `+` 연산자로 추가하여 재사용 가능
+- `ggsave()` 함수로 원하는 파일 형식을 외부 파일로 저장
+
+```r
+p0 <- df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
+  geom_point()
+p0
+p0 + geom_smooth()  
 ```
 
 ## 범주형 변수의 차트
@@ -119,7 +121,7 @@ df2007 <- df2007 |>
 
 ### 범주형 변수 1개의 요약
 
-- Frequency table
+- 도수분포표 Frequency table
 
 ```r
 df2007 |> tabyl(continent)
@@ -137,7 +139,7 @@ df2007 |> ggplot(aes(x = income_group)) +
 
 ### 범주형 변수 2개의 관계 요약
 
-- Contingency table
+- 교차표 (Contingency table)
 
 ```r
 df2007 |> tabyl(continent, income_group)
@@ -147,18 +149,20 @@ df2007 |> tabyl(continent, income_group) |>
   adorn_percentages("col")  
 ```
 
-- 막대그래프
+- 범주형 변수 2개와 막대그래프
 
 ```r
-p <- df2007 |> ggplot(aes(x = continent, fill = income_group))
-p + geom_bar()
-p + geom_bar(position = "dodge")
-p + geom_bar(position = "fill")
+df2007 |> ggplot(aes(x = continent, fill = income_group)) +
+  geom_bar()
+df2007 |> ggplot(aes(x = continent, fill = income_group)) +
+  geom_bar(position = "dodge")
+df2007 |> ggplot(aes(x = continent, fill = income_group)) +
+  geom_bar(position = "fill")   
 ```
 
-## 수치형 변수 $\times$ 범주형 변수 차트
+## 수치형 변수와 범주형 변수를 함께 살펴보는 차트
 
-즉, 수치형 변수를 범주별로 나타내는 차트: 예를 들어 기대수명의 분포를 대륙별로 나누어 제시
+### 범주별로 수치형 변수의 분포 전체를 제시
 
 - 분할 차트 (Faceting)
 
@@ -175,29 +179,39 @@ ggplot(df2007, aes(x = continent, y = lifeExp)) +
   geom_boxplot()    
 ```
 
-- 병렬 점도표 (Side-by-side strip chart)
+### 범주별로 구분하여 두 수치현 변수의 관계를 제시
 
 ```r
-ggplot(df2007, aes(x = continent, y = lifeExp)) +
-  geom_jitter()
+df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
+  geom_point()
 ```
 
-- Overlapping density plot
+### 범주별로 수치형 변수의 통계량을 제시
 
 ```r
-df2007 |> filter(continent != "Oceania") |>
-  ggplot(aes(x = lifeExp, color = continent, fill = continent)) +
-  geom_density(alpha = 0.1)
+gapminder |> group_by(continent) |>
+  summarize(mean_lifeExp = mean(lifeExp)) |>
+  ggplot(aes(x = continent, y = mean_lifeExp)) +
+     geom_col()
 ```
 
-::: {.callout-important title="주의"}
+## 시간에 따른 변화를 나타내는 차트
 
-위 예제에서는 편의상 제외하였으나 앞으로 제출하는 모든 과제에 포함된 그래프에는 반드시 적절한 축 이름이 표시되어야 합니다. 1주차 예제 스크립트를 참고하세요.
+- 선그래프 (Line chart)
 
-:::
+```r
+gapminder |> group_by(year) |>
+  summarize(mean_lifeExp = mean(lifeExp)) |>
+  ggplot(aes(x = year, y = mean_lifeExp)) +
+     geom_line()
+
+gapminder |> group_by(year, continent) |>
+  summarize(mean_lifeExp = mean(lifeExp)) |>
+  ggplot(aes(x = year, y = mean_lifeExp, color = continent)) +
+     geom_line()     
+```
 
 
-## 데이터 변형하기: dplyr 핵심 동사
 
 
 ## R 스크립트 예제
@@ -233,150 +247,73 @@ skim(gapminder)
 # ============================================================
 # 4. 데이터 변형 --------------------------------------------------
 # ============================================================
-
-# 4.1 select(): 필요한 변수만 남기기 -----------------------------------
-df_small <- gapminder |>
-  select(country, year, lifeExp)
-
-skim(df_small)
-
-# 4.2 filter(): 조건에 맞는 관측치 선택 --------------------------------
-df_korea <- gapminder |>
-  filter(country == "Korea, Rep.")
-
-df_recent <- gapminder |>
-  filter(year >= 2000)
-
-# 4.3 mutate(): 새로운 변수 생성 --------------------------------------
-df_gdp <- gapminder |>
-  mutate(
-    gdp_total   = gdpPercap * pop,
-    gdp_billion = gdp_total / 1e9
-  )
-
-# 4.4 arrange(): 관측치 정렬 ------------------------------------------
-df_2007_sorted <- gapminder |>
+df2007 <- gapminder |>
   filter(year == 2007) |>
-  arrange(desc(lifeExp))
-
-df_2007_sorted
-
-# 4.5 group_by() + summarize(): 집단별 요약 ----------------------------
-continent_summary <- gapminder |>
-  filter(year == 2007) |>
-  group_by(continent) |>
-  summarize(
-    n_countries  = n(),
-    mean_lifeExp = mean(lifeExp),
-    mean_gdp     = mean(gdpPercap)
-  )
-
-continent_summary
+  mutate(income_group = cut(gdpPercap,
+                             breaks = quantile(gdpPercap, probs = c(0, 1/3, 2/3, 1)),
+                             labels = c("Low", "Medium", "High"),
+                             include.lowest = TRUE))
 
 # ============================================================
 # 5. 시각화 및 표 작성 ---------------------------------------------
 # ============================================================
 
-# 대륙별 평균 기대수명 막대그래프
-p1 <- ggplot(continent_summary, aes(x = continent, y = mean_lifeExp)) +
-  geom_col() +
-  labs(
-    title = "대륙별 평균 기대수명 (2007)",
-    x = "대륙",
-    y = "평균 기대수명 (년)"
-  )
+# 기대수명(2007)의 히스토그램
+df2007 |> ggplot(aes(x = lifeExp)) +
+  geom_histogram(bins = 10) +
+  labs(title = "기대수명의 분포 (2007)", x = "기대수명 (년)", y = "빈도")
 
-p1
 
-# 대륙별, 연도별 평균 기대수명 추이
-p2 <- gapminder |>
-  group_by(continent, year) |>
-  summarize(mean_lifeExp = mean(lifeExp)) |>
-  ggplot(aes(x = year, y = mean_lifeExp, color = continent)) +
-  geom_line() +
-  labs(
-    title = "대륙별 평균 기대수명 추이",
-    x = "연도",
-    y = "평균 기대수명 (년)"
-  )
+# 이 부분에 코드를 추가하여 아래 실습 1에 답변하세요
 
-p2
 
 # ============================================================
 # 6. 모형 추정 ----------------------------------------------------
 # ============================================================
-
 # 이번 주에는 생략
 
 # ============================================================
 # 7. 결과 저장 (보고서에서 불러 쓸 것들) ----------------------------
 # ============================================================
-
 # 이번 주에는 생략
 
 ```
 
 ## 실습
 
+::: {.callout-important title="주의"}
+
+위 예제에서는 편의상 표 제목 및 축 이름을 제외하였으나, 실습에 포함된 그래프에는 반드시 적절한 표 제목과 축 이름이 표시되어야 합니다. 1주차의 예제 스크립트를 참고하세요.
+:::
 
 **실습 1**
 
-1. `4.1 select()` 부분을 실행하면서 답하세요.
+1. `df2007`에서 `gdpPercap`의 히스토그램을 그리고 분포의 주요한 특징을 설명하세요. 
 
-    (1) `df_small`에는 몇 개의 변수가 남았습니까? 원래 `gapminder`의 변수 개수와 비교하세요.
+2. `df2007`에서 대륙별로 `gdpPercap`의 분포를 병렬 상자그림으로 나타내고 주요한 특징을 설명하세요. 
 
-2. `4.2 filter()` 부분을 실행하면서 답하세요.
+3. `df2007`에서 `gdpPercap`과 `lifeExp`의 관계를 산점도로 그리고 대륙별로 색을 다르게 표시하세요. 그래프에 나타난 주요한 특징을 설명하세요.
 
-    (1) `df_korea`의 관측치는 몇 개입니까? 무엇을 기준으로 선택되었습니까?
-    (2) `df_recent`는 몇 개의 관측치를 포함합니까? 조건을 다음과 같이 바꾸어 실행하고 결과를 비교하세요: `year >= 2000` → `year > 2000`.
+4. `income_group`의 도수분포표를 구하고 주요한 특징을 설명하세요. 그래프에 나타난 주요한 특징을 설명하세요.
 
-3. `4.3 mutate()`, `4.4 arrange()` 부분을 실행하면서 답하세요.
+5. 대륙과 소득 그룹의 교차표를 만들고, 각 대륙 내에서 소득 그룹의 비율 구하세요. 표에 나타난 주요한 특징을 설명하세요.
 
-    (1) `df_gdp`에 새로 생긴 변수는 무엇이며 어떻게 계산되었습니까?
-    (2) `df_2007_sorted`에서 기대수명이 가장 높은 나라와 가장 낮은 나라는 각각 어디입니까?
-    (3) `arrange(desc(lifeExp))`에서 `desc()`를 지우고 다시 실행하면 결과가 어떻게 달라집니까?
+6. 대륙별·소득 그룹별 국가 수를 막대그래프로 나타내세요. 먼저 `position = "dodge"`를 사용하여 막대가 겹치지 않도록 하세요. 다음으로는 `position = "fill"`을 사용하여 대륙별 소득 그룹의 비율을 제시하세요. 그래프에 나타난 주요한 특징을 설명하세요.
 
-4. `4.5 group_by() + summarize()` 부분을 실행하면서 답하세요.
+7. `gapminder` 전체 데이터를 사용하여 대륙별·연도별 평균 `gdpPercap`을 구하고, 연도를 x축, 평균 `gdpPercap`을 y축, 대륙을 색상으로 하는 선그래프를 그리세요. 그래프에 나타난 주요한 특징을 설명하세요.
 
-    (1) `continent_summary`에서 대륙별 국가 수(`n_countries`)를 비교하고, 가장 많은 대륙과 가장 적은 대륙을 확인하세요.
-    (2) 평균 기대수명(`mean_lifeExp`)이 가장 높은 대륙과 가장 낮은 대륙은 어디입니까?
-    (3) `summarize()` 안에 `sd_lifeExp = sd(lifeExp)`를 추가하여 대륙별 기대수명의 표준편차를 구하고, 어느 대륙의 편차가 가장 큰지 설명하세요.
-
-5. `5. 시각화 및 표 작성` 부분을 실행하면서 답하세요.
-
-    (1) `p1`과 `p2` 그래프를 보고 각각 무엇을 보여주는지 설명하세요.
-    (2) `p2`에서 특정 대륙(예: Asia)만 눈에 띄게 다른 추세를 보이는 구간이 있다면 언급하고, 그 이유를 짐작해 보세요.
-
+8. `df2007`에서 인구(`pop`)가 5천만 명 이상인 국가만 필터링한 후, 대륙별 기대수명 분포를 나누어 그리세요. 그래프에 나타난 주요한 특징을 설명하세요.
 
 
 **실습 2**
 
-이번에는 예제 스크립트를 복사하지 않고, 스스로 아래 작업을 수행하시오.
+::: {.callout-important title="실습 2: 주의사항"}
 
-1. `gapminder` 데이터에서 `country`, `year`, `lifeExp` 변수만을 선택하여 새로운 데이터를 만들고 `df_small2`라는 이름을 붙이시오.
+- 실습 2의 R 스크립트는 week03_ex2_학번.R로 저장합니다.
 
-2. `gapminder` 데이터에서 한국에 해당하는 자료만을 선택하여 새로운 데이터를 만들고 `df_korea2`라는 이름을 붙이시오.
+- 실습 2의 문제와 답은 별도의 Microsoft Word 문서를 만들어 기록합니다. 문서 이름은 week03_ex2_학번.docx로 저장합니다.
 
-3. `gapminder` 데이터에서 2000년 이후에 해당하는 자료만을 선택하여 새로운 데이터를 만들고 `df_recent2`라는 이름을 붙이시오.
-
-4. `gapminder` 데이터에서 1인당 GDP와 인구를 이용하여 총 GDP에 해당하는 `gdp_total` 변수를 만드시오. 또한 총 GDP의 단위를 10억 달러로 변환한 새 변수 `gdp_total`을 만든 후 이 데이터를 `df_gdp2`라는 이름을 붙이시오.
-
-5. `gapminder` 데이터에서 2007년 자료만을 선택한 후 기대수명의 내림차순으로 정렬한 새 데이터를 만들고 `df_2007_sorted2`라는 이름을 붙이시오.
-
-6. `gapminder` 데이터에서 2007년 자료만을 선택한 후, 대륙별로 국가수(`n_countries`), 평균기대수명(`mean_lifeExp`), 평균1인당GDP(`mean_gdp`)를 포함하는 새로운 데이터를 만들고 `continent_summary2`라는 이름을 붙이시오.
-
-7. `df_small`과 `df_small2`가 동일한지 확인하기 위해 콘솔 창에 `identical(df_small, df_small2)`라고 입력하고 결과를 확인하시오. 만약 다르다면 이유가 무엇인지 확인하시오. 문제 2 - 6에 대해서도 새로 생성된 데이터가 예제의 데이터와 동일한지 확인하고, 만약 다르다면 이유가 무엇인지 확인하시오. 
-
-
-**실습 3**
-
-::: {.callout-important title="실습 3: 주의사항"}
-
-- 실습 3의 R 스크립트는 week02_ex3_학번.R로 저장합니다.
-
-- 실습 3의 문제와 답은 별도의 Microsoft Word 문서를 만들어 기록합니다. 문서 이름은 week02_ex3_학번.docx로 저장합니다.
-
-- 실습 3이 끝난 후 week02_ex3_학번.R과 week02_ex3_학번.docx를 E-class 과제로 제출하세요.
+- 실습 2이 끝난 후 week03_ex2_학번.R과 week03_ex2_학번.docx를 E-class 과제로 제출하세요.
 
 :::
 
