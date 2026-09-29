@@ -102,7 +102,7 @@ skim(klips27p_small)
 
 ### 임금 변수의 분포
 
-- 임금의 평균은 305만원, 중앙값은 270만원이며 매우 오른쪽으로 치우친 분포를 나타냄
+- 임금의 평균은 305만원, 중앙값은 270만원이며 매우 오른쪽으로 치우친 비대칭 분포를 나타냄
 
 ```{r}
 #| label: fig-hist
@@ -114,6 +114,8 @@ klips27p_small |>
     geom_histogram() +
     labs(x = "임금 (만원)")
 ```
+
+- 분포의 위쪽 구간에 극단적인 고임금 이상치들이 존재함
 
 ```{r}
 #| label: fig-boxplot
@@ -141,7 +143,7 @@ klips27p_small |>
 ```    
 ```{r}
 #| label: fig-box-zoomed
-#| fig-cap: "임금의 상자그림 (0-1,000 구간 확대)"
+#| fig-cap: "임금의 상자그림 (0-1,000만원 구간 확대)"
 #| fig-cap-location: top  
 #| 
 klips27p_small |> 
@@ -170,7 +172,7 @@ klips27p_small |>
     ratio_cutoff = p90 / p10,
     ratio_mean = mean_90 / mean_10
   ) |>
-  kable(align = "c")
+  kable(align = "c", digits = 2)
 ```
    
 
@@ -188,12 +190,12 @@ klips27p_small |>
   summarize(
     gini = ineq(wage)
   ) |>
-  kable(align = "c")
+  kable(align = "c", digits = 3)
 ```
 
 ### 남녀 임금 분포의 비교
 
-- 남성이 여성에 비하여 평균과 산포도가 모두 크게 나타남
+- 남성이 여성에 비하여 평균과 산포도 (dispersion)가 모두 크게 나타남
   - 남성의 평균 임금은 370만원, 여성의 평균 임금은 226만원으로 남성 평균이 여성 평균의 1.64배
   - 남성의 표준편차 216, 여성의 표준편차 129로 남성 표준편차가 여성 표준편차의 1.67배
 
@@ -229,10 +231,19 @@ klips27p_small |>
     ratio_mean = (mean_Male / mean_Female),
     ratio_sd = (sd_Male / sd_Female)    
   ) |>
-  kable(align = "c")
+  kable(align = "c", digits = 2)
 ```
 
-- 두 성별 모두 오른쪽으로 치우친 분포를 나타내지만 남성이 더 넓게 분포되어 있으며 이는 높은 임금을 받는 여성이 상대적으로 드문 것에서 비롯됨
+- 두 그룹의 평균을 비교하는 통계적 검정 결과 남성의 평균이 통계적으로 유의하게 여성의 평균보다 높은 것으로 나타남
+
+```{r}
+t.test(wage ~ gender, data = klips27p_small)
+```
+
+- 두 성별 모두 오른쪽으로 치우친 분포를 나타냄 
+
+- 두 분포에 상당한 중첩이 나타나지만 남성 분포의 사분위수가 여성 분포의 사분위수에 비하여 뚜렷하게 높게 나타남
+  - 남성의 1사분위수 > 여성의 1사분위수; 남성의 중앙값 > 여성의 중앙값; 남성의 3사분위수 > 여성의 3사분위수
 
 ```{r}
 #| label: fig-wage-by-gender
@@ -247,383 +258,87 @@ p1
 p1 + coord_cartesian(xlim = c(0, 1000))
 ```
 
+### 연령 그룹별 남녀 임금 분포의 비교
 
-```r
-# 강의 중 실습
-# 정규직-비정규직 임금 분포 차이
+- 먼저 다음과 같이 `age_group` 변수 레벨의 순서를 다시 정렬하는 것이 바람직함
 
-# 실습 1
-# KLIPS 원자료 다운
-# 5년전 자료로 성별 임금 분포 살펴볼 것
+```{r}
+#| echo: true
+#| warning: false
+#| message: false
+#| output: false
 
-# 실습 2
-# KLIPS 원자료 다운
-# 2027년 자료 이용 기업 규모별 임금 분포 
+klips27p_small <- read_csv("data/klips27p_small.csv")
 ```
-
-```r
-# 가르칠 내용
-# 1. 컴퓨터에 저장된 데이터 불러오기: 
-#   csv, excel
-#   path와 r project 사용
-# 2. 성별 임금 분포 
-#   분석하는 방법, 태도 설명
-#     표와 그림을 읽고 생각하기
-#     필요하면 추가로 표 및 그래프 작성
-#     전체 분포: 지니계수, 다른 기술 방법
-#     세부 그룹별 비교
-#   기술적인 이슈
-#     기초: 패키지 사용법 (dplyr, ggplot2, skimr, janitor)
-#     기타: kernel density, case_when, pivot_wider
-#   KLIPS 실제로 다운받아서 사용해 보기
-```
-
-### 구성요소
-
-- 데이터: 시각화할 원본 데이터프레임
-
-- 미적 매핑 (Aesthetic mapping, `aes()`): 데이터의 변수를 시각적 속성 (x축, y축, 크기, 색상, 모양 등)과 연결
-
-- 기하학적 객체 (Geometries, `geom_*`): 데이터를 어떤 형태 (점, 선, 막대 등)로 화면에 표현할지 결정
-
-### 코드구조
-
-1. 캔버스 생성: 데이터와 좌표축 설정
-2. 도형 레이어 추가
-3. 보조 레이어 추가
-
-::: {.callout-important title="주의"}
-
-이번 주 예제에서 사용된 `df2007`은 지난 시간 사용한 `gapminder` 데이터에서 2007년에 해당하는 자료만을 추출한 데이터프레임입니다.
-
-:::
-
-예)
-```r
-df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +    # 캔버스 생성
-  + geom_point()                                       # 도형 레이어 추가
-  + geom_smooth()                                      # 보조 레이어 추가
-```
-
-
-## 수치형 변수의 차트
-
-### 수치형 변수 1개의 요약
-
-- 히스토그램 (Histogram)
-
-```r
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_histogram()
-
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_histogram(bins = 10)  
-
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_histogram(binwidth = 10)  
-
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_histogram(breaks = seq(0, 70, by = 10))  
-```
-
-- 상자그림 (Box plot)
-
-```r
-df2007 |> ggplot(aes(x =lifeExp)) +
-  geom_boxplot()
-
-df2007 |> ggplot(aes(y =lifeExp)) +
-  geom_boxplot()
-```
-
-### 수치형 변수 2개의 관계 요약
-
-- 산점도 (Scatter plot)
-
-```r
-df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
-  geom_point()
-
-df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
-  geom_point() +
-  scale_x_log10()
-```
-
-### 참고: `ggplot` 객체
-
-- `ggplot` 차트를 변수에 저장하여 다시 호출할 수 있음
-- 반복적으로 사용하는 레이어를 객체로 만들고 `+` 연산자로 추가하여 재사용 가능
-- `ggsave()` 함수로 원하는 파일 형식을 외부 파일로 저장
-
-```r
-p0 <- df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +
-  geom_point()
-
-p0
-
-p0 + geom_smooth()  
-```
-
-## 범주형 변수의 차트
-
-이 섹션의 연습을 위해서 우선 다음과 같이 새로운 범주형 변수 `income_group`을 만드세요.
-
-```r
-df2007 <- df2007 |>
-  mutate(income_group = cut(gdpPercap, 
-                            breaks = quantile(gdpPercap, probs = c(0, 1/3, 2/3, 1)),
-                            labels = c("Low", "Medium", "High"),
-                            include.lowest = TRUE
-                        )
-  )
-```
-
-### 범주형 변수 1개의 요약
-
-- 도수분포표 Frequency table
-
-```r
-df2007 |> tabyl(continent)
-
-df2007 |> tabyl(income_group)
-```
-
-- 막대그래프 (bar chart)
-
-```r
-df2007 |> ggplot(aes(x = continent)) +
-  geom_bar()
-
-df2007 |> ggplot(aes(x = income_group)) +
-  geom_bar()  
-```
-
-### 범주형 변수 2개의 관계 요약
-
-- 교차표 (Contingency table)
-
-```r
-df2007 |> tabyl(continent, income_group)
-
-df2007 |> tabyl(continent, income_group) |> 
-  adorn_percentages("row")
-
-df2007 |> tabyl(continent, income_group) |> 
-  adorn_percentages("col")  
-```
-
-- 범주형 변수 2개와 막대그래프
-
-```r
-df2007 |> ggplot(aes(x = continent, fill = income_group)) +
-  geom_bar()
-
-df2007 |> ggplot(aes(x = continent, fill = income_group)) +
-  geom_bar(position = "dodge")
-
-df2007 |> ggplot(aes(x = continent, fill = income_group)) +
-  geom_bar(position = "fill")   
-```
-
-## 수치형 변수와 범주형 변수를 함께 살펴보는 차트
-
-### 범주별로 수치형 변수의 분포 전체를 제시
-
-- 분할 차트 (Faceting)
-
-```r
-ggplot(df2007, aes(y = lifeExp)) +
-  geom_boxplot() +
-  facet_wrap(~continent)    
-```
-
-- 병렬 상자 그림 (Side-by-side box plot)
-
-```r
-ggplot(df2007, aes(x = continent, y = lifeExp)) +
-  geom_boxplot()    
-```
-
-### 범주별로 두 수치형 변수의 관계를 제시
-
-```r
-df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp, color = continent)) +
-  geom_point()
-```
-
-### 범주별로 수치형 변수의 통계량을 제시
-
-```r
-gapminder |> group_by(continent) |>
-  summarize(mean_lifeExp = mean(lifeExp))     
-
-gapminder |> group_by(continent) |>
-  summarize(mean_lifeExp = mean(lifeExp)) |>
-  ggplot(aes(x = continent, y = mean_lifeExp)) +
-     geom_col()  
-```
-
-## 시간에 따른 변화를 나타내는 차트
-
-- 선그래프 (Line chart)
-
-```r
-gapminder |> group_by(year) |>
-  summarize(mean_lifeExp = mean(lifeExp)) |>
-  ggplot(aes(x = year, y = mean_lifeExp)) +
-     geom_line()
-
-gapminder |> group_by(year, continent) |>
-  summarize(mean_lifeExp = mean(lifeExp)) |>
-  ggplot(aes(x = year, y = mean_lifeExp, color = continent)) +
-     geom_line()     
-```
-
-
-
-
-## R 스크립트 예제
-
-```r
-# ============================================================
-# [Practice in Data Analysis] 2주차 스크립트 예제1
-# 학번: **********
-# 이름: XXX
-# 날짜: 2026-XX-XX
-# ============================================================
-
-
-# ============================================================
-# 1. 환경 준비 ---------------------------------------------------
-# ============================================================
-# 아래 세 패키지는 이 수업의 모든 연습에 항상 사용합니다.
-library(tidyverse)
-library(janitor)
-library(skimr)
-
-# ============================================================
-# 2. 데이터 불러오기 ---------------------------------------------
-# ============================================================
-# 1주차와 동일하게 gapminder를 사용합니다.
-library(gapminder)
-
-# ============================================================
-# 3. 데이터의 기본적 특성 파악 -------------------------------------
-# ============================================================
-skim(gapminder)
-
-# ============================================================
-# 4. 데이터 변형 --------------------------------------------------
-# ============================================================
-df2007 <- gapminder |>
-  filter(year == 2007) |>
-  mutate(income_group = cut(gdpPercap,
-                             breaks = quantile(gdpPercap, probs = c(0, 1/3, 2/3, 1)),
-                             labels = c("Low", "Medium", "High"),
-                             include.lowest = TRUE))
-
-# ============================================================
-# 5. 시각화 및 표 작성 ---------------------------------------------
-# ============================================================
-
-# 기대수명(2007)의 히스토그램
-df2007 |> ggplot(aes(x = lifeExp)) +
-  geom_histogram(bins = 10) +
-  labs(title = "기대수명의 분포 (2007)", x = "기대수명 (년)", y = "빈도")
-
-
-# 이 부분에 코드를 추가하여 아래 실습 1에 답변하세요
-
-
-# ============================================================
-# 6. 모형 추정 ----------------------------------------------------
-# ============================================================
-# 이번 주에는 생략
-
-# ============================================================
-# 7. 결과 저장 (보고서에서 불러 쓸 것들) ----------------------------
-# ============================================================
-# 이번 주에는 생략
-
-```
-
 ## 실습
-
-::: {.callout-important title="주의"}
-
-위 예제에서는 편의상 표 제목 및 축 이름을 제외하였으나, 실습에 포함된 그래프에는 반드시 적절한 표 제목과 축 이름이 표시되어야 합니다. 1주차의 예제 스크립트를 참고하세요.
-:::
 
 **실습 1**
 
-1. `df2007`에서 `gdpPercap`의 히스토그램을 그리고 분포의 주요한 특징을 설명하세요. 
-
-2. `df2007`에서 대륙별로 `gdpPercap`의 분포를 병렬 상자그림으로 나타내고 주요한 특징을 설명하세요. 
-
-3. `df2007`에서 `gdpPercap`과 `lifeExp`의 관계를 산점도로 그리고 대륙별로 색을 다르게 표시하세요. 그래프에 나타난 주요한 특징을 설명하세요.
-
-4. `income_group`의 도수분포표를 구하고 주요한 특징을 설명하세요. 그래프에 나타난 주요한 특징을 설명하세요.
-
-5. 대륙과 소득 그룹의 교차표를 만들고, 각 대륙 내에서 소득 그룹의 비율 구하세요. 표에 나타난 주요한 특징을 설명하세요.
-
-6. 대륙별·소득 그룹별 국가 수를 막대그래프로 나타내세요. 먼저 `position = "dodge"`를 사용하여 막대가 겹치지 않도록 하세요. 다음으로는 `position = "fill"`을 사용하여 대륙별 소득 그룹의 비율을 제시하세요. 그래프에 나타난 주요한 특징을 설명하세요.
-
-7. `gapminder` 전체 데이터를 사용하여 대륙별·연도별 평균 `gdpPercap`을 구하고, 연도를 x축, 평균 `gdpPercap`을 y축, 대륙을 색상으로 하는 선그래프를 그리세요. 그래프에 나타난 주요한 특징을 설명하세요.
-
-8. `df2007`에서 인구(`pop`)가 5천만 명 이상인 국가만 필터링한 후, 대륙별 기대수명 분포를 나누어 그리세요. 그래프에 나타난 주요한 특징을 설명하세요.
-
+1. `klips27p_small.csv`를 이용하여 정규직-비정규직 임금 분포 차이를 비교해 보시오.
 
 **실습 2**
 
-`openintro` R 패키지에 포함된 `gss2010`라는 데이터를 이용하여 아래 질문에 답변하시오.
+1. KLIPS 22차 조사 (2019년 조사) 원자료로부터 임금 근로자 자료를 추출한 후 성별에 따른 임금 분포의 차이를 설명하시오. 
 
-1. 콘솔 창에 `?gss2010`을 입력하여 데이터 설명을 확인하시오. 이 데이터는 어떤 조사 결과이며 무엇을 목표로 수집된 데이터인가요?
+2. 2019년의 성별 임금 분포와 2024년의 성별 임금 분포를 비교하시오.
 
-2. 관측 단위(unit of observation), 총 관측치(행)의 수, 변수(열)의 수를 구하시오. 데이터에 포함된 변수 중 수치형(numerical) 변수와 범주형(categorical) 변수를 구분하여 정리하시오.
+3. `klips27p_small.csv`를 추출할 때 사용하였던 아래 R 스크립트를 참고하세요.
 
-3. 연령과 주당 근무 시간 사이의 관계를 알아보기 위해 산점도(scatter plot)를 그리시오. 작성한 산점도에서 관찰되는 전반적인 패턴이나 특이점을 설명하시오.
+```{r}
+#| eval: false
+#| echo: true
+#| code-fold: true
+#| code-summary: "R 스크립트 코드 보기/접기"
 
-4. 성별에 따라 연령과 주당 근무 시간의 관계가 어떻게 다른지 확인하기 위해, 남성과 여성 각각의 산점도를 개별적으로 그리시오. 두 그룹 사이 그래프에서 관찰되는 주요 차이점과 특징을 설명하시오.
+library(tidyverse)
+library(readxl)
 
-5. 연령의 분포를 확인하기 위한 히스토그램(histogram)을 작성하시오. 구간 너비나 빈의 개수를 여러 가지로 조정해 보고, 가장 적절하다고 생각하는 빈의 개수(또는 너비)와 그 이유를 설명하시오. 히스토그램을 통해 알 수 있는 연령 분포의 주요 특징을 기술하시오.
+klips27p <- read_excel("data/klips27p.xlsx")
 
-6. 최종 학력 범주에 따른 주당 근무 시간의 분포를 비교하는 상자 그림(box plot)을 그리시오. 상자 그림에서 확인되는 주요 특징을 설명하시오.
+klips27p_small <- klips27p |> 
+  mutate(wage = p271642,
+         gender = case_when(
+           p270101 == 1 ~ "Male",
+           p270101 == 2 ~ "Female",
+           .default = NA_character_
+           ),
+         age = p270107,
+         age_group = case_when(
+           age >= 1 & age < 30 ~ "Below 30",
+           age >= 30 & age < 40 ~ "30s",
+           age >= 40 & age < 50 ~ "40s",
+           age >= 50 ~ "Above 50",
+           .default = NA_character_
+         ),
+         education = case_when(
+           p270110 >= 1 & p270110 <= 5 ~ "High School",
+           p270110 >= 6 ~ "College",
+           .default = NA_character_
+           ),
+         job_type = case_when(
+           p270317 == 1 ~ "Regular",
+           p270317 == 2 ~ "Non-regular",
+           .default = NA_character_
+           ),
+         firm_size = case_when(
+           p270403 >= 1 & p270403 <= 4 ~ "Small",
+           p270403 >= 5 & p270403 <= 7 ~ "Medium",
+           p270403 >= 8 & p270403 <= 10 ~ "Large",
+           .default = NA_character_           
+           )
+  ) |> 
+  select(pid, jobclass, wage, gender, age_group, education, job_type) |> 
+  na.omit()
 
-7. 인종 변수의 분포를 보여주는 막대 그래프(bar plot)를 작성하고 인종 분포의 주요 특징을 설명하시오.
-
-8. 인종과 최종 학력 간의 연관성을 파악하기 위해 아래 세 가지 형태의 막대 그래프를 작성하고, 각각의 장단점을 비교 설명하시오.
-
+skim(klips27p_small)
+```
 
 **실습 3**
 
-::: {.callout-important title="실습 3: 주의사항"}
-
-- 실습 3의 R 스크립트는 week03_ex3_학번.R로 저장합니다.
-
-- 실습 3의 문제와 답은 별도의 Microsoft Word 문서를 만들어 기록합니다. 문서 이름은 week03_ex3_학번.docx로 저장합니다.
-
-- 실습 3이 끝난 후 week03_ex3_학번.R과 week03_ex3_학번.docx를 E-class 과제로 제출하세요.
-
-:::
-
-`openintro` R 패키지에 포함된 `acs12` 데이터를 이용하여 아래 질문에 답하시오.
-
-1. 콘솔 창에 `?acs12`를 입력하면 `acs12` 데이터의 소개를 볼 수 있습니다. 이 데이터에 대해 설명하시오.
-
-2. 관측 단위(unit of observation)는 무엇인가요? 관측치(observation)는 총 몇 개인가요? 포함된 변수는 몇 개인가요? 어떤 변수가 범주형(categorical)이고 어떤 변수가 수치형(numerical)인가요?
-
-3. `age`와 `income`의 산점도(scatter plot)를 그리시오. 가로축(수평축)에는 어떤 변수를 두고 싶나요? 그래프에서 관찰되는 패턴을 설명하시오.
-
-4. 남성과 여성 각각에 대해 `age`와 `income`의 산점도를 개별적으로 그리고 주요한 특징을 설명하시오.
-
-5. `income`의 히스토그램(histogram)을 그리고 주요한 특징을 설명하시오. 적절한 빈(bin)의 개수는 몇 개인가요?
-
-6. 인종(`race`)에 따른 `income`의 분포를 비교하는 상자 그림(box plot)을 그리고 주요한 특징을 설명하시오.
-
-7. `race`의 분포를 나타내는 막대 그래프(bar plot)를 그리고 주요한 특징을 설명하시오.
-
-8. `race`와 `edu` 간의 연관성을 보여주는 세 가지 버전의 막대 그래프를 그리시오. 각 그래프의 장점과 단점에 대해 논하시오.
-
+1. `fct_re
+# 실습 2
+# KLIPS 원자료 다운
+# 2027년 자료 이용 기업 규모별 임금 분포 
 
 
 ## 과제 
