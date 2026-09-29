@@ -1,0 +1,137 @@
+---
+title: "과제 1"
+date: "마감: 9월 24일 오후 6시"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+mainfont: NanumGothic
+papersize: a4
+header-includes:
+#     - \usepackage{setspace}\onehalfspacing
+    - \usepackage{setspace}\doublespacing
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, include = FALSE)
+```
+
+**주의사항:**
+
+- 문제에 따라 표 또는 그래프를 제시한 다음 표 또는 그래프에서 확인할 수 있는 주요한 특징을 **반드시** 서술해야 합니다.
+
+- 모든 그래프에는 적절한 제목, 축이름이 **반드시** 나타나야 합니다.
+
+```{r, include = FALSE}
+library(tidyverse)
+library(janitor)
+library(skimr)
+library(openintro)
+```
+
+`openintro` R 패키지에 포함된 `ncbirths` 데이터를 이용하여 아래 질문에 답하시오.
+
+1. 콘솔 창에 `?ncbirths`를 입력하면 `ncbirths` 데이터의 소개를 볼 수 있습니다. 이 데이터에 대해 설명하시오.
+
+2. 관측 단위(unit of observation)는 무엇인가요? 관측치(observation)는 총 몇 개인가요? 포함된 변수는 몇 개인가요? 어떤 변수가 범주형(categorical)이고 어떤 변수가 수치형(numerical)인가요?
+
+```{r}
+skim(ncbirths)
+```
+
+3. 산모의 임신 기간이 40주 이상인 출생 건 중에서, 아기의 체중이 가장 무거운 상위 8건을 추출하시오. 이들의 산모 나이, 임신 기간, 아기 체중, 아기 성별 변수만 선택하여 조회하시오.
+
+```{r}
+ncbirths |> 
+  select(mage, weeks, weight, gender) |> 
+  filter(weeks >= 40) |> 
+  arrange(desc(weight)) |> 
+  print(n = 8)
+```
+
+4. 산모의 나이가 35세 이상인 경우 "Older", 35세 미만인 경우 "Younger" 값을 갖는 새로운 변수 `age_group`을 만드시오. 그리고 `age_group`별로 평균 아기 체중과 전체 관측치 수를 계산하는 요약표를 작성하시오.
+
+힌트) `ifelse()` 함수의 활용법을 찾아보고 적절히 사용하시오.
+
+```{r}
+ncbirths |> 
+  mutate(age_group = ifelse(mage >= 35, "Older", "Younger")) |> 
+  group_by(age_group) |> 
+  summarize(mean_weight = mean(weight),
+            n = n())
+```
+
+5. 아기의 성별에 따른 출생 건수와 비율을 나타내는 도수분포표를 작성하시오. 표의 맨 아래에는 전체 합계 행을 포함하고, 비율은 백분율(%) 형식으로 표시하시오.
+
+```{r}
+ncbirths |> 
+  tabyl(gender) |> 
+  adorn_totals() |> 
+  adorn_pct_formatting()
+```
+
+6. 산모의 흡연 여부와 조산 여부, 두 범주형 변수의 관계를 보여주는 교차표를 만들고 출생 건수와 적절한 방향의 비율이 나타나게 하시오. 
+
+```{r}
+ncbirths |> 
+  tabyl(habit, premie) |> 
+  adorn_percentages("row") |> 
+  adorn_pct_formatting(digits = 2) |> 
+  adorn_ns()
+```
+
+7. 산모의 인종별 평균 아기 체중을 막대 그래프로 나타내시오. 
+
+```{r}
+ncbirths |> 
+  filter(!is.na(whitemom )) |> 
+  group_by(whitemom) |> 
+  summarize(mean_weight = mean(weight)) |> 
+  ggplot(aes(x = whitemom, y = mean_weight)) +
+    geom_col()
+```
+
+8. 산모의 진찰 횟수가 10회 이상인 데이터만 선택하여, 산모 나이별 평균 아기 체중을 구하시오. 또한 산모 나이를 x축, 나이별 평균 아기 체충을 y축에 나타내는 산점도를 제시하시오.
+
+```{r}
+ncbirths |> 
+  filter(visits >= 10) |> 
+  group_by(mage) |> 
+  summarize(mean_weight = mean(weight)) |> 
+  ggplot(aes(x = mage, y = mean_weight)) +
+    geom_point()
+```
+
+9. 아기의 성별에 따른 임신 기간의 분포를 비교하시오.
+
+```{r}
+ncbirths |> 
+  ggplot(aes(x = weeks, y = gender)) +
+    geom_boxplot()
+```
+
+10. 산모의 나이와 아기의 체중간의 관계를 확인할 수 있는 산점도를 그리되, 아기의 성별에 따라 점의 색상을 다르게 지정하고, 점들이 겹치는 현상을 완화하기 위해 투명도를 조절하시오.
+
+```{r}
+ncbirths |> 
+  ggplot(aes(x = mage, y = weight, color = gender)) +
+    geom_point(alpha = 0.2)
+```
+
+11. 전체 아기의 체중 분포를 파악하기 위한 히스토그램을 그리시오.
+
+```{r}
+ncbirths |> 
+  ggplot(aes(x = weight)) +
+    geom_histogram()
+```
+
+12. 산모의 결혼 여부 내에서 조산 여부의 구성 비율을 비교하기 위한 막대 그래프를 그리시오.
+
+
+```{r}
+ncbirths |> 
+  filter(!is.na(marital)) |>  
+  ggplot(aes(x = marital, fill = premie)) +
+    geom_bar(position = "fill")
+```
+13. 그밖에 본인이 발견한 흥미로운 패턴을 표 또는 그림으로 나타내시오.

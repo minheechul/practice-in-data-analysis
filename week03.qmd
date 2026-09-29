@@ -44,8 +44,8 @@ number-sections: true
 예)
 ```r
 df2007 |> ggplot(aes(x = gdpPercap, y = lifeExp)) +    # 캔버스 생성
-  + geom_point()                                       # 도형 레이어 추가
-  + geom_smooth()                                      # 보조 레이어 추가
+  geom_point() +                                       # 도형 레이어 추가
+  geom_smooth()                                      # 보조 레이어 추가
 ```
 
 

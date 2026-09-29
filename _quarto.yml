@@ -4,6 +4,12 @@ project:
     - "*.qmd"
     - "*.md"
     - "!CLAUDE.md"
+    - "!for_later_use/"
+  resources:
+    - "data/*.csv"
+
+# execute:
+#   dir: project  
 
 website: 
   title: "Practice in Data Analysis"

@@ -1,5 +1,9 @@
 ---
 title: "4주차. 도구 적용하기 (1): 근로자 수준 데이터"
+execute:
+  echo: false
+  message: false
+  warning: false
 number-sections: true
 ---
 
@@ -38,6 +42,225 @@ my-project/
 └── my-project.Rproj    
 ```
 
+
+## 한국노동패널조사 (KLIPS)
+
+- KLIPS는 도시지역에 거주하는 5,000가구와 가구원을 대상으로 1998년부터 1년에 1회씩 조사
+- 자료의 구성: 가구자료, 개인자료, 직업력자료, 부가조사자료
+- [한국노동패널 홈페이지](https://www.kli.re.kr/klips/)에서 데이터 및 참고자료를 다운로드
+  - KLIPS 홈페이지 > 데이터 다운로드 > 한국노동패널 1~27차년도 자료 (Excel)과 한국노동패널 1~27차년도 통합설문지, 유저가이드 및 통합코드북
+- 데이터 파일 이름의 마지막이 p로 끝나는 것이 개인자료 (h: 가구자료, w: 직업력자료, a: 부가조사자료)
+- 개인자료의 변수 설명은 1~27차 유저가이드의 84페이지 이하를 참고
+
+## 성별에 따른 임금의 분포를 비교
+
+### 준비
+
+- KLIPS 27차 조사(2024년 조사)의 개인 자료 중 임금근로자만 별도로 추출한 다음 파일을 이용
+
+  [📥 실습용 CSV 데이터 다운로드](data/klips27p_small.csv){.btn .btn-outline-primary .btn-sm download=""}
+
+
+  | 변수명 | 설명 | 
+  | :---: | :--- | 
+  | `pid` | 개인고유번호 | 
+  | `jobclass` | 주된 일자리 유형 (1 또는 5가 임금근로자) | 
+  | `wage` | 월평균임금액 (만원)| 
+  | `gender` | 성별 | 
+  | `age_group` | 연령 그룹  |
+  | `education` | 학력 |
+  | `jot_type` | 정규직/비정규직 |
+
+- 먼저 3개의 필수 패키지 (`tidyverse`, `skimr`, `janitor`)를 준비하고 데이터를 불러오기
+
+```{r}
+#| echo: true
+#| warning: false
+#| message: false
+#| output: false
+
+# 패키지 준비
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(ineq)      # 나중에 지니계수 구할 때만 한번 사용
+library(knitr)     # 데이터를 표로 깔끔하게 보여줄 때 사용
+
+# 데이터 불러오기
+klips27p_small <- read_csv("data/klips27p_small.csv")
+```
+
+- 본격적인 분석에 앞서 데이터의 구조와 변수의 개요를 파악
+
+```{r}
+#| label: tbl-hist
+#| tbl-cap: "데이터의 개요"
+#| tbl-cap-location: top 
+
+skim(klips27p_small)
+```
+
+### 임금 변수의 분포
+
+- 임금의 평균은 305만원, 중앙값은 270만원이며 매우 오른쪽으로 치우친 분포를 나타냄
+
+```{r}
+#| label: fig-hist
+#| fig-cap: "임금의 히스토그램"
+#| fig-cap-location: top 
+
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+    geom_histogram() +
+    labs(x = "임금 (만원)")
+```
+
+```{r}
+#| label: fig-boxplot
+#| fig-cap: "임금의 상자그림"
+#| fig-cap-location: top 
+#| 
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+    geom_boxplot() +
+    labs(x = "임금 (만원)")       
+```
+
+- 매우 오른쪽으로 치우친 분포이므로, 로그 스케일을 사용하거나 데이터가 밀집된 0 ~ 1,000만원 구간만 확대하는 것이 유용할 수 있음
+
+```{r}
+#| label: fig-hist-log
+#| fig-cap: "임금의 히스토그램 (로그 스케일)"
+#| fig-cap-location: top  
+#| 
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+    geom_histogram() +
+    labs(x = "임금 (만원)") +
+    scale_x_log10()
+```    
+```{r}
+#| label: fig-box-zoomed
+#| fig-cap: "임금의 상자그림 (0-1,000 구간 확대)"
+#| fig-cap-location: top  
+#| 
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+    geom_boxplot() +
+    labs(x = "임금 (만원)") +
+    coord_cartesian(xlim = c(0, 1000))       
+```
+
+- 상위 10% 경계선 소득은 520만원으로 하위 90% 경계선 소득 100만원의 5.2배이며, 상위 10% 평균 소득은 703만원으로 하위 10%의 평균 소득 60만원의 11.7배로 나타남
+
+```{r}
+#| label: tbl-pctile-ratio
+#| code-fold: true
+#| tbl-cap: "임금의 분위수 배율 및 분위 평균 배율" 
+#| tbl-cap-location: top
+
+klips27p_small |> 
+  summarize(
+    p10 = quantile(wage, probs = 0.1),
+    p90 = quantile(wage, probs = 0.9),
+
+    mean_10 = mean(wage[wage <= p10]),
+    mean_90 = mean(wage[wage >= p90]),
+
+    ratio_cutoff = p90 / p10,
+    ratio_mean = mean_90 / mean_10
+  ) |>
+  kable(align = "c")
+```
+   
+
+- 임금의 지니계수 (Gini coefficient)는 0.313이지만 지니계수를 자체로 해석하기는 쉽지 않으므로 두 시점 또는 두 그룹 사이의 차이를 살펴보는 것이 유용함
+  - 세계은행 (World bank)은 높은 수준의 소득 불평등을 나타내는 벤치마크로 지니계수 0.4를 사용한다고 보고된 바 있으나 이론적 근거는 약함
+  - 무작위로 두 사람을 뽑았을 때 두 사람의 소득 차이(절대값)의 평균이 $2 \times Gini \times \mu$로 알려짐 -> 즉 위 표본에서 두 명을 무작위로 뽑았을 때 두 사람의 소득 차이 절대값의 평균은 2 * 0.313 * 305 = 191만원임
+
+```{r}
+#| label: tbl-gini
+#| code-fold: true
+#| tbl-cap: "임금의 지니계수" 
+#| tbl-cap-location: top 
+#| 
+klips27p_small |> 
+  summarize(
+    gini = ineq(wage)
+  ) |>
+  kable(align = "c")
+```
+
+### 남녀 임금 분포의 비교
+
+- 남성이 여성에 비하여 평균과 산포도가 모두 크게 나타남
+  - 남성의 평균 임금은 370만원, 여성의 평균 임금은 226만원으로 남성 평균이 여성 평균의 1.64배
+  - 남성의 표준편차 216, 여성의 표준편차 129로 남성 표준편차가 여성 표준편차의 1.67배
+
+```{r}
+#| label: tbl-wage-by-gender1
+#| code-fold: true
+#| tbl-cap: "성별에 따른 임금 통계량 비교" 
+#| tbl-cap-location: top 
+#| 
+klips27p_small |> 
+  group_by(gender) |> 
+  skim(wage)
+```
+
+```{r}
+#| label: tbl-wage-by-gender2
+#| code-fold: true
+#| tbl-cap: "성별에 따른 임금 통계량 비교" 
+#| tbl-cap-location: top 
+#| 
+klips27p_small |> 
+  group_by(gender) |> 
+  summarize(
+    mean = mean(wage),
+    sd = sd(wage)
+  ) |>
+  # 아래 일곱 줄은 번거로우면 무시해도 됩니다   
+  pivot_wider(
+    names_from  = gender,
+    values_from = c(mean, sd)
+  ) |>
+  mutate(
+    ratio_mean = (mean_Male / mean_Female),
+    ratio_sd = (sd_Male / sd_Female)    
+  ) |>
+  kable(align = "c")
+```
+
+- 두 성별 모두 오른쪽으로 치우친 분포를 나타내지만 남성이 더 넓게 분포되어 있으며 이는 높은 임금을 받는 여성이 상대적으로 드문 것에서 비롯됨
+
+```{r}
+#| label: fig-wage-by-gender
+#| code-fold: true
+#| fig-cap: "성별에 따른 임금의 상자그림"
+#| fig-cap-location: top 
+#| 
+p1 <- klips27p_small |> 
+  ggplot(aes(x = wage, y = gender)) +
+  geom_boxplot()
+p1
+p1 + coord_cartesian(xlim = c(0, 1000))
+```
+
+
+```r
+# 강의 중 실습
+# 정규직-비정규직 임금 분포 차이
+
+# 실습 1
+# KLIPS 원자료 다운
+# 5년전 자료로 성별 임금 분포 살펴볼 것
+
+# 실습 2
+# KLIPS 원자료 다운
+# 2027년 자료 이용 기업 규모별 임금 분포 
+```
+
 ```r
 # 가르칠 내용
 # 1. 컴퓨터에 저장된 데이터 불러오기: 
@@ -54,11 +277,6 @@ my-project/
 #     기타: kernel density, case_when, pivot_wider
 #   KLIPS 실제로 다운받아서 사용해 보기
 ```
-
-
-## 한국노동패널
-
-## 성별 임금 분포
 
 ### 구성요소
 
