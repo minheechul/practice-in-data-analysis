@@ -47,7 +47,7 @@ my-project/
 
 - KLIPS는 도시지역에 거주하는 5,000가구와 가구원을 대상으로 1998년부터 1년에 1회씩 조사
 - 자료의 구성: 가구자료, 개인자료, 직업력자료, 부가조사자료
-- [한국노동패널 홈페이지](https://www.kli.re.kr/klips/)에서 데이터 및 참고자료를 다운로드
+- [한국노동패널 홈페이지](https://www.kli.re.kr/klips/){target="_blank"}에서 데이터 및 참고자료를 다운로드
   - KLIPS 홈페이지 > 데이터 다운로드 > 한국노동패널 1~27차년도 자료 (Excel)과 한국노동패널 1~27차년도 통합설문지, 유저가이드 및 통합코드북
 - 데이터 파일 이름의 마지막이 p로 끝나는 것이 개인자료 (h: 가구자료, w: 직업력자료, a: 부가조사자료)
 - 개인자료의 변수 설명은 1~27차 유저가이드의 84페이지 이하를 참고
@@ -143,7 +143,7 @@ klips27p_small |>
 ```    
 ```{r}
 #| label: fig-box-zoomed
-#| fig-cap: "임금의 상자그림 (0-1,000만원 구간 확대)"
+#| fig-cap: "임금의 상자그림 (0 - 1,000만원 구간 확대)"
 #| fig-cap-location: top  
 #| 
 klips27p_small |> 
@@ -255,10 +255,20 @@ p1 <- klips27p_small |>
   ggplot(aes(x = wage, y = gender)) +
   geom_boxplot()
 p1
+```
+```{r}
+#| label: fig-wage-by-gender-zoomed
+#| code-fold: true
+#| fig-cap: "성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)"
+#| fig-cap-location: top 
+#| 
 p1 + coord_cartesian(xlim = c(0, 1000))
 ```
 
 ### 연령 그룹별 남녀 임금 분포의 비교
+
+- 때로는 세부 그룹별로 나누어 두 집단을 비교하는 것이 유용할 수 있음
+  - 여기서는 연령 그룹별로 남녀 임금의 분포를 비교함
 
 - 먼저 다음과 같이 `age_group` 변수 레벨의 순서를 다시 정렬하는 것이 바람직함
 
@@ -268,21 +278,201 @@ p1 + coord_cartesian(xlim = c(0, 1000))
 #| message: false
 #| output: false
 
-klips27p_small <- read_csv("data/klips27p_small.csv")
+klips27p_small <- klips27p_small |> 
+  mutate(age_group = fct_relevel(age_group, "Below 30", "30s", "40s", "Above 50")) 
 ```
+
+
+- 남녀 평균 임금 격차는 연령이 높아질수록 확대됨
+  - 남녀 평균 임금의 비율은 30세 이하에서는 1.10이나 50세 이상에는 1.92로 높아짐
+
+```{r}
+#| label: tbl-wage-by-gender-and-age_group
+#| code-fold: true
+#| tbl-cap: "연령 그룹별 남녀 임금 통계량 비교" 
+#| tbl-cap-location: top 
+#| 
+klips27p_small |> 
+  group_by(gender, age_group) |> 
+  summarize(mean_wage = mean(wage),
+            n = n()) |> 
+  pivot_wider(
+    names_from  = gender,
+    values_from = c(mean_wage, n)
+  ) |> 
+  mutate(
+    male_to_female_ratio = (mean_wage_Male / mean_wage_Female) 
+  ) |>
+  kable(align = "c", digits = 2)
+```
+
+```{r}
+#| label: fig-wage-by-gender-and-age_group-zoomed
+#| code-fold: true
+#| fig-cap: "성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)"
+#| fig-cap-location: top 
+#| 
+p1 <- klips27p_small |> 
+  ggplot(aes(x = wage, y = gender)) +
+  geom_boxplot()
+
+p1 + coord_cartesian(xlim = c(0, 1000)) + facet_wrap(~age_group)
+```
+
 ## 실습
 
 **실습 1**
 
-1. `klips27p_small.csv`를 이용하여 정규직-비정규직 임금 분포 차이를 비교해 보시오.
+1. 먼저 위의 예제에서 사용한 다음 R 스크립트를 잘 읽어보고 연습하세요.
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-fold: true
+#| code-summary: "R 스크립트 코드 보기/접기"
+
+# 패키지 준비
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(ineq)      # 나중에 지니계수 구할 때만 한번 사용
+
+# 데이터 불러오기
+klips27p_small <- read_csv("data/klips27p_small.csv")
+
+
+# 데이터의 구조와 변수의 개요
+skim(klips27p_small)
+
+
+### 3.2 임금 변수의 분포
+
+# 임금의 히스토그램
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+  geom_histogram() +
+  labs(x = "임금 (만원)")
+
+# 임금의 상자그림
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+  geom_boxplot() +
+  labs(x = "임금 (만원)")       
+
+# 임금의 히스토그램 (로그 스케일)
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+  geom_histogram() +
+  labs(x = "임금 (만원)") +
+  scale_x_log10()
+  
+# 임금의 상자그림 (0 - 1,000만원 구간 확대)
+klips27p_small |> 
+  ggplot(aes(x = wage)) +
+  geom_boxplot() +
+  labs(x = "임금 (만원)") +
+  coord_cartesian(xlim = c(0, 1000))       
+
+
+# 임금의 분위수 배율 및 분위 평균 배율
+klips27p_small |> 
+  summarize(
+    p10 = quantile(wage, probs = 0.1),
+    p90 = quantile(wage, probs = 0.9),
+    
+    mean_10 = mean(wage[wage <= p10]),
+    mean_90 = mean(wage[wage >= p90]),
+    
+    ratio_cutoff = p90 / p10,
+    ratio_mean = mean_90 / mean_10
+  ) 
+
+# 임금의 지니계수
+klips27p_small |> 
+  summarize(
+    gini = ineq(wage)
+  ) 
+
+
+### 3.3 남녀 임금 분포의 비교
+
+# 성별에 따른 임금 통계량 비교
+klips27p_small |> 
+  group_by(gender) |> 
+  skim(wage)
+
+# 성별에 따른 임금 통계량 비교
+klips27p_small |> 
+  group_by(gender) |> 
+  summarize(
+    mean = mean(wage),
+    sd = sd(wage)
+  ) |>
+  # 아래 일곱 줄은 번거로우면 무시해도 됩니다   
+  pivot_wider(
+    names_from  = gender,
+    values_from = c(mean, sd)
+  ) |>
+  mutate(
+    ratio_mean = (mean_Male / mean_Female),
+    ratio_sd = (sd_Male / sd_Female)    
+  ) 
+
+# T-test
+t.test(wage ~ gender, data = klips27p_small)
+
+# 성별에 따른 임금의 상자그림
+p1 <- klips27p_small |> 
+  ggplot(aes(x = wage, y = gender)) +
+  geom_boxplot()
+p1
+
+# 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
+p1 + coord_cartesian(xlim = c(0, 1000))
+
+
+### 3.4 연령 그룹별 남녀 임금 분포의 비교
+
+# age_group 레벨의 순서를 다시 정렬
+klips27p_small <- klips27p_small |> 
+  mutate(age_group = fct_relevel(age_group, "Below 30", "30s", "40s", "Above 50")) 
+
+# 연령 그룹별 남녀 임금 통계량 비교
+klips27p_small |> 
+  group_by(gender, age_group) |> 
+  summarize(mean_wage = mean(wage),
+            n = n()) |> 
+  pivot_wider(
+    names_from  = gender,
+    values_from = c(mean_wage, n)
+  ) |> 
+  mutate(
+    male_to_female_ratio = (mean_wage_Male / mean_wage_Female) 
+  ) 
+
+# 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
+p2 <- klips27p_small |> 
+  ggplot(aes(x = wage, y = gender)) +
+  geom_boxplot()
+
+p2 + coord_cartesian(xlim = c(0, 1000)) + facet_wrap(~age_group)
+```
+
+2. `klips27p_small.csv`를 이용하여 정규직-비정규직 임금 분포 차이를 비교해 보시오.
+
+
+
+## 과제 
+
+- 과제 3: 10월 8일 (목) 오후 6시까지 E-class로 제출
+
+1. `fct_recode()`의 사용법을 예를 들어 설명하세요..
+
+2. 
 
 **실습 2**
 
-1. KLIPS 22차 조사 (2019년 조사) 원자료로부터 임금 근로자 자료를 추출한 후 성별에 따른 임금 분포의 차이를 설명하시오. 
-
-2. 2019년의 성별 임금 분포와 2024년의 성별 임금 분포를 비교하시오.
-
-3. `klips27p_small.csv`를 추출할 때 사용하였던 아래 R 스크립트를 참고하세요.
+1. `klips27p_small.csv`를 추출할 때 사용하였던 아래 R 스크립트를 잘 읽어보세요.
 
 ```{r}
 #| eval: false
@@ -333,16 +523,10 @@ klips27p_small <- klips27p |>
 skim(klips27p_small)
 ```
 
-**실습 3**
+2. KLIPS 22차 조사 (2019년 조사) 원자료로부터 임금 근로자 자료를 추출한 후 성별에 따른 임금 분포의 차이를 설명하시오. 
 
-1. `fct_re
+3. 2019년의 성별 임금 분포와 2024년의 성별 임금 분포를 비교하시오.
+
 # 실습 2
 # KLIPS 원자료 다운
 # 2027년 자료 이용 기업 규모별 임금 분포 
-
-
-## 과제 
-
-- 과제 1: 9월 18일 (금) 공개; 9월 24일 (목) 오후 6시까지 E-class로 제출
-
-- 과제 2: 9월 25일 (금) 공개; 10월 1일 (목) 오후 6시까지 E-class로 제출
