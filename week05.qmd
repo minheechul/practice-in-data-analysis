@@ -1,11 +1,17 @@
 ---
-title: "4주차. 도구 적용하기 (1): 근로자 수준 데이터"
+title: "5주차. 도구 적용하기 (2): 시계열 데이터"
 execute:
   echo: false
   message: false
   warning: false
 number-sections: true
 ---
+
+
+## 시계열
+
+## 참고: R programming 기초
+
 
 ## 컴퓨터에 저장된 데이터 불러오기 
 
@@ -523,7 +529,7 @@ klips27p_small_before_na.omit <- klips27p |>
   
 klips27p_small <- klips27p_small_before_na.omit |> na.omit()
 
-skim(klips27p_small_before_na.omit)
+skim(klips27p_small_before)
 skim(klips27p_small)
 ```
 

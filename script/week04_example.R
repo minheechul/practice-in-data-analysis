@@ -98,6 +98,12 @@ p1
 p1 + coord_cartesian(xlim = c(0, 1000))
 
 
+klips27p_small |> 
+  group_by(gender) |> 
+  summarize(
+    gini = ineq(wage)
+  ) 
+
 ### 3.4 연령 그룹별 남녀 임금 분포의 비교
 
 # age_group 레벨의 순서를 다시 정렬
