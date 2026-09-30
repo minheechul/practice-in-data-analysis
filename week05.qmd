@@ -10,6 +10,8 @@ number-sections: true
 
 ## 시계열
 
+claude 최근 챗 참고
+
 ## 참고: R programming 기초
 
 
