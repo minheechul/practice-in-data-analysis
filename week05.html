@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>4주차. 도구 적용하기 (1): 근로자 수준 데이터 – Practice in Data Analysis</title>
+<title>5주차. 도구 적용하기 (2): 시계열 데이터 – Practice in Data Analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -177,7 +177,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./week01.html">강의자료</a></li><li class="breadcrumb-item"><a href="./week04.html">4주차. 도구 적용하기 (1): 근로자 수준 데이터</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">5주차. 도구 적용하기 (2): 시계열 데이터</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -226,7 +226,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./week04.html" class="sidebar-item-text sidebar-link active">
+  <a href="./week04.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">4주차. 도구 적용하기 (1): 근로자 수준 데이터</span></a>
   </div>
 </li>
@@ -242,26 +242,28 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#컴퓨터에-저장된-데이터-불러오기" id="toc-컴퓨터에-저장된-데이터-불러오기" class="nav-link active" data-scroll-target="#컴퓨터에-저장된-데이터-불러오기"><span class="header-section-number">1</span> 컴퓨터에 저장된 데이터 불러오기</a></li>
-  <li><a href="#한국노동패널조사-klips" id="toc-한국노동패널조사-klips" class="nav-link" data-scroll-target="#한국노동패널조사-klips"><span class="header-section-number">2</span> 한국노동패널조사 (KLIPS)</a></li>
-  <li><a href="#성별에-따른-임금의-분포를-비교" id="toc-성별에-따른-임금의-분포를-비교" class="nav-link" data-scroll-target="#성별에-따른-임금의-분포를-비교"><span class="header-section-number">3</span> 성별에 따른 임금의 분포를 비교</a>
+  <li><a href="#시계열" id="toc-시계열" class="nav-link active" data-scroll-target="#시계열"><span class="header-section-number">1</span> 시계열</a></li>
+  <li><a href="#참고-r-programming-기초" id="toc-참고-r-programming-기초" class="nav-link" data-scroll-target="#참고-r-programming-기초"><span class="header-section-number">2</span> 참고: R programming 기초</a></li>
+  <li><a href="#컴퓨터에-저장된-데이터-불러오기" id="toc-컴퓨터에-저장된-데이터-불러오기" class="nav-link" data-scroll-target="#컴퓨터에-저장된-데이터-불러오기"><span class="header-section-number">3</span> 컴퓨터에 저장된 데이터 불러오기</a></li>
+  <li><a href="#한국노동패널조사-klips" id="toc-한국노동패널조사-klips" class="nav-link" data-scroll-target="#한국노동패널조사-klips"><span class="header-section-number">4</span> 한국노동패널조사 (KLIPS)</a></li>
+  <li><a href="#성별에-따른-임금의-분포를-비교" id="toc-성별에-따른-임금의-분포를-비교" class="nav-link" data-scroll-target="#성별에-따른-임금의-분포를-비교"><span class="header-section-number">5</span> 성별에 따른 임금의 분포를 비교</a>
   <ul class="collapse">
-  <li><a href="#준비" id="toc-준비" class="nav-link" data-scroll-target="#준비"><span class="header-section-number">3.1</span> 준비</a></li>
-  <li><a href="#임금-변수의-분포" id="toc-임금-변수의-분포" class="nav-link" data-scroll-target="#임금-변수의-분포"><span class="header-section-number">3.2</span> 임금 변수의 분포</a></li>
-  <li><a href="#남녀-임금-분포의-비교" id="toc-남녀-임금-분포의-비교" class="nav-link" data-scroll-target="#남녀-임금-분포의-비교"><span class="header-section-number">3.3</span> 남녀 임금 분포의 비교</a></li>
-  <li><a href="#연령-그룹별-남녀-임금-분포의-비교" id="toc-연령-그룹별-남녀-임금-분포의-비교" class="nav-link" data-scroll-target="#연령-그룹별-남녀-임금-분포의-비교"><span class="header-section-number">3.4</span> 연령 그룹별 남녀 임금 분포의 비교</a></li>
+  <li><a href="#준비" id="toc-준비" class="nav-link" data-scroll-target="#준비"><span class="header-section-number">5.1</span> 준비</a></li>
+  <li><a href="#임금-변수의-분포" id="toc-임금-변수의-분포" class="nav-link" data-scroll-target="#임금-변수의-분포"><span class="header-section-number">5.2</span> 임금 변수의 분포</a></li>
+  <li><a href="#남녀-임금-분포의-비교" id="toc-남녀-임금-분포의-비교" class="nav-link" data-scroll-target="#남녀-임금-분포의-비교"><span class="header-section-number">5.3</span> 남녀 임금 분포의 비교</a></li>
+  <li><a href="#연령-그룹별-남녀-임금-분포의-비교" id="toc-연령-그룹별-남녀-임금-분포의-비교" class="nav-link" data-scroll-target="#연령-그룹별-남녀-임금-분포의-비교"><span class="header-section-number">5.4</span> 연령 그룹별 남녀 임금 분포의 비교</a></li>
   </ul></li>
-  <li><a href="#실습" id="toc-실습" class="nav-link" data-scroll-target="#실습"><span class="header-section-number">4</span> 실습</a></li>
-  <li><a href="#과제" id="toc-과제" class="nav-link" data-scroll-target="#과제"><span class="header-section-number">5</span> 과제</a></li>
+  <li><a href="#실습" id="toc-실습" class="nav-link" data-scroll-target="#실습"><span class="header-section-number">6</span> 실습</a></li>
+  <li><a href="#과제" id="toc-과제" class="nav-link" data-scroll-target="#과제"><span class="header-section-number">7</span> 과제</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./week01.html">강의자료</a></li><li class="breadcrumb-item"><a href="./week04.html">4주차. 도구 적용하기 (1): 근로자 수준 데이터</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">4주차. 도구 적용하기 (1): 근로자 수준 데이터</h1>
+<h1 class="title">5주차. 도구 적용하기 (2): 시계열 데이터</h1>
 </div>
 
 
@@ -278,8 +280,14 @@ window.Quarto = {
 </header>
 
 
-<section id="컴퓨터에-저장된-데이터-불러오기" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="컴퓨터에-저장된-데이터-불러오기"><span class="header-section-number">1</span> 컴퓨터에 저장된 데이터 불러오기</h2>
+<section id="시계열" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="시계열"><span class="header-section-number">1</span> 시계열</h2>
+</section>
+<section id="참고-r-programming-기초" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="참고-r-programming-기초"><span class="header-section-number">2</span> 참고: R programming 기초</h2>
+</section>
+<section id="컴퓨터에-저장된-데이터-불러오기" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="컴퓨터에-저장된-데이터-불러오기"><span class="header-section-number">3</span> 컴퓨터에 저장된 데이터 불러오기</h2>
 <ul>
 <li><p>데이터 파일의 형식에 맞추어 <code>read_csv()</code> 또는 <code>readxl::read_excel()</code>을 이용</p>
 <ul>
@@ -321,8 +329,8 @@ window.Quarto = {
 <p><a href="script/sample_project_files.zip" class="btn btn-outline-primary btn-sm" download="">📥 샘플 R project 파일 다운로드</a></p></li>
 </ul>
 </section>
-<section id="한국노동패널조사-klips" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="한국노동패널조사-klips"><span class="header-section-number">2</span> 한국노동패널조사 (KLIPS)</h2>
+<section id="한국노동패널조사-klips" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="한국노동패널조사-klips"><span class="header-section-number">4</span> 한국노동패널조사 (KLIPS)</h2>
 <ul>
 <li>도시지역에 거주하는 5,000가구와 가구원을 대상으로 1998년부터 1년에 1회씩 조사</li>
 <li>자료의 구성: 가구자료, 개인자료, 직업력자료, 부가조사자료</li>
@@ -334,10 +342,10 @@ window.Quarto = {
 <li>개인자료의 변수 설명은 1~27차 유저가이드의 84페이지 이하를 참고</li>
 </ul>
 </section>
-<section id="성별에-따른-임금의-분포를-비교" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="성별에-따른-임금의-분포를-비교"><span class="header-section-number">3</span> 성별에 따른 임금의 분포를 비교</h2>
-<section id="준비" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="준비"><span class="header-section-number">3.1</span> 준비</h3>
+<section id="성별에-따른-임금의-분포를-비교" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="성별에-따른-임금의-분포를-비교"><span class="header-section-number">5</span> 성별에 따른 임금의 분포를 비교</h2>
+<section id="준비" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="준비"><span class="header-section-number">5.1</span> 준비</h3>
 <ul>
 <li><p>KLIPS 27차 조사(2024년 조사)의 개인 자료 중 임금근로자만 별도로 추출해서 만든 아래 파일을 이용</p>
 <p><a href="data/klips27p_small.csv" class="btn btn-outline-primary btn-sm" download="">📥 실습용 CSV 데이터 다운로드</a></p>
@@ -589,8 +597,8 @@ Table&nbsp;1: 데이터의 개요
 </div>
 </div>
 </section>
-<section id="임금-변수의-분포" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="임금-변수의-분포"><span class="header-section-number">3.2</span> 임금 변수의 분포</h3>
+<section id="임금-변수의-분포" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="임금-변수의-분포"><span class="header-section-number">5.2</span> 임금 변수의 분포</h3>
 <ul>
 <li>임금의 평균은 305만원, 중앙값은 270만원이며 매우 오른쪽으로 치우친 비대칭 분포를 나타냄</li>
 </ul>
@@ -602,7 +610,7 @@ Table&nbsp;1: 데이터의 개요
 Figure&nbsp;1: 임금의 히스토그램
 </figcaption>
 <div aria-describedby="fig-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-hist-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-hist-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -619,7 +627,7 @@ Figure&nbsp;1: 임금의 히스토그램
 Figure&nbsp;2: 임금의 상자그림
 </figcaption>
 <div aria-describedby="fig-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-boxplot-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-boxplot-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -636,7 +644,7 @@ Figure&nbsp;2: 임금의 상자그림
 Figure&nbsp;3: 임금의 히스토그램 (로그 스케일)
 </figcaption>
 <div aria-describedby="fig-hist-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-hist-log-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-hist-log-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -650,7 +658,7 @@ Figure&nbsp;3: 임금의 히스토그램 (로그 스케일)
 Figure&nbsp;4: 임금의 상자그림 (0 - 1,000만원 구간 확대)
 </figcaption>
 <div aria-describedby="fig-box-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-box-zoomed-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-box-zoomed-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -727,8 +735,8 @@ Table&nbsp;3: 임금의 지니계수
 </div>
 </div>
 </section>
-<section id="남녀-임금-분포의-비교" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="남녀-임금-분포의-비교"><span class="header-section-number">3.3</span> 남녀 임금 분포의 비교</h3>
+<section id="남녀-임금-분포의-비교" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="남녀-임금-분포의-비교"><span class="header-section-number">5.3</span> 남녀 임금 분포의 비교</h3>
 <ul>
 <li>남성이 여성에 비하여 평균과 산포도 (dispersion)가 모두 크게 나타남
 <ul>
@@ -925,7 +933,7 @@ mean in group Female   mean in group Male
 Figure&nbsp;5: 성별에 따른 임금의 상자그림
 </figcaption>
 <div aria-describedby="fig-wage-by-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-wage-by-gender-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-wage-by-gender-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -939,15 +947,15 @@ Figure&nbsp;5: 성별에 따른 임금의 상자그림
 Figure&nbsp;6: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
 </figcaption>
 <div aria-describedby="fig-wage-by-gender-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-wage-by-gender-zoomed-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-wage-by-gender-zoomed-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="연령-그룹별-남녀-임금-분포의-비교" class="level3" data-number="3.4">
-<h3 data-number="3.4" class="anchored" data-anchor-id="연령-그룹별-남녀-임금-분포의-비교"><span class="header-section-number">3.4</span> 연령 그룹별 남녀 임금 분포의 비교</h3>
+<section id="연령-그룹별-남녀-임금-분포의-비교" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="연령-그룹별-남녀-임금-분포의-비교"><span class="header-section-number">5.4</span> 연령 그룹별 남녀 임금 분포의 비교</h3>
 <ul>
 <li>때로는 세부 그룹별로 나누어 두 집단을 비교하는 것이 유용할 수 있음
 <ul>
@@ -1040,7 +1048,7 @@ Table&nbsp;6: 연령 그룹별 남녀 임금 통계량 비교
 Figure&nbsp;7: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
 </figcaption>
 <div aria-describedby="fig-wage-by-gender-and-age_group-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week04_files/figure-html/fig-wage-by-gender-and-age_group-zoomed-1.png" class="img-fluid figure-img" width="672">
+<img src="week05_files/figure-html/fig-wage-by-gender-and-age_group-zoomed-1.png" class="img-fluid figure-img" width="672">
 </div>
 </figure>
 </div>
@@ -1048,8 +1056,8 @@ Figure&nbsp;7: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 �
 </div>
 </section>
 </section>
-<section id="실습" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="실습"><span class="header-section-number">4</span> 실습</h2>
+<section id="실습" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="실습"><span class="header-section-number">6</span> 실습</h2>
 <p><strong>실습 1</strong></p>
 <div class="callout callout-style-default callout-important callout-titled" title="실습 1: 주의사항">
 <div class="callout-header d-flex align-content-center">
@@ -1201,8 +1209,8 @@ Figure&nbsp;7: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 �
 <li><code>klips27p_small.csv</code>를 이용하여 정규직-비정규직 임금 분포 차이를 비교해 보시오.</li>
 </ol>
 </section>
-<section id="과제" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="과제"><span class="header-section-number">5</span> 과제</h2>
+<section id="과제" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="과제"><span class="header-section-number">7</span> 과제</h2>
 <ul>
 <li><p>과제 3: 10월 8일 (목) 오후 6시까지 E-class로 제출</p></li>
 <li><p>과제에 답변할 때 아래 코드를 참고하시오.</p></li>
@@ -1252,7 +1260,7 @@ Figure&nbsp;7: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 �
 <span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="ot">&lt;-</span> klips27p_small_before_na.omit <span class="sc">|&gt;</span> <span class="fu">na.omit</span>()</span>
 <span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(klips27p_small_before_na.omit)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(klips27p_small_before)</span>
 <span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(klips27p_small)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
