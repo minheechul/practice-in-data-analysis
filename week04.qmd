@@ -482,11 +482,12 @@ p2 + coord_cartesian(xlim = c(0, 1000)) + facet_wrap(~age_group)
 #| code-summary: "R 스크립트 코드 보기/접기"
 
 library(tidyverse)
+library(skimr)
 library(readxl)
 
 klips27p <- read_excel("data/klips27p.xlsx")
 
-klips27p_small <- klips27p |> 
+klips27p_small_before_na.omit <- klips27p |> 
   mutate(wage = p271642,
          gender = case_when(
            p270101 == 1 ~ "Male",
@@ -518,9 +519,11 @@ klips27p_small <- klips27p |>
            .default = NA_character_           
            )
   ) |> 
-  select(pid, jobclass, wage, gender, age_group, education, job_type) |> 
-  na.omit()
+  select(pid, jobclass, wage, gender, age_group, education, job_type)
+  
+klips27p_small <- klips27p_small_before_na.omit |> na.omit()
 
+skim(klips27p_small_before)
 skim(klips27p_small)
 ```
 
