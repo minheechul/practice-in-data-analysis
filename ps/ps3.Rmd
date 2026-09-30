@@ -1,0 +1,43 @@
+---
+title: "과제 3"
+date: "마감: 10월 8일 (목) 오후 6시"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+mainfont: NanumGothic
+papersize: a4
+header-includes:
+#     - \usepackage{setspace}\onehalfspacing
+    - \usepackage{setspace}\doublespacing
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+1. 4주차 강의 자료 하단의 코드는 `klips27p_small.csv`를 추출할 때 사용하였던 R 스크립트의 일부입니다. 먼저 잘 읽고 실행한 이후 아래 물음에 답변하시오.
+
+    a. 아래 코드의 의미를 말로 설명하시오.
+
+```{r, indent="     "}
+gender = case_when(
+  p270101 == 1 ~ "Male",
+  p270101 == 2 ~ "Female",
+  .default = NA_character_
+  )
+```
+
+    b. `na.omit()`을 실행하기 이전과 이후 데이터에 어떤 변화가 나타났는가?
+
+    c. `wage`에 결측치가 나타난 이유를 생각해 보시오.
+
+
+2. KLIPS 홈페이지로부터 22차 조사 (2019년 조사) 원자료를 다운로드한 다음 아래 질문에 답변하시오.
+
+    a. 문제 1에서 사용한 코드를 참고하여 임금 근로자의 데이터를 추출하시오. 
+
+    b. 2019년 조사에서 성별에 따른 임금 분포의 차이를 설명하시오. 
+
+    c. 2019년의 성별 임금 분포와 2024년의 성별 임금 분포를 비교하시오.
+
+3. 27차 조사 자료를 이용하여 기업 규모별 임금 분포를 비교하시오. (필요하면 문제 1에서 사용한 코드를 참고하시오.)
