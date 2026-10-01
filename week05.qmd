@@ -136,8 +136,6 @@ df <- read_csv("data/수출입 총괄_01193017.csv",
 df <- df |> 
   mutate(date = ym(date)) |> 
   arrange(date)
-
-skim(df)
 ```
 
 ### 수준 그래프
@@ -174,6 +172,16 @@ head(df, 14)
 df <- df |>
   mutate(g_mom = (export / lag(export)     - 1) * 100,   # 전기(전월)대비
          g_yoy = (export / lag(export, 12) - 1) * 100)   # 전년동월대비
+
+df |>
+  ggplot(aes(date, g_mom)) +
+    geom_line() +
+    labs(title = "월별 수출액 증가율 (전월대비)", x = NULL, y = "증가율(%)")
+
+df |>
+  ggplot(aes(date, g_yoy)) +
+    geom_line() +
+    labs(title = "월별 수출액 증가율 (전년동월대비)", x = NULL, y = "증가율(%)")    
 ```
 
 - 로그와 로그차분
@@ -187,11 +195,20 @@ df <- df |>
          dlog      = (log_export - lag(log_export)) * 100)
 
 summary(df$g_mom - df$dlog)  
+
+df |>
+  ggplot(aes(date, dlog)) +
+    geom_line() +
+    labs(title = "월별 수출액 로그변화율 (전월 대비)", x = NULL, y = "로그변화율(%)")
 ```
 
 
 ### 실습 1: 주가 예제
 
+- 아래 일별 KOSPI 지수 데이터를 이용하여 수준과 로그변화율(로그차분)을 그래프로 나타내고 주요한 특징을 설명하시오
+  - 참고: 데이터에는 주말과 공휴일을 제외한 영업일만을 포함하고 있으므로 `lag()`는 전영업일을 의미함
+  
+[📥 일별 KOSPI지수 데이터 다운로드](data/수출입 총괄_01193017.csv){.btn .btn-outline-primary .btn-sm download=""}
 
 ### 요약통계와 구간 비교
 
