@@ -6,7 +6,7 @@ df <- read_csv("data/수출입 총괄_30200702.csv",
                skip = 1,
                col_names = c("date", "export", "import"))
 
-exports <- df |> 
+df <- df |> 
   mutate(date = ym(date)) |> 
   arrange(date)
 
@@ -14,7 +14,7 @@ exports <- df |>
 # =====================================================================
 # B. 수준 그림 그리기와 읽기
 # =====================================================================
-ggplot(exports, aes(date, export)) +
+ggplot(df, aes(date, export)) +
   geom_line() +
   geom_vline(xintercept = as.Date(c("2008-09-15", "2020-03-01")),
              linetype = "dashed", color = "grey40") +
@@ -26,18 +26,18 @@ ggplot(exports, aes(date, export)) +
 
 # ---- C-1. lag() 도입 ----
 # stats::lag 와 이름이 겹치므로 dplyr::lag 로 명시한다
-exports <- exports |>
+df <- df |>
   mutate(export_l1  = lag(export),        # 1개월 전 값
          export_l12 = lag(export, 12))    # 12개월 전 값
 
-head(exports, 14)    
+head(df, 14)    
 
 # ---- C-2. 증가율 ----
-exports <- exports |>
+df <- df |>
   mutate(g_mom = (export / lag(export)     - 1) * 100,   # 전기(전월)대비
          g_yoy = (export / lag(export, 12) - 1) * 100)   # 전년동월대비
 
-exports |>
+df |>
   select(date, g_mom, g_yoy) |>
   pivot_longer(-date, names_to = "type", values_to = "growth") |>
   ggplot(aes(date, growth)) +
@@ -48,16 +48,16 @@ exports |>
 # 질문: 전년동월대비에서 계절 진동이 줄어드는 이유는?
 
 # ---- C-3. 로그와 로그차분 ----
-exports <- exports |>
+df <- df |>
   mutate(log_export = log(export),
          dlog      = (log_export - lag(log_export)) * 100)
 
 # 로그차분은 전월대비 증가율의 근사: 증가율이 작을 때 거의 같고, 클수록 벌어진다
-exports |> select(date, g_mom, dlog) |> slice(2:8)
-summary(exports$g_mom - exports$dlog)          # 차이의 크기
+df |> select(date, g_mom, dlog) |> slice(2:8)
+summary(df$g_mom - df$dlog)          # 차이의 크기
 
 # 수준 / 로그 / 로그차분 나란히 비교
-exports |>
+df |>
   select(date, level = export, log = log_export, dlog) |>
   pivot_longer(-date, names_to = "series", values_to = "x") |>
   mutate(series = factor(series, levels = c("level", "log", "dlog"))) |>
@@ -106,13 +106,13 @@ add_period <- function(df) {
 
 # ---- 수출액: 전년동월대비 증가율 ----
 # 전체 기간
-exports |>
+df |>
   drop_na(g_yoy) |>
   summarise(n = n(), mean = mean(g_yoy), sd = sd(g_yoy),
             min = min(g_yoy), max = max(g_yoy))
 
 # 구간별 (NA는 C에서 만든 첫 12개월 때문에 생긴 것 -> drop_na로 제거)
-exports |>
+df |>
   drop_na(g_yoy) |>
   add_period() |>
   summarise(n = n(), mean = mean(g_yoy), sd = sd(g_yoy),
@@ -142,7 +142,7 @@ kospi |>
 # =====================================================================
 
 # 월별 평균 전월대비 증가율
-exports |>
+df |>
   drop_na(g_mom) |>
   mutate(month = month(date, label = TRUE)) |>
   summarise(mean_g = mean(g_mom), .by = month) |>
@@ -151,7 +151,7 @@ exports |>
   labs(x = NULL, y = "월별 평균 전월대비 증가율 (%)")
 
 # seasonal plot: 연도별 선을 겹쳐 그린다 (최근 10년)
-exports |>
+df |>
   mutate(year = year(date), month = month(date, label = TRUE)) |>
   filter(year >= max(year) - 9) |>
   ggplot(aes(month, value, group = year, color = factor(year))) +
@@ -164,7 +164,7 @@ exports |>
 # =====================================================================
 
 # ---- F-1. lag plot: 전월대비 증가율의 lag 1, lag 12 ----
-lagdat <- exports |>
+lagdat <- df |>
   mutate(g_l1  = dplyr::lag(g_mom),
          g_l12 = dplyr::lag(g_mom, 12)) |>
   drop_na(g_mom, g_l1, g_l12)          # 세 열 모두 있는 행만 남겨 표본을 맞춘다
@@ -181,13 +181,13 @@ cor(lagdat$g_mom, lagdat$g_l1)
 cor(lagdat$g_mom, lagdat$g_l12)        # 계절 구조가 있으면 lag 12에서 상관이 큼
 
 # ---- F-2. ACF ----
-g_mom_vec <- exports |> drop_na(g_mom) |> pull(g_mom)
+g_mom_vec <- df |> drop_na(g_mom) |> pull(g_mom)
 acf(g_mom_vec, lag.max = 36, main = "수출액 전월대비 증가율의 ACF")
 # 숫자 벡터를 넣었으므로 x축 lag는 관측치(=개월) 단위: 12, 24, 36 근처에서 튀는가
 
 # ---- F-3. 수준 / 증가율 / 변동성의 대비 ----
 # 매크로: 수출액 수준 vs 증가율
-level_vec <- exports$value
+level_vec <- df$value
 par(mfrow = c(1, 2))
 acf(level_vec,   lag.max = 36, main = "수출액 수준")
 acf(g_mom_vec,   lag.max = 36, main = "전월대비 증가율")

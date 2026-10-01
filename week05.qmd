@@ -1,14 +1,200 @@
 ---
 title: "5주차. 도구 적용하기 (2): 시계열 데이터"
 execute:
-  echo: false
+  echo: true
   message: false
   warning: false
 number-sections: true
 ---
 
+## Base R에 대한 간단한 소개 
+
+### 왜 base R?
+
+- 인터넷 예제 코드, 도움말, 패키지 문서에 base R 문법이 섞여 있어서 읽을 줄 알아야 함
+- 에러 메시지와 모델 객체(모형을 실행한 결과를 저장한 것)도 base R의 용어와 구조를 따름
+
+### 벡터
+
+- 벡터: 같은 종류의 값을 한 줄로 늘어 놓은 것
+  - `c()`로 벡터를 생성
+  - 데이터 프레임의 한 열이 벡터
+  - 자료형: numeric, character, logical, factor
+  - 자료형은 `class()`로 확인
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-fold: true
+#| code-summary: "R 스크립트 코드 보기/접기"
+
+
+x <- c(10, 2, 6, 1, 5)
+y <- c("apple", "banana", "cranberry", "durian")
+z <- c(TRUE, FALSE, TRUE, TRUE)
+w <- as.factor(y)
+
+class(x)
+class(y)
+class(z)
+class(w)
+
+length(x)
+length(y)
+```
+
+- `[]`의 용법
+  - 양의 정수: 해당 위치의 원소 선택
+  - 음의 정수: 해당 위치의 원소 제외
+  - 논리벡터: TRUE인 위치만 선택 (조건 서브셋 `x[x > 5]`)
+  - 이름: 이름이 붙은 원소 선택
+  - 함께 쓰는 도구: `which()`, `%in%`
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-fold: true
+#| code-summary: "R 스크립트 코드 보기/접기"
+#| collpase: true
+
+y[2]
+y[c(2, 4)]
+y[-3]
+y[z]
+x[x < 3]
+which(y == "banana")
+"fig" %in% y
+```
+
+
+### 데이터 프레임
+
+- 데이터 프레임은 R에서 표 형태의 데이터를 다루는 기본 방식
+  - 열 (세로줄)은 변수, 행 (가로줄)은 관측치 (observation)
+
+- 데이터 프레임에서 변수를 꺼내기
+  - `$` 이용: `데이터프레임$변수이름`
+  - 추출된 열은 벡터
+  - `df[행, 열]`은 벡터 인덱싱을 두 축으로 확장 
+
+- tibble은 tidyverse에서 변형된 data frame
+  - 콘솔에 출력할 때 모양이 약간 다를 수 있으나 대부분의 경우 둘 사이의 차이는 미미함
+
+- tidyverse와 base R 대응표
+
+| 하려는 일 | tidyverse | base R |
+|:-------------|:-----------------------------------|:------------------------------------|
+| 한 열 꺼내기 | `pull(lifeExp)` | `df$lifeExp` |
+| 새 변수 | `mutate(gdp = gdpPercap * pop)` | `df$gdp <- df$gdpPercap * df$pop` |
+| 행 선택 | `filter(year == 2007)` | `df[df$year == 2007, ]` |
+| 열 선택 | `select(country, lifeExp)` | `df[, c("country", "lifeExp")]` |
+
+
+### 퀴즈
+
+1. `x <- c(15, 18, 3, 10)`일 때 `x[x > 10]`의 결과를 예측하세요.
+
+2. 다음 코드의 결과를 예측하세요.
+
+```r
+library(gapminder)
+class(gapminder$country)
+```
+
+3. 다음 tidyverse 코드를 base R로 바꾸세요.
+
+```r
+gapminder |>
+  filter(country == "Korea, Rep.", year >= 2000) |>
+  select(year, lifeExp)
+```
+
 
 ## 시계열
+
+### 자료 불러오기와 날짜 다루기
+
+- 여기서는 [한국은행경제통계시스템](https://ecos.bok.or.kr/){target="_blank"}에서 월별 수출액 통계를 다운받아서 분석함
+  - 통계검색 > 3. 환율/통관수출입/외환보유액 > 3.2. 통관기준 수출입 > 3.2.1. 수출입 총괄 > 수출금액
+  - (2026년 10월 초 현재) 2000년 1월부터 2026년 7월까지 수출금액이 수록
+  - 빈도: 월, 단위: 천불
+
+- 시계열 자료는 횡단면 자료와 달리 관측 순서가 의미를 가짐
+
+- `df$date`의 내용과 클래스가 `ym()`을 적용하기 이전과 이후 어떻게 달라지는지 확인
+
+```{r}
+library(tidyverse)
+library(skimr)
+library(janitor)
+df <- read_csv("data/수출입 총괄_01193017.csv",
+               skip = 1,
+               col_names = c("date", "export"))
+
+df <- df |> 
+  mutate(date = ym(date)) |> 
+  arrange(date)
+```
+
+### 수준 그래프
+
+- 시계열의 요소: 추세, 계절성, 순환, 불규칙 변동
+  - 추세: 수년에 걸쳐 완만하게 오르거나 내리는 장기적인 방향
+  - 계절성: 매년 같은 시기에 같은 방향으로 반복되는, 주기가 고정된 패턴
+  - 순환: 수 년 단위로 오르내리지만 주기의 길이와 폭이 일정하지 않은 변동 (예: 경기순환)
+  - 불규칙 변동: 위 세 가지로 설명되지 않는, 예측하기 어려운 나머지 단기 변동
+
+```{r}
+df |>
+ggplot(aes(date, export)) +
+  geom_line() +
+  labs(title = "월별 수출액 (2000년 1월 ~ 2026년 7월)", x = NULL, y = "수출액 (천불)")
+```
+
+
+### 변환: 로그, 차분, 성장률
+
+- 시차: `lag(x)`는 한 기간 전 값, `lag(x, 12)`는 12 기간 전 값
+
+```{r}
+df <- df |>
+  mutate(export_l1  = lag(export),        # 1개월 전 값
+         export_l12 = lag(export, 12))    # 12개월 전 값
+
+head(df, 14)    
+```
+
+- 증가율: $(x_{t} /x_{t-1} -1) \times 100$
+
+```{r}
+df <- df |>
+  mutate(g_mom = (export / lag(export)     - 1) * 100,   # 전기(전월)대비
+         g_yoy = (export / lag(export, 12) - 1) * 100)   # 전년동월대비
+```
+
+- 로그와 로그차분
+
+  - 증가율이 작을 때 로그차분은 증가율과 거의 비슷함
+  - 로그차분은 계산과 모형 분석을 편리하게 하는 장점이 있어 자주 사용됨
+
+```{r}
+df <- df |>
+  mutate(log_export = log(export),
+         dlog      = (log_export - lag(log_export)) * 100)
+
+summary(df$g_mom - df$dlog)  
+```
+
+
+### 실습 1: 주가 예제
+
+
+### 요약통계와 구간 비교
+
+### 계절성 
+
+### 자기상관
+
 
 블록별 내용
 
@@ -166,528 +352,4 @@ ACF (수준과 성장률)
 남은 확인 사항
 lubridate와 case_when이 이미 다뤄졌는지: 안 다뤘다면 A와 D에 각각 5분 정도를 더 배정해야 하고, 그 시간은 E에서 가져오는 것이 가장 자연스럽습니다.
 수출액과 주가 자료의 표본기간을 맞출지: 두 자료의 기간이 다르면 D의 위기 구간 비교가 자료마다 다른 구간을 쓰게 되므로, 2008~2020 전후를 모두 포함하도록 미리 확인하십시오.
-
-## 참고: R programming 기초
-
-
-## 컴퓨터에 저장된 데이터 불러오기 
-
-- 데이터 파일의 형식에 맞추어 `read_csv()` 또는 `readxl::read_excel()`을 이용
-
-  - 이번 학기 강의에서 사용할 데이터 파일은 거의 대부분 `csv` 또는 `xlsx` 형태임
-
-- 경로 (path): 컴퓨터의 파일 시스템 내에서 파일이 위치한 주소
-  - R 스크립트에서 파일을 열거나 저장하기 위해서는 파일 이름과 함께 경로를 명시해야 함
-    - 예를 들어, `read_csv("C:/Users/hmin/teaching/PDA/data/klips27p_small.csv")`
-  - 다만 작업 디렉토리(working directory)에 위치한 파일은 경로 없이 파일 이름만 사용할 수 있음
-    - 예를 들어, 만약 작업 디렉토리가 `C:/Users/hmin/teaching/PDA/data`라면 전체 경로를 적는 대신 `read_csv("klisp27p_small.csv")`만으로 파일을 읽을 수 있음
-  - 주의사항
-    - `/`와 `\`를 구분할 필요
-    - 작업 디렉토리를 확인하려면 `getwd()`, 작업 디렉토리를 변경하려면 `setwd()`
-
-- R 프로젝트 (`.Rproj`)
-  - `.Rproj`를 이용하면 경로 문제를 손쉽게 해결할 수 있음
-  - RStudio 우측 상단의 메뉴를 이용하여 새로운 프로젝트를 만들거나 기존 프로젝트를 열 수 있음
-  - 이 강의의 예제 스크립트에서는 아래와 같은 폴더 구조를 가정하고 있음 (학생의 폴더 구조가 이와 다르다면 스스로 알맞은 경로를 설정해야 함)
-
-  ```r
-  my-project/
-  ├── script/
-  │   ├── week01.R
-  │   └── week02.R
-  ├── data/
-  │   ├── penguins.csv
-  │   └── klips27p_small.csv
-  ├── output/
-  │   ├── chart1.png
-  │   └── report.csv
-  └── my-project.Rproj    
-  ```
-  [📥 샘플 R project 파일 다운로드](script/sample_project_files.zip){.btn .btn-outline-primary .btn-sm download=""}
-
-
-## 한국노동패널조사 (KLIPS)
-
-- 도시지역에 거주하는 5,000가구와 가구원을 대상으로 1998년부터 1년에 1회씩 조사
-- 자료의 구성: 가구자료, 개인자료, 직업력자료, 부가조사자료
-- [한국노동패널 홈페이지](https://www.kli.re.kr/klips/){target="_blank"}에서 데이터 및 참고자료를 다운로드
-  - KLIPS 홈페이지 > 데이터 다운로드 > 한국노동패널 1~27차년도 자료 (Excel)과 한국노동패널 1~27차년도 통합설문지, 유저가이드 및 통합코드북
-- 데이터 파일 이름의 마지막이 p로 끝나는 것이 개인자료 (h: 가구자료, w: 직업력자료, a: 부가조사자료)
-- 개인자료의 변수 설명은 1~27차 유저가이드의 84페이지 이하를 참고
-
-## 성별에 따른 임금의 분포를 비교
-
-### 준비
-
-- KLIPS 27차 조사(2024년 조사)의 개인 자료 중 임금근로자만 별도로 추출해서 만든 아래 파일을 이용
-
-  [📥 실습용 CSV 데이터 다운로드](data/klips27p_small.csv){.btn .btn-outline-primary .btn-sm download=""}
-
-
-  | 변수명 | 설명 | 
-  | :---: | :--- | 
-  | `pid` | 개인고유번호 | 
-  | `jobclass` | 주된 일자리 유형 (1 또는 5가 임금근로자) | 
-  | `wage` | 월평균임금액 (만원)| 
-  | `gender` | 성별 (`Male`, `Female`) | 
-  | `age_group` | 연령 그룹 (`Below 30`, `30s`, `40s`, `Above 50`) |
-  | `education` | 학력 (`High school and below`, `College`) |
-  | `jot_type` | 정규직/비정규직 (`Regular`, `Non-regular`) |
-
-- 먼저 3개의 필수 패키지 (`tidyverse`, `skimr`, `janitor`)를 준비하고 데이터를 불러오기
-
-```{r}
-#| echo: true
-#| warning: false
-#| message: false
-#| output: false
-
-# 패키지 준비
-library(tidyverse)
-library(skimr)
-library(janitor)
-library(ineq)      # 나중에 지니계수 구할 때만 한번 사용
-library(knitr)     # 데이터를 표로 깔끔하게 보여줄 때 사용
-
-# 데이터 불러오기
-klips27p_small <- read_csv("data/klips27p_small.csv")
-```
-
-- 본격적인 분석에 앞서 데이터의 구조와 변수의 개요를 파악
-
-```{r}
-#| label: tbl-hist
-#| tbl-cap: "데이터의 개요"
-#| tbl-cap-location: top 
-
-skim(klips27p_small)
-```
-
-### 임금 변수의 분포
-
-- 임금의 평균은 305만원, 중앙값은 270만원이며 매우 오른쪽으로 치우친 비대칭 분포를 나타냄
-
-```{r}
-#| label: fig-hist
-#| fig-cap: "임금의 히스토그램"
-#| fig-cap-location: top 
-
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-    geom_histogram() +
-    labs(x = "임금 (만원)")
-```
-
-- 분포의 위쪽 구간에 극단적인 고임금 이상치들이 존재함
-
-```{r}
-#| label: fig-boxplot
-#| fig-cap: "임금의 상자그림"
-#| fig-cap-location: top 
-#| 
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-    geom_boxplot() +
-    labs(x = "임금 (만원)")       
-```
-
-- 매우 오른쪽으로 치우친 분포이므로, 로그 스케일을 사용하거나 데이터가 밀집된 0 ~ 1,000만원 구간만 확대하는 것이 유용할 수 있음
-
-```{r}
-#| label: fig-hist-log
-#| fig-cap: "임금의 히스토그램 (로그 스케일)"
-#| fig-cap-location: top  
-#| 
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-    geom_histogram() +
-    labs(x = "임금 (만원)") +
-    scale_x_log10()
-```    
-```{r}
-#| label: fig-box-zoomed
-#| fig-cap: "임금의 상자그림 (0 - 1,000만원 구간 확대)"
-#| fig-cap-location: top  
-#| 
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-    geom_boxplot() +
-    labs(x = "임금 (만원)") +
-    coord_cartesian(xlim = c(0, 1000))       
-```
-
-- 상위 10% 경계선 소득은 520만원으로 하위 90% 경계선 소득 100만원의 5.2배이며, 상위 10% 평균 소득은 703만원으로 하위 10%의 평균 소득 60만원의 11.7배로 나타남
-
-```{r}
-#| label: tbl-pctile-ratio
-#| code-fold: true
-#| tbl-cap: "임금의 분위수 배율 및 분위 평균 배율" 
-#| tbl-cap-location: top
-
-klips27p_small |> 
-  summarize(
-    p10 = quantile(wage, probs = 0.1),
-    p90 = quantile(wage, probs = 0.9),
-
-    mean_10 = mean(wage[wage <= p10]),
-    mean_90 = mean(wage[wage >= p90]),
-
-    ratio_cutoff = p90 / p10,
-    ratio_mean = mean_90 / mean_10
-  ) |>
-  kable(align = "c", digits = 1)
-```
-   
-
-- 임금의 지니계수 (Gini coefficient)는 0.313이지만 그 자체로 해석하기 쉽지 않으므로 두 시점 또는 두 그룹 사이의 차이를 살펴보는 것이 유용함
-  - 세계은행 (World bank)은 높은 수준의 소득 불평등을 나타내는 벤치마크로 지니계수 0.4를 사용한다고 보고된 바 있으나 이론적 근거는 약함
-  - 지니계수에 굳이 직관적인 해석을 부여하자면, 무작위로 두 사람을 뽑았을 때 두 사람의 소득 차이(절대값)의 평균이 $2 \times Gini \times \mu$로 알려짐 -> 즉 위 표본에서 두 명을 무작위로 뽑았을 때 두 사람의 소득 차이 절대값의 평균은 2 * 0.313 * 305 = 191만원임
-
-```{r}
-#| label: tbl-gini
-#| code-fold: true
-#| tbl-cap: "임금의 지니계수" 
-#| tbl-cap-location: top 
-#| 
-klips27p_small |> 
-  summarize(
-    gini = ineq(wage)
-  ) |>
-  kable(align = "c", digits = 3)
-```
-
-### 남녀 임금 분포의 비교
-
-- 남성이 여성에 비하여 평균과 산포도 (dispersion)가 모두 크게 나타남
-  - 남성의 평균 임금은 370만원, 여성의 평균 임금은 226만원으로 남성 평균이 여성 평균의 1.64배
-  - 남성의 표준편차 216, 여성의 표준편차 129로 남성 표준편차가 여성 표준편차의 1.67배
-
-```{r}
-#| label: tbl-wage-by-gender1
-#| code-fold: true
-#| tbl-cap: "성별에 따른 임금 통계량 비교" 
-#| tbl-cap-location: top 
-#| 
-klips27p_small |> 
-  group_by(gender) |> 
-  skim(wage)
-```
-
-```{r}
-#| label: tbl-wage-by-gender2
-#| code-fold: true
-#| tbl-cap: "성별에 따른 임금 통계량 비교" 
-#| tbl-cap-location: top 
-#| 
-klips27p_small |> 
-  group_by(gender) |> 
-  summarize(
-    mean = mean(wage),
-    sd = sd(wage)
-  ) |>
-  # 아래 일곱 줄은 번거로우면 무시해도 됩니다   
-  pivot_wider(
-    names_from  = gender,
-    values_from = c(mean, sd)
-  ) |>
-  mutate(
-    ratio_mean = (mean_Male / mean_Female),
-    ratio_sd = (sd_Male / sd_Female)    
-  ) |>
-  kable(align = "c", digits = 2)
-```
-
-- 두 그룹의 평균을 비교하는 통계적 검정 결과 남성의 평균이 통계적으로 유의하게 여성의 평균보다 높은 것으로 나타남
-
-```{r}
-t.test(wage ~ gender, data = klips27p_small)
-```
-
-- 두 성별 모두 오른쪽으로 치우친 분포를 나타냄 
-
-- 두 분포에 상당한 중첩이 나타나지만 남성 분포의 사분위수가 여성 분포의 사분위수에 비하여 뚜렷하게 높게 나타남
-  - 남성의 1사분위수 > 여성의 1사분위수; 남성의 중앙값 > 여성의 중앙값; 남성의 3사분위수 > 여성의 3사분위수
-
-```{r}
-#| label: fig-wage-by-gender
-#| code-fold: true
-#| fig-cap: "성별에 따른 임금의 상자그림"
-#| fig-cap-location: top 
-#| 
-p1 <- klips27p_small |> 
-  ggplot(aes(x = wage, y = gender)) +
-  geom_boxplot()
-p1
-```
-```{r}
-#| label: fig-wage-by-gender-zoomed
-#| code-fold: true
-#| fig-cap: "성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)"
-#| fig-cap-location: top 
-#| 
-p1 + coord_cartesian(xlim = c(0, 1000))
-```
-
-### 연령 그룹별 남녀 임금 분포의 비교
-
-- 때로는 세부 그룹별로 나누어 두 집단을 비교하는 것이 유용할 수 있음
-  - 여기서는 연령 그룹별로 남녀 임금의 분포를 비교함
-
-- 먼저 다음과 같이 `age_group` 변수 레벨의 순서를 다시 정렬하는 것이 바람직함
-
-```{r}
-#| echo: true
-#| warning: false
-#| message: false
-#| output: false
-
-klips27p_small <- klips27p_small |> 
-  mutate(age_group = fct_relevel(age_group, "Below 30", "30s", "40s", "Above 50")) 
-```
-
-
-- 남녀 평균 임금 격차는 연령이 높아질수록 확대됨
-  - 남녀 평균 임금의 비율은 30세 이하에서는 1.10이나 50세 이상에는 1.92로 높아짐
-
-```{r}
-#| label: tbl-wage-by-gender-and-age_group
-#| code-fold: true
-#| tbl-cap: "연령 그룹별 남녀 임금 통계량 비교" 
-#| tbl-cap-location: top 
-#| 
-klips27p_small |> 
-  group_by(gender, age_group) |> 
-  summarize(mean_wage = mean(wage),
-            n = n()) |> 
-  pivot_wider(
-    names_from  = gender,
-    values_from = c(mean_wage, n)
-  ) |> 
-  mutate(
-    male_to_female_ratio = (mean_wage_Male / mean_wage_Female) 
-  ) |>
-  kable(align = "c", digits = 2)
-```
-
-```{r}
-#| label: fig-wage-by-gender-and-age_group-zoomed
-#| code-fold: true
-#| fig-cap: "성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)"
-#| fig-cap-location: top 
-#| 
-p1 <- klips27p_small |> 
-  ggplot(aes(x = wage, y = gender)) +
-  geom_boxplot()
-
-p1 + coord_cartesian(xlim = c(0, 1000)) + facet_wrap(~age_group)
-```
-
-## 실습
-
-**실습 1**
-
-::: {.callout-important title="실습 1: 주의사항"}
-
-- 먼저 위의 분석을 수행하는데 사용한 코드는 다음 R 스크립트에 포함되어 있으니 잘 읽어보고 연습한 후 아래 문제에 답변할 때 참고하세요.
-
-- 실습에 사용한 R 스크립트는 week04_ex1_학번.R로, 답안은 week04_ex1_학번.docx로 저장한 후 E-class 과제로 제출하세요.
-
-:::
-
-```{r}
-#| eval: false
-#| echo: true
-#| code-fold: true
-#| code-summary: "R 스크립트 코드 보기/접기"
-
-# 패키지 준비
-library(tidyverse)
-library(skimr)
-library(janitor)
-library(ineq)      # 나중에 지니계수 구할 때만 한번 사용
-
-# 데이터 불러오기
-klips27p_small <- read_csv("data/klips27p_small.csv")
-
-
-# 데이터의 구조와 변수의 개요
-skim(klips27p_small)
-
-
-### 3.2 임금 변수의 분포
-
-# 임금의 히스토그램
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-  geom_histogram() +
-  labs(x = "임금 (만원)")
-
-# 임금의 상자그림
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-  geom_boxplot() +
-  labs(x = "임금 (만원)")       
-
-# 임금의 히스토그램 (로그 스케일)
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-  geom_histogram() +
-  labs(x = "임금 (만원)") +
-  scale_x_log10()
-  
-# 임금의 상자그림 (0 - 1,000만원 구간 확대)
-klips27p_small |> 
-  ggplot(aes(x = wage)) +
-  geom_boxplot() +
-  labs(x = "임금 (만원)") +
-  coord_cartesian(xlim = c(0, 1000))       
-
-
-# 임금의 분위수 배율 및 분위 평균 배율
-klips27p_small |> 
-  summarize(
-    p10 = quantile(wage, probs = 0.1),
-    p90 = quantile(wage, probs = 0.9),
-    
-    mean_10 = mean(wage[wage <= p10]),
-    mean_90 = mean(wage[wage >= p90]),
-    
-    ratio_cutoff = p90 / p10,
-    ratio_mean = mean_90 / mean_10
-  ) 
-
-# 임금의 지니계수
-klips27p_small |> 
-  summarize(
-    gini = ineq(wage)
-  ) 
-
-
-### 3.3 남녀 임금 분포의 비교
-
-# 성별에 따른 임금 통계량 비교
-klips27p_small |> 
-  group_by(gender) |> 
-  skim(wage)
-
-# 성별에 따른 임금 통계량 비교
-klips27p_small |> 
-  group_by(gender) |> 
-  summarize(
-    mean = mean(wage),
-    sd = sd(wage)
-  ) |>
-  # 아래 일곱 줄은 번거로우면 무시해도 됩니다   
-  pivot_wider(
-    names_from  = gender,
-    values_from = c(mean, sd)
-  ) |>
-  mutate(
-    ratio_mean = (mean_Male / mean_Female),
-    ratio_sd = (sd_Male / sd_Female)    
-  ) 
-
-# T-test
-t.test(wage ~ gender, data = klips27p_small)
-
-# 성별에 따른 임금의 상자그림
-p1 <- klips27p_small |> 
-  ggplot(aes(x = wage, y = gender)) +
-  geom_boxplot()
-p1
-
-# 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
-p1 + coord_cartesian(xlim = c(0, 1000))
-
-
-### 3.4 연령 그룹별 남녀 임금 분포의 비교
-
-# age_group 레벨의 순서를 다시 정렬
-klips27p_small <- klips27p_small |> 
-  mutate(age_group = fct_relevel(age_group, "Below 30", "30s", "40s", "Above 50")) 
-
-# 연령 그룹별 남녀 임금 통계량 비교
-klips27p_small |> 
-  group_by(gender, age_group) |> 
-  summarize(mean_wage = mean(wage),
-            n = n()) |> 
-  pivot_wider(
-    names_from  = gender,
-    values_from = c(mean_wage, n)
-  ) |> 
-  mutate(
-    male_to_female_ratio = (mean_wage_Male / mean_wage_Female) 
-  ) 
-
-# 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
-p2 <- klips27p_small |> 
-  ggplot(aes(x = wage, y = gender)) +
-  geom_boxplot()
-
-p2 + coord_cartesian(xlim = c(0, 1000)) + facet_wrap(~age_group)
-```
-
-
-1. `klips27p_small.csv`를 이용하여 정규직-비정규직 임금 분포 차이를 비교해 보시오.  
-
-
-
-## 과제 
-
-- 과제 3: 10월 8일 (목) 오후 6시까지 E-class로 제출
-
-- 과제에 답변할 때 아래 코드를 참고하시오.
-
-```{r}
-#| eval: false
-#| echo: true
-#| code-fold: true
-#| code-summary: "R 스크립트 코드 보기/접기"
-
-library(tidyverse)
-library(skimr)
-library(readxl)
-
-klips27p <- read_excel("data/klips27p.xlsx")
-
-klips27p_small_before_na.omit <- klips27p |> 
-  mutate(wage = p271642,
-         gender = case_when(
-           p270101 == 1 ~ "Male",
-           p270101 == 2 ~ "Female",
-           .default = NA_character_
-           ),
-         age = p270107,
-         age_group = case_when(
-           age >= 1 & age < 30 ~ "Below 30",
-           age >= 30 & age < 40 ~ "30s",
-           age >= 40 & age < 50 ~ "40s",
-           age >= 50 ~ "Above 50",
-           .default = NA_character_
-         ),
-         education = case_when(
-           p270110 >= 1 & p270110 <= 5 ~ "High School",
-           p270110 >= 6 ~ "College",
-           .default = NA_character_
-           ),
-         job_type = case_when(
-           p270317 == 1 ~ "Regular",
-           p270317 == 2 ~ "Non-regular",
-           .default = NA_character_
-           ),
-         firm_size = case_when(
-           p270403 >= 1 & p270403 <= 4 ~ "Small",
-           p270403 >= 5 & p270403 <= 7 ~ "Medium",
-           p270403 >= 8 & p270403 <= 10 ~ "Large",
-           .default = NA_character_           
-           )
-  ) |> 
-  select(pid, jobclass, wage, gender, age_group, education, job_type)
-  
-klips27p_small <- klips27p_small_before_na.omit |> na.omit()
-
-skim(klips27p_small_before)
-skim(klips27p_small)
-```
-
 
