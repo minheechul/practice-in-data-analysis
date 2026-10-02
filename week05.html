@@ -242,19 +242,24 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#시계열" id="toc-시계열" class="nav-link active" data-scroll-target="#시계열"><span class="header-section-number">1</span> 시계열</a></li>
-  <li><a href="#참고-r-programming-기초" id="toc-참고-r-programming-기초" class="nav-link" data-scroll-target="#참고-r-programming-기초"><span class="header-section-number">2</span> 참고: R programming 기초</a></li>
-  <li><a href="#컴퓨터에-저장된-데이터-불러오기" id="toc-컴퓨터에-저장된-데이터-불러오기" class="nav-link" data-scroll-target="#컴퓨터에-저장된-데이터-불러오기"><span class="header-section-number">3</span> 컴퓨터에 저장된 데이터 불러오기</a></li>
-  <li><a href="#한국노동패널조사-klips" id="toc-한국노동패널조사-klips" class="nav-link" data-scroll-target="#한국노동패널조사-klips"><span class="header-section-number">4</span> 한국노동패널조사 (KLIPS)</a></li>
-  <li><a href="#성별에-따른-임금의-분포를-비교" id="toc-성별에-따른-임금의-분포를-비교" class="nav-link" data-scroll-target="#성별에-따른-임금의-분포를-비교"><span class="header-section-number">5</span> 성별에 따른 임금의 분포를 비교</a>
+  <li><a href="#base-r에-대한-간단한-소개" id="toc-base-r에-대한-간단한-소개" class="nav-link active" data-scroll-target="#base-r에-대한-간단한-소개"><span class="header-section-number">1</span> Base R에 대한 간단한 소개</a>
   <ul class="collapse">
-  <li><a href="#준비" id="toc-준비" class="nav-link" data-scroll-target="#준비"><span class="header-section-number">5.1</span> 준비</a></li>
-  <li><a href="#임금-변수의-분포" id="toc-임금-변수의-분포" class="nav-link" data-scroll-target="#임금-변수의-분포"><span class="header-section-number">5.2</span> 임금 변수의 분포</a></li>
-  <li><a href="#남녀-임금-분포의-비교" id="toc-남녀-임금-분포의-비교" class="nav-link" data-scroll-target="#남녀-임금-분포의-비교"><span class="header-section-number">5.3</span> 남녀 임금 분포의 비교</a></li>
-  <li><a href="#연령-그룹별-남녀-임금-분포의-비교" id="toc-연령-그룹별-남녀-임금-분포의-비교" class="nav-link" data-scroll-target="#연령-그룹별-남녀-임금-분포의-비교"><span class="header-section-number">5.4</span> 연령 그룹별 남녀 임금 분포의 비교</a></li>
+  <li><a href="#왜-base-r" id="toc-왜-base-r" class="nav-link" data-scroll-target="#왜-base-r"><span class="header-section-number">1.1</span> 왜 base R?</a></li>
+  <li><a href="#벡터" id="toc-벡터" class="nav-link" data-scroll-target="#벡터"><span class="header-section-number">1.2</span> 벡터</a></li>
+  <li><a href="#데이터-프레임" id="toc-데이터-프레임" class="nav-link" data-scroll-target="#데이터-프레임"><span class="header-section-number">1.3</span> 데이터 프레임</a></li>
+  <li><a href="#퀴즈" id="toc-퀴즈" class="nav-link" data-scroll-target="#퀴즈"><span class="header-section-number">1.4</span> 퀴즈</a></li>
   </ul></li>
-  <li><a href="#실습" id="toc-실습" class="nav-link" data-scroll-target="#실습"><span class="header-section-number">6</span> 실습</a></li>
-  <li><a href="#과제" id="toc-과제" class="nav-link" data-scroll-target="#과제"><span class="header-section-number">7</span> 과제</a></li>
+  <li><a href="#시계열" id="toc-시계열" class="nav-link" data-scroll-target="#시계열"><span class="header-section-number">2</span> 시계열</a>
+  <ul class="collapse">
+  <li><a href="#자료-불러오기와-날짜-다루기" id="toc-자료-불러오기와-날짜-다루기" class="nav-link" data-scroll-target="#자료-불러오기와-날짜-다루기"><span class="header-section-number">2.1</span> 자료 불러오기와 날짜 다루기</a></li>
+  <li><a href="#수준-그래프" id="toc-수준-그래프" class="nav-link" data-scroll-target="#수준-그래프"><span class="header-section-number">2.2</span> 수준 그래프</a></li>
+  <li><a href="#변환-로그-차분-성장률" id="toc-변환-로그-차분-성장률" class="nav-link" data-scroll-target="#변환-로그-차분-성장률"><span class="header-section-number">2.3</span> 변환: 로그, 차분, 성장률</a></li>
+  <li><a href="#실습-1-주가-예제" id="toc-실습-1-주가-예제" class="nav-link" data-scroll-target="#실습-1-주가-예제"><span class="header-section-number">2.4</span> 실습 1: 주가 예제</a></li>
+  <li><a href="#요약통계와-구간-비교" id="toc-요약통계와-구간-비교" class="nav-link" data-scroll-target="#요약통계와-구간-비교"><span class="header-section-number">2.5</span> 요약통계와 구간 비교</a></li>
+  <li><a href="#계절성" id="toc-계절성" class="nav-link" data-scroll-target="#계절성"><span class="header-section-number">2.6</span> 계절성</a></li>
+  <li><a href="#자기상관" id="toc-자기상관" class="nav-link" data-scroll-target="#자기상관"><span class="header-section-number">2.7</span> 자기상관</a></li>
+  </ul></li>
+  <li><a href="#상세" id="toc-상세" class="nav-link" data-scroll-target="#상세"><span class="header-section-number">3</span> 상세</a></li>
   </ul>
 </nav>
     </div>
@@ -280,991 +285,379 @@ window.Quarto = {
 </header>
 
 
-<section id="시계열" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="시계열"><span class="header-section-number">1</span> 시계열</h2>
-<p>claude 최근 챗 참고</p>
-</section>
-<section id="참고-r-programming-기초" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="참고-r-programming-기초"><span class="header-section-number">2</span> 참고: R programming 기초</h2>
-</section>
-<section id="컴퓨터에-저장된-데이터-불러오기" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="컴퓨터에-저장된-데이터-불러오기"><span class="header-section-number">3</span> 컴퓨터에 저장된 데이터 불러오기</h2>
+<section id="base-r에-대한-간단한-소개" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="base-r에-대한-간단한-소개"><span class="header-section-number">1</span> Base R에 대한 간단한 소개</h2>
+<section id="왜-base-r" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="왜-base-r"><span class="header-section-number">1.1</span> 왜 base R?</h3>
 <ul>
-<li><p>데이터 파일의 형식에 맞추어 <code>read_csv()</code> 또는 <code>readxl::read_excel()</code>을 이용</p>
-<ul>
-<li>이번 학기 강의에서 사용할 데이터 파일은 거의 대부분 <code>csv</code> 또는 <code>xlsx</code> 형태임</li>
-</ul></li>
-<li><p>경로 (path): 컴퓨터의 파일 시스템 내에서 파일이 위치한 주소</p>
-<ul>
-<li>R 스크립트에서 파일을 열거나 저장하기 위해서는 파일 이름과 함께 경로를 명시해야 함
-<ul>
-<li>예를 들어, <code>read_csv("C:/Users/hmin/teaching/PDA/data/klips27p_small.csv")</code></li>
-</ul></li>
-<li>다만 작업 디렉토리(working directory)에 위치한 파일은 경로 없이 파일 이름만 사용할 수 있음
-<ul>
-<li>예를 들어, 만약 작업 디렉토리가 <code>C:/Users/hmin/teaching/PDA/data</code>라면 전체 경로를 적는 대신 <code>read_csv("klisp27p_small.csv")</code>만으로 파일을 읽을 수 있음</li>
-</ul></li>
-<li>주의사항
-<ul>
-<li><code>/</code>와 <code>\</code>를 구분할 필요</li>
-<li>작업 디렉토리를 확인하려면 <code>getwd()</code>, 작업 디렉토리를 변경하려면 <code>setwd()</code></li>
-</ul></li>
-</ul></li>
-<li><p>R 프로젝트 (<code>.Rproj</code>)</p>
-<ul>
-<li><code>.Rproj</code>를 이용하면 경로 문제를 손쉽게 해결할 수 있음</li>
-<li>RStudio 우측 상단의 메뉴를 이용하여 새로운 프로젝트를 만들거나 기존 프로젝트를 열 수 있음</li>
-<li>이 강의의 예제 스크립트에서는 아래와 같은 폴더 구조를 가정하고 있음 (학생의 폴더 구조가 이와 다르다면 스스로 알맞은 경로를 설정해야 함)</li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my<span class="sc">-</span>project<span class="sc">/</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>├── script<span class="sc">/</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>│   ├── week01.R</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>│   └── week02.R</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>├── data<span class="sc">/</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>│   ├── penguins.csv</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>│   └── klips27p_small.csv</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>├── output<span class="sc">/</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>│   ├── chart1.png</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>│   └── report.csv</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>└── my<span class="sc">-</span>project.Rproj    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><a href="script/sample_project_files.zip" class="btn btn-outline-primary btn-sm" download="">📥 샘플 R project 파일 다운로드</a></p></li>
+<li>인터넷 예제 코드, 도움말, 패키지 문서에 base R 문법이 섞여 있어서 읽을 줄 알아야 함</li>
+<li>에러 메시지와 모델 객체(모형을 실행한 결과를 저장한 것)도 base R의 용어와 구조를 따름</li>
 </ul>
 </section>
-<section id="한국노동패널조사-klips" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="한국노동패널조사-klips"><span class="header-section-number">4</span> 한국노동패널조사 (KLIPS)</h2>
+<section id="벡터" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="벡터"><span class="header-section-number">1.2</span> 벡터</h3>
 <ul>
-<li>도시지역에 거주하는 5,000가구와 가구원을 대상으로 1998년부터 1년에 1회씩 조사</li>
-<li>자료의 구성: 가구자료, 개인자료, 직업력자료, 부가조사자료</li>
-<li><a href="https://www.kli.re.kr/klips/" target="_blank">한국노동패널 홈페이지</a>에서 데이터 및 참고자료를 다운로드
+<li>벡터: 같은 종류의 값을 한 줄로 늘어 놓은 것
 <ul>
-<li>KLIPS 홈페이지 &gt; 데이터 다운로드 &gt; 한국노동패널 1~27차년도 자료 (Excel)과 한국노동패널 1~27차년도 통합설문지, 유저가이드 및 통합코드북</li>
+<li><code>c()</code>로 벡터를 생성</li>
+<li>데이터 프레임의 한 열이 벡터</li>
+<li>자료형: numeric, character, logical, factor</li>
+<li>자료형은 <code>class()</code>로 확인</li>
 </ul></li>
-<li>데이터 파일 이름의 마지막이 p로 끝나는 것이 개인자료 (h: 가구자료, w: 직업력자료, a: 부가조사자료)</li>
-<li>개인자료의 변수 설명은 1~27차 유저가이드의 84페이지 이하를 참고</li>
 </ul>
-</section>
-<section id="성별에-따른-임금의-분포를-비교" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="성별에-따른-임금의-분포를-비교"><span class="header-section-number">5</span> 성별에 따른 임금의 분포를 비교</h2>
-<section id="준비" class="level3" data-number="5.1">
-<h3 data-number="5.1" class="anchored" data-anchor-id="준비"><span class="header-section-number">5.1</span> 준비</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>R 스크립트 코드 보기/접기</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">6</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"apple"</span>, <span class="st">"banana"</span>, <span class="st">"cranberry"</span>, <span class="st">"durian"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(y)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(x)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(y)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(z)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(w)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(x)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 <ul>
-<li><p>KLIPS 27차 조사(2024년 조사)의 개인 자료 중 임금근로자만 별도로 추출해서 만든 아래 파일을 이용</p>
-<p><a href="data/klips27p_small.csv" class="btn btn-outline-primary btn-sm" download="">📥 실습용 CSV 데이터 다운로드</a></p>
+<li><code>[]</code>의 용법
+<ul>
+<li>양의 정수: 해당 위치의 원소 선택</li>
+<li>음의 정수: 해당 위치의 원소 제외</li>
+<li>논리벡터: TRUE인 위치만 선택 (조건 서브셋 <code>x[x &gt; 5]</code>)</li>
+<li>이름: 이름이 붙은 원소 선택</li>
+<li>함께 쓰는 도구: <code>which()</code>, <code>%in%</code></li>
+</ul></li>
+</ul>
+<div class="cell" data-collpase="true">
+<details class="code-fold">
+<summary>R 스크립트 코드 보기/접기</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">2</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>)]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>y[<span class="sc">-</span><span class="dv">3</span>]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>y[z]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>x[x <span class="sc">&lt;</span> <span class="dv">3</span>]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span>(y <span class="sc">==</span> <span class="st">"banana"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="st">"fig"</span> <span class="sc">%in%</span> y</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</section>
+<section id="데이터-프레임" class="level3" data-number="1.3">
+<h3 data-number="1.3" class="anchored" data-anchor-id="데이터-프레임"><span class="header-section-number">1.3</span> 데이터 프레임</h3>
+<ul>
+<li>데이터 프레임은 R에서 표 형태의 데이터를 다루는 기본 방식
+<ul>
+<li>열 (세로줄)은 변수, 행 (가로줄)은 관측치 (observation)</li>
+</ul></li>
+<li>데이터 프레임에서 변수를 꺼내기
+<ul>
+<li><code>$</code> 이용: <code>데이터프레임$변수이름</code></li>
+<li>추출된 열은 벡터</li>
+<li><code>df[행, 열]</code>은 벡터 인덱싱을 두 축으로 확장</li>
+</ul></li>
+<li>tibble은 tidyverse에서 변형된 data frame
+<ul>
+<li>콘솔에 출력할 때 모양이 약간 다를 수 있으나 대부분의 경우 둘 사이의 차이는 미미함</li>
+</ul></li>
+<li>tidyverse와 base R 대응표</li>
+</ul>
 <table class="caption-top table">
-<thead>
-<tr class="header">
-<th style="text-align: center;">변수명</th>
-<th style="text-align: left;">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><code>pid</code></td>
-<td style="text-align: left;">개인고유번호</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>jobclass</code></td>
-<td style="text-align: left;">주된 일자리 유형 (1 또는 5가 임금근로자)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>wage</code></td>
-<td style="text-align: left;">월평균임금액 (만원)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>gender</code></td>
-<td style="text-align: left;">성별 (<code>Male</code>, <code>Female</code>)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>age_group</code></td>
-<td style="text-align: left;">연령 그룹 (<code>Below 30</code>, <code>30s</code>, <code>40s</code>, <code>Above 50</code>)</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>education</code></td>
-<td style="text-align: left;">학력 (<code>High school and below</code>, <code>College</code>)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>jot_type</code></td>
-<td style="text-align: left;">정규직/비정규직 (<code>Regular</code>, <code>Non-regular</code>)</td>
-</tr>
-</tbody>
-</table></li>
-<li><p>먼저 3개의 필수 패키지 (<code>tidyverse</code>, <code>skimr</code>, <code>janitor</code>)를 준비하고 데이터를 불러오기</p></li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 패키지 준비</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ineq)      <span class="co"># 나중에 지니계수 구할 때만 한번 사용</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)     <span class="co"># 데이터를 표로 깔끔하게 보여줄 때 사용</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/klips27p_small.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ul>
-<li>본격적인 분석에 앞서 데이터의 구조와 변수의 개요를 파악</li>
-</ul>
-<div class="cell" data-tbl-cap-location="top">
-<div id="tbl-hist" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: 데이터의 개요
-</figcaption>
-<div aria-describedby="tbl-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">klips27p_small</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">9527</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">character</td>
-<td style="text-align: left;">4</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">3</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">None</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: character</strong></p>
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 13%">
-<col style="width: 19%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">min</th>
-<th style="text-align: right;">max</th>
-<th style="text-align: right;">empty</th>
-<th style="text-align: right;">n_unique</th>
-<th style="text-align: right;">whitespace</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">gender</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">age_group</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">education</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">job_type</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">0</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 13%">
-<col style="width: 9%">
-<col style="width: 13%">
-<col style="width: 10%">
-<col style="width: 10%">
-<col style="width: 3%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 10%">
-<col style="width: 8%">
-<col style="width: 5%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">pid</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">8151314.85</td>
-<td style="text-align: right;">9165892.62</td>
-<td style="text-align: right;">102</td>
-<td style="text-align: right;">294051</td>
-<td style="text-align: right;">778502</td>
-<td style="text-align: right;">20141601.5</td>
-<td style="text-align: right;">21048102</td>
-<td style="text-align: left;">▇▁▂▁▅</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">jobclass</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1.62</td>
-<td style="text-align: right;">1.45</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1.0</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">▇▁▁▁▂</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">wage</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">305.06</td>
-<td style="text-align: right;">195.77</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">200</td>
-<td style="text-align: right;">270</td>
-<td style="text-align: right;">382.5</td>
-<td style="text-align: right;">6900</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-</section>
-<section id="임금-변수의-분포" class="level3" data-number="5.2">
-<h3 data-number="5.2" class="anchored" data-anchor-id="임금-변수의-분포"><span class="header-section-number">5.2</span> 임금 변수의 분포</h3>
-<ul>
-<li>임금의 평균은 305만원, 중앙값은 270만원이며 매우 오른쪽으로 치우친 비대칭 분포를 나타냄</li>
-</ul>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-hist" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: 임금의 히스토그램
-</figcaption>
-<div aria-describedby="fig-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-hist-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
-<ul>
-<li>분포의 위쪽 구간에 극단적인 고임금 이상치들이 존재함</li>
-</ul>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: 임금의 상자그림
-</figcaption>
-<div aria-describedby="fig-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-boxplot-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
-<ul>
-<li>매우 오른쪽으로 치우친 분포이므로, 로그 스케일을 사용하거나 데이터가 밀집된 0 ~ 1,000만원 구간만 확대하는 것이 유용할 수 있음</li>
-</ul>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-hist-log" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-hist-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: 임금의 히스토그램 (로그 스케일)
-</figcaption>
-<div aria-describedby="fig-hist-log-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-hist-log-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-box-zoomed" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-box-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4: 임금의 상자그림 (0 - 1,000만원 구간 확대)
-</figcaption>
-<div aria-describedby="fig-box-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-box-zoomed-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
-<ul>
-<li>상위 10% 경계선 소득은 520만원으로 하위 90% 경계선 소득 100만원의 5.2배이며, 상위 10% 평균 소득은 703만원으로 하위 10%의 평균 소득 60만원의 11.7배로 나타남</li>
-</ul>
-<div class="cell" data-tbl-cap-location="top">
-<div id="tbl-pctile-ratio" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-pctile-ratio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;2: 임금의 분위수 배율 및 분위 평균 배율
-</figcaption>
-<div aria-describedby="tbl-pctile-ratio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: center;">p10</th>
-<th style="text-align: center;">p90</th>
-<th style="text-align: center;">mean_10</th>
-<th style="text-align: center;">mean_90</th>
-<th style="text-align: center;">ratio_cutoff</th>
-<th style="text-align: center;">ratio_mean</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">100</td>
-<td style="text-align: center;">520</td>
-<td style="text-align: center;">60.1</td>
-<td style="text-align: center;">702.8</td>
-<td style="text-align: center;">5.2</td>
-<td style="text-align: center;">11.7</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<ul>
-<li>임금의 지니계수 (Gini coefficient)는 0.313이지만 그 자체로 해석하기 쉽지 않으므로 두 시점 또는 두 그룹 사이의 차이를 살펴보는 것이 유용함
-<ul>
-<li>세계은행 (World bank)은 높은 수준의 소득 불평등을 나타내는 벤치마크로 지니계수 0.4를 사용한다고 보고된 바 있으나 이론적 근거는 약함</li>
-<li>지니계수에 굳이 직관적인 해석을 부여하자면, 무작위로 두 사람을 뽑았을 때 두 사람의 소득 차이(절대값)의 평균이 <span class="math inline">\(2 \times Gini \times \mu\)</span>로 알려짐 -&gt; 즉 위 표본에서 두 명을 무작위로 뽑았을 때 두 사람의 소득 차이 절대값의 평균은 2 * 0.313 * 305 = 191만원임</li>
-</ul></li>
-</ul>
-<div class="cell" data-tbl-cap-location="top">
-<div id="tbl-gini" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-gini-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;3: 임금의 지니계수
-</figcaption>
-<div aria-describedby="tbl-gini-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<thead>
-<tr class="header">
-<th style="text-align: center;">gini</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">0.313</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-</section>
-<section id="남녀-임금-분포의-비교" class="level3" data-number="5.3">
-<h3 data-number="5.3" class="anchored" data-anchor-id="남녀-임금-분포의-비교"><span class="header-section-number">5.3</span> 남녀 임금 분포의 비교</h3>
-<ul>
-<li>남성이 여성에 비하여 평균과 산포도 (dispersion)가 모두 크게 나타남
-<ul>
-<li>남성의 평균 임금은 370만원, 여성의 평균 임금은 226만원으로 남성 평균이 여성 평균의 1.64배</li>
-<li>남성의 표준편차 216, 여성의 표준편차 129로 남성 표준편차가 여성 표준편차의 1.67배</li>
-</ul></li>
-</ul>
-<div class="cell" data-tbl-cap-location="top">
-<div id="tbl-wage-by-gender1" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-wage-by-gender1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;4: 성별에 따른 임금 통계량 비교
-</figcaption>
-<div aria-describedby="tbl-wage-by-gender1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<caption>Data summary</caption>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Name</td>
-<td style="text-align: left;">group_by(klips27p_small, …</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Number of rows</td>
-<td style="text-align: left;">9527</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Number of columns</td>
-<td style="text-align: left;">7</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">_______________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Column type frequency:</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">numeric</td>
-<td style="text-align: left;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">________________________</td>
-<td style="text-align: left;"></td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Group variables</td>
-<td style="text-align: left;">gender</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Variable type: numeric</strong></p>
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 16%">
-<col style="width: 8%">
-<col style="width: 11%">
-<col style="width: 16%">
-<col style="width: 8%">
-<col style="width: 8%">
-<col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 5%">
-<col style="width: 7%">
+<col style="width: 41%">
+<col style="width: 42%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">skim_variable</th>
-<th style="text-align: left;">gender</th>
-<th style="text-align: right;">n_missing</th>
-<th style="text-align: right;">complete_rate</th>
-<th style="text-align: right;">mean</th>
-<th style="text-align: right;">sd</th>
-<th style="text-align: right;">p0</th>
-<th style="text-align: right;">p25</th>
-<th style="text-align: right;">p50</th>
-<th style="text-align: right;">p75</th>
-<th style="text-align: right;">p100</th>
-<th style="text-align: left;">hist</th>
+<th style="text-align: left;">하려는 일</th>
+<th style="text-align: left;">tidyverse</th>
+<th style="text-align: left;">base R</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">wage</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">225.72</td>
-<td style="text-align: right;">129.40</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">150</td>
-<td style="text-align: right;">220</td>
-<td style="text-align: right;">280</td>
-<td style="text-align: right;">1450</td>
-<td style="text-align: left;">▇▂▁▁▁</td>
+<td style="text-align: left;">한 열 꺼내기</td>
+<td style="text-align: left;"><code>pull(lifeExp)</code></td>
+<td style="text-align: left;"><code>df$lifeExp</code></td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">wage</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">370.11</td>
-<td style="text-align: right;">215.94</td>
-<td style="text-align: right;">15</td>
-<td style="text-align: right;">250</td>
-<td style="text-align: right;">330</td>
-<td style="text-align: right;">450</td>
-<td style="text-align: right;">6900</td>
-<td style="text-align: left;">▇▁▁▁▁</td>
+<td style="text-align: left;">새 변수</td>
+<td style="text-align: left;"><code>mutate(gdp = gdpPercap * pop)</code></td>
+<td style="text-align: left;"><code>df$gdp &lt;- df$gdpPercap * df$pop</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">행 선택</td>
+<td style="text-align: left;"><code>filter(year == 2007)</code></td>
+<td style="text-align: left;"><code>df[df$year == 2007, ]</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">열 선택</td>
+<td style="text-align: left;"><code>select(country, lifeExp)</code></td>
+<td style="text-align: left;"><code>df[, c("country", "lifeExp")]</code></td>
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<div class="cell" data-tbl-cap-location="top">
-<div id="tbl-wage-by-gender2" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-wage-by-gender2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;5: 성별에 따른 임금 통계량 비교
-</figcaption>
-<div aria-describedby="tbl-wage-by-gender2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 19%">
-<col style="width: 16%">
-<col style="width: 16%">
-<col style="width: 13%">
-<col style="width: 18%">
-<col style="width: 15%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">mean_Female</th>
-<th style="text-align: center;">mean_Male</th>
-<th style="text-align: center;">sd_Female</th>
-<th style="text-align: center;">sd_Male</th>
-<th style="text-align: center;">ratio_mean</th>
-<th style="text-align: center;">ratio_sd</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">225.72</td>
-<td style="text-align: center;">370.11</td>
-<td style="text-align: center;">129.4</td>
-<td style="text-align: center;">215.94</td>
-<td style="text-align: center;">1.64</td>
-<td style="text-align: center;">1.67</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<ul>
-<li>두 그룹의 평균을 비교하는 통계적 검정 결과 남성의 평균이 통계적으로 유의하게 여성의 평균보다 높은 것으로 나타남</li>
-</ul>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>
-    Welch Two Sample t-test
-
-data:  wage by gender
-t = -40.343, df = 8770.7, p-value &lt; 2.2e-16
-alternative hypothesis: true difference in means between group Female and group Male is not equal to 0
-95 percent confidence interval:
- -151.4039 -137.3725
-sample estimates:
-mean in group Female   mean in group Male 
-            225.7230             370.1112 </code></pre>
-</div>
-</div>
-<ul>
-<li><p>두 성별 모두 오른쪽으로 치우친 분포를 나타냄</p></li>
-<li><p>두 분포에 상당한 중첩이 나타나지만 남성 분포의 사분위수가 여성 분포의 사분위수에 비하여 뚜렷하게 높게 나타남</p>
-<ul>
-<li>남성의 1사분위수 &gt; 여성의 1사분위수; 남성의 중앙값 &gt; 여성의 중앙값; 남성의 3사분위수 &gt; 여성의 3사분위수</li>
-</ul></li>
-</ul>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-wage-by-gender" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-wage-by-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: 성별에 따른 임금의 상자그림
-</figcaption>
-<div aria-describedby="fig-wage-by-gender-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-wage-by-gender-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-wage-by-gender-zoomed" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-wage-by-gender-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
-</figcaption>
-<div aria-describedby="fig-wage-by-gender-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-wage-by-gender-zoomed-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
 </section>
-<section id="연령-그룹별-남녀-임금-분포의-비교" class="level3" data-number="5.4">
-<h3 data-number="5.4" class="anchored" data-anchor-id="연령-그룹별-남녀-임금-분포의-비교"><span class="header-section-number">5.4</span> 연령 그룹별 남녀 임금 분포의 비교</h3>
-<ul>
-<li>때로는 세부 그룹별로 나누어 두 집단을 비교하는 것이 유용할 수 있음
-<ul>
-<li>여기서는 연령 그룹별로 남녀 임금의 분포를 비교함</li>
-</ul></li>
-<li>먼저 다음과 같이 <code>age_group</code> 변수 레벨의 순서를 다시 정렬하는 것이 바람직함</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="ot">&lt;-</span> klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_group =</span> <span class="fu">fct_relevel</span>(age_group, <span class="st">"Below 30"</span>, <span class="st">"30s"</span>, <span class="st">"40s"</span>, <span class="st">"Above 50"</span>)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<ul>
-<li>남녀 평균 임금 격차는 연령이 높아질수록 확대됨
-<ul>
-<li>남녀 평균 임금의 비율은 30세 이하에서는 1.10이나 50세 이상에는 1.92로 높아짐</li>
-</ul></li>
-</ul>
-<div class="cell" data-tbl-cap-location="top">
-<div id="tbl-wage-by-gender-and-age_group" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="top">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-wage-by-gender-and-age_group-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;6: 연령 그룹별 남녀 임금 통계량 비교
-</figcaption>
-<div aria-describedby="tbl-wage-by-gender-and-age_group-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output-display">
-<table class="do-not-create-environment cell caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 12%">
-<col style="width: 21%">
-<col style="width: 18%">
-<col style="width: 11%">
-<col style="width: 9%">
-<col style="width: 25%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: center;">age_group</th>
-<th style="text-align: center;">mean_wage_Female</th>
-<th style="text-align: center;">mean_wage_Male</th>
-<th style="text-align: center;">n_Female</th>
-<th style="text-align: center;">n_Male</th>
-<th style="text-align: center;">male_to_female_ratio</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;">Below 30</td>
-<td style="text-align: center;">221.26</td>
-<td style="text-align: center;">243.90</td>
-<td style="text-align: center;">536</td>
-<td style="text-align: center;">429</td>
-<td style="text-align: center;">1.10</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">30s</td>
-<td style="text-align: center;">274.51</td>
-<td style="text-align: center;">360.15</td>
-<td style="text-align: center;">728</td>
-<td style="text-align: center;">1003</td>
-<td style="text-align: center;">1.31</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">40s</td>
-<td style="text-align: center;">278.35</td>
-<td style="text-align: center;">437.82</td>
-<td style="text-align: center;">986</td>
-<td style="text-align: center;">1502</td>
-<td style="text-align: center;">1.57</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Above 50</td>
-<td style="text-align: center;">184.09</td>
-<td style="text-align: center;">353.79</td>
-<td style="text-align: center;">2042</td>
-<td style="text-align: center;">2301</td>
-<td style="text-align: center;">1.92</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</figure>
-</div>
-</div>
-<div class="cell fig-cap-location-top">
-<div class="cell-output-display">
-<div id="fig-wage-by-gender-and-age_group-zoomed" class="quarto-float quarto-figure quarto-figure-center anchored" data-cap-location="top">
-<figure class="quarto-float quarto-float-fig figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-fig" id="fig-wage-by-gender-and-age_group-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)
-</figcaption>
-<div aria-describedby="fig-wage-by-gender-and-age_group-zoomed-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="week05_files/figure-html/fig-wage-by-gender-and-age_group-zoomed-1.png" class="img-fluid figure-img" width="672">
-</div>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
-<section id="실습" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="실습"><span class="header-section-number">6</span> 실습</h2>
-<p><strong>실습 1</strong></p>
-<div class="callout callout-style-default callout-important callout-titled" title="실습 1: 주의사항">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Important</span>실습 1: 주의사항
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<ul>
-<li><p>먼저 위의 분석을 수행하는데 사용한 코드는 다음 R 스크립트에 포함되어 있으니 잘 읽어보고 연습한 후 아래 문제에 답변할 때 참고하세요.</p></li>
-<li><p>실습에 사용한 R 스크립트는 week04_ex1_학번.R로, 답안은 week04_ex1_학번.docx로 저장한 후 E-class 과제로 제출하세요.</p></li>
-</ul>
-</div>
-</div>
-<div class="cell">
-<details class="code-fold">
-<summary>R 스크립트 코드 보기/접기</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 패키지 준비</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ineq)      <span class="co"># 나중에 지니계수 구할 때만 한번 사용</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터 불러오기</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/klips27p_small.csv"</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 데이터의 구조와 변수의 개요</span></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(klips27p_small)</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="do">### 3.2 임금 변수의 분포</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 임금의 히스토그램</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wage)) <span class="sc">+</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"임금 (만원)"</span>)</span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 임금의 상자그림</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wage)) <span class="sc">+</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"임금 (만원)"</span>)       </span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 임금의 히스토그램 (로그 스케일)</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wage)) <span class="sc">+</span></span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"임금 (만원)"</span>) <span class="sc">+</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>()</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co"># 임금의 상자그림 (0 - 1,000만원 구간 확대)</span></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wage)) <span class="sc">+</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"임금 (만원)"</span>) <span class="sc">+</span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>))       </span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 임금의 분위수 배율 및 분위 평균 배율</span></span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">p10 =</span> <span class="fu">quantile</span>(wage, <span class="at">probs =</span> <span class="fl">0.1</span>),</span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">p90 =</span> <span class="fu">quantile</span>(wage, <span class="at">probs =</span> <span class="fl">0.9</span>),</span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_10 =</span> <span class="fu">mean</span>(wage[wage <span class="sc">&lt;=</span> p10]),</span>
-<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_90 =</span> <span class="fu">mean</span>(wage[wage <span class="sc">&gt;=</span> p90]),</span>
-<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio_cutoff =</span> p90 <span class="sc">/</span> p10,</span>
-<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio_mean =</span> mean_90 <span class="sc">/</span> mean_10</span>
-<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a><span class="co"># 임금의 지니계수</span></span>
-<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb5-60"><a href="#cb5-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">gini =</span> <span class="fu">ineq</span>(wage)</span>
-<span id="cb5-61"><a href="#cb5-61" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb5-62"><a href="#cb5-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-63"><a href="#cb5-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-64"><a href="#cb5-64" aria-hidden="true" tabindex="-1"></a><span class="do">### 3.3 남녀 임금 분포의 비교</span></span>
-<span id="cb5-65"><a href="#cb5-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-66"><a href="#cb5-66" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별에 따른 임금 통계량 비교</span></span>
-<span id="cb5-67"><a href="#cb5-67" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-68"><a href="#cb5-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender) <span class="sc">|&gt;</span> </span>
-<span id="cb5-69"><a href="#cb5-69" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim</span>(wage)</span>
-<span id="cb5-70"><a href="#cb5-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-71"><a href="#cb5-71" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별에 따른 임금 통계량 비교</span></span>
-<span id="cb5-72"><a href="#cb5-72" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-73"><a href="#cb5-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender) <span class="sc">|&gt;</span> </span>
-<span id="cb5-74"><a href="#cb5-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb5-75"><a href="#cb5-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(wage),</span>
-<span id="cb5-76"><a href="#cb5-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(wage)</span>
-<span id="cb5-77"><a href="#cb5-77" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-78"><a href="#cb5-78" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 아래 일곱 줄은 번거로우면 무시해도 됩니다   </span></span>
-<span id="cb5-79"><a href="#cb5-79" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb5-80"><a href="#cb5-80" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from  =</span> gender,</span>
-<span id="cb5-81"><a href="#cb5-81" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(mean, sd)</span>
-<span id="cb5-82"><a href="#cb5-82" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb5-83"><a href="#cb5-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-84"><a href="#cb5-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio_mean =</span> (mean_Male <span class="sc">/</span> mean_Female),</span>
-<span id="cb5-85"><a href="#cb5-85" aria-hidden="true" tabindex="-1"></a>    <span class="at">ratio_sd =</span> (sd_Male <span class="sc">/</span> sd_Female)    </span>
-<span id="cb5-86"><a href="#cb5-86" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a><span class="co"># T-test</span></span>
-<span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(wage <span class="sc">~</span> gender, <span class="at">data =</span> klips27p_small)</span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별에 따른 임금의 상자그림</span></span>
-<span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wage, <span class="at">y =</span> gender)) <span class="sc">+</span></span>
-<span id="cb5-94"><a href="#cb5-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span>
-<span id="cb5-95"><a href="#cb5-95" aria-hidden="true" tabindex="-1"></a>p1</span>
-<span id="cb5-96"><a href="#cb5-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-97"><a href="#cb5-97" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)</span></span>
-<span id="cb5-98"><a href="#cb5-98" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>))</span>
-<span id="cb5-99"><a href="#cb5-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-100"><a href="#cb5-100" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-101"><a href="#cb5-101" aria-hidden="true" tabindex="-1"></a><span class="do">### 3.4 연령 그룹별 남녀 임금 분포의 비교</span></span>
-<span id="cb5-102"><a href="#cb5-102" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-103"><a href="#cb5-103" aria-hidden="true" tabindex="-1"></a><span class="co"># age_group 레벨의 순서를 다시 정렬</span></span>
-<span id="cb5-104"><a href="#cb5-104" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="ot">&lt;-</span> klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-105"><a href="#cb5-105" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_group =</span> <span class="fu">fct_relevel</span>(age_group, <span class="st">"Below 30"</span>, <span class="st">"30s"</span>, <span class="st">"40s"</span>, <span class="st">"Above 50"</span>)) </span>
-<span id="cb5-106"><a href="#cb5-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-107"><a href="#cb5-107" aria-hidden="true" tabindex="-1"></a><span class="co"># 연령 그룹별 남녀 임금 통계량 비교</span></span>
-<span id="cb5-108"><a href="#cb5-108" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-109"><a href="#cb5-109" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(gender, age_group) <span class="sc">|&gt;</span> </span>
-<span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_wage =</span> <span class="fu">mean</span>(wage),</span>
-<span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb5-112"><a href="#cb5-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb5-113"><a href="#cb5-113" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from  =</span> gender,</span>
-<span id="cb5-114"><a href="#cb5-114" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> <span class="fu">c</span>(mean_wage, n)</span>
-<span id="cb5-115"><a href="#cb5-115" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb5-116"><a href="#cb5-116" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb5-117"><a href="#cb5-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">male_to_female_ratio =</span> (mean_wage_Male <span class="sc">/</span> mean_wage_Female) </span>
-<span id="cb5-118"><a href="#cb5-118" aria-hidden="true" tabindex="-1"></a>  ) </span>
-<span id="cb5-119"><a href="#cb5-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-120"><a href="#cb5-120" aria-hidden="true" tabindex="-1"></a><span class="co"># 성별에 따른 임금의 상자그림 (0 - 1,000만원 구간 확대)</span></span>
-<span id="cb5-121"><a href="#cb5-121" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> klips27p_small <span class="sc">|&gt;</span> </span>
-<span id="cb5-122"><a href="#cb5-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wage, <span class="at">y =</span> gender)) <span class="sc">+</span></span>
-<span id="cb5-123"><a href="#cb5-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span>
-<span id="cb5-124"><a href="#cb5-124" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-125"><a href="#cb5-125" aria-hidden="true" tabindex="-1"></a>p2 <span class="sc">+</span> <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1000</span>)) <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span>age_group)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<section id="퀴즈" class="level3" data-number="1.4">
+<h3 data-number="1.4" class="anchored" data-anchor-id="퀴즈"><span class="header-section-number">1.4</span> 퀴즈</h3>
 <ol type="1">
-<li><code>klips27p_small.csv</code>를 이용하여 정규직-비정규직 임금 분포 차이를 비교해 보시오.</li>
+<li><p><code>x &lt;- c(15, 18, 3, 10)</code>일 때 <code>x[x &gt; 10]</code>의 결과를 예측하세요.</p></li>
+<li><p>다음 코드의 결과를 예측하세요.</p></li>
 </ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gapminder)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(gapminder<span class="sc">$</span>country)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<ol start="3" type="1">
+<li>다음 tidyverse 코드를 base R로 바꾸세요.</li>
+</ol>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>gapminder <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Korea, Rep."</span>, year <span class="sc">&gt;=</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, lifeExp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="과제" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="과제"><span class="header-section-number">7</span> 과제</h2>
+</section>
+<section id="시계열" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="시계열"><span class="header-section-number">2</span> 시계열</h2>
+<section id="자료-불러오기와-날짜-다루기" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="자료-불러오기와-날짜-다루기"><span class="header-section-number">2.1</span> 자료 불러오기와 날짜 다루기</h3>
 <ul>
-<li><p>과제 3: 10월 8일 (목) 오후 6시까지 E-class로 제출</p></li>
-<li><p>과제에 답변할 때 아래 코드를 참고하시오.</p></li>
+<li><p>여기서는 <a href="https://ecos.bok.or.kr/" target="_blank">한국은행경제통계시스템</a>에서 월별 수출액 통계를 다운받아서 분석함</p>
+<ul>
+<li>통계검색 &gt; 3. 환율/통관수출입/외환보유액 &gt; 3.2. 통관기준 수출입 &gt; 3.2.1. 수출입 총괄 &gt; 수출금액</li>
+<li>(2026년 10월 초 현재) 2000년 1월부터 2026년 7월까지 수출금액이 수록</li>
+<li>빈도: 월, 단위: 천불</li>
+</ul>
+<p><a href="data/수출입 총괄_01193017.csv" class="btn btn-outline-primary btn-sm" download="">📥 월별 수출액 데이터 다운로드</a></p></li>
+<li><p>시계열 자료는 횡단면 자료와 달리 관측 순서가 의미를 가짐</p></li>
+<li><p><code>df$date</code>의 내용과 클래스가 <code>ym()</code>을 적용하기 이전과 이후 어떻게 달라지는지 확인</p></li>
 </ul>
 <div class="cell">
-<details class="code-fold">
-<summary>R 스크립트 코드 보기/접기</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>klips27p <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"data/klips27p.xlsx"</span>)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>klips27p_small_before_na.omit <span class="ot">&lt;-</span> klips27p <span class="sc">|&gt;</span> </span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">wage =</span> p271642,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">gender =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>           p270101 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Male"</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>           p270101 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Female"</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>           ),</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">age =</span> p270107,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">age_group =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>           age <span class="sc">&gt;=</span> <span class="dv">1</span> <span class="sc">&amp;</span> age <span class="sc">&lt;</span> <span class="dv">30</span> <span class="sc">~</span> <span class="st">"Below 30"</span>,</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>           age <span class="sc">&gt;=</span> <span class="dv">30</span> <span class="sc">&amp;</span> age <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">~</span> <span class="st">"30s"</span>,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>           age <span class="sc">&gt;=</span> <span class="dv">40</span> <span class="sc">&amp;</span> age <span class="sc">&lt;</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"40s"</span>,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>           age <span class="sc">&gt;=</span> <span class="dv">50</span> <span class="sc">~</span> <span class="st">"Above 50"</span>,</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>         ),</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">education =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>           p270110 <span class="sc">&gt;=</span> <span class="dv">1</span> <span class="sc">&amp;</span> p270110 <span class="sc">&lt;=</span> <span class="dv">5</span> <span class="sc">~</span> <span class="st">"High School"</span>,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>           p270110 <span class="sc">&gt;=</span> <span class="dv">6</span> <span class="sc">~</span> <span class="st">"College"</span>,</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>           <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>           ),</span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">job_type =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>           p270317 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"Regular"</span>,</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>           p270317 <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"Non-regular"</span>,</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">.default =</span> <span class="cn">NA_character_</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>           ),</span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">firm_size =</span> <span class="fu">case_when</span>(</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>           p270403 <span class="sc">&gt;=</span> <span class="dv">1</span> <span class="sc">&amp;</span> p270403 <span class="sc">&lt;=</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"Small"</span>,</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>           p270403 <span class="sc">&gt;=</span> <span class="dv">5</span> <span class="sc">&amp;</span> p270403 <span class="sc">&lt;=</span> <span class="dv">7</span> <span class="sc">~</span> <span class="st">"Medium"</span>,</span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>           p270403 <span class="sc">&gt;=</span> <span class="dv">8</span> <span class="sc">&amp;</span> p270403 <span class="sc">&lt;=</span> <span class="dv">10</span> <span class="sc">~</span> <span class="st">"Large"</span>,</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>           <span class="at">.default =</span> <span class="cn">NA_character_</span>           </span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>           )</span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(pid, jobclass, wage, gender, age_group, education, job_type)</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>klips27p_small <span class="ot">&lt;-</span> klips27p_small_before_na.omit <span class="sc">|&gt;</span> <span class="fu">na.omit</span>()</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(klips27p_small_before)</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(klips27p_small)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/수출입 총괄_01193017.csv"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">skip =</span> <span class="dv">1</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>               <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"date"</span>, <span class="st">"export"</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span> </span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ym</span>(date)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+</section>
+<section id="수준-그래프" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="수준-그래프"><span class="header-section-number">2.2</span> 수준 그래프</h3>
+<ul>
+<li>시계열의 요소: 추세, 계절성, 순환, 불규칙 변동
+<ul>
+<li>추세: 수년에 걸쳐 완만하게 오르거나 내리는 장기적인 방향</li>
+<li>계절성: 매년 같은 시기에 같은 방향으로 반복되는, 주기가 고정된 패턴</li>
+<li>순환: 수 년 단위로 오르내리지만 주기의 길이와 폭이 일정하지 않은 변동 (예: 경기순환)</li>
+<li>불규칙 변동: 위 세 가지로 설명되지 않는, 예측하기 어려운 나머지 단기 변동</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(date, export)) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 (2000년 1월 ~ 2026년 7월)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"수출액 (천불)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="변환-로그-차분-성장률" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="변환-로그-차분-성장률"><span class="header-section-number">2.3</span> 변환: 로그, 차분, 성장률</h3>
+<ul>
+<li>시차: <code>lag(x)</code>는 한 기간 전 값, <code>lag(x, 12)</code>는 12 기간 전 값</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">export_l1  =</span> <span class="fu">lag</span>(export),        <span class="co"># 1개월 전 값</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">export_l12 =</span> <span class="fu">lag</span>(export, <span class="dv">12</span>))    <span class="co"># 12개월 전 값</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df, <span class="dv">14</span>)    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 4
+   date         export export_l1 export_l12
+   &lt;date&gt;        &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;
+ 1 2000-01-01 12162425        NA         NA
+ 2 2000-02-01 12676042  12162425         NA
+ 3 2000-03-01 14429703  12676042         NA
+ 4 2000-04-01 13522040  14429703         NA
+ 5 2000-05-01 14636755  13522040         NA
+ 6 2000-06-01 15250940  14636755         NA
+ 7 2000-07-01 14455656  15250940         NA
+ 8 2000-08-01 14786880  14455656         NA
+ 9 2000-09-01 15133379  14786880         NA
+10 2000-10-01 15248068  15133379         NA
+11 2000-11-01 14989068  15248068         NA
+12 2000-12-01 14976555  14989068         NA
+13 2001-01-01 12644929  14976555   12162425
+14 2001-02-01 13354074  12644929   12676042</code></pre>
+</div>
+</div>
+<ul>
+<li>증가율: <span class="math inline">\((x_{t} /x_{t-1} -1) \times 100\)</span></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">g_mom =</span> (export <span class="sc">/</span> <span class="fu">lag</span>(export)     <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>,   <span class="co"># 전기(전월)대비</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">g_yoy =</span> (export <span class="sc">/</span> <span class="fu">lag</span>(export, <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>)   <span class="co"># 전년동월대비</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, g_mom)) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 증가율 (전월대비)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"증가율(%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, g_yoy)) <span class="sc">+</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 증가율 (전년동월대비)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"증가율(%)"</span>)    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-6-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>로그와 로그차분</p>
+<ul>
+<li>증가율이 작을 때 로그차분은 증가율과 거의 비슷함</li>
+<li>로그차분은 계산과 모형 분석을 편리하게 하는 장점이 있어 자주 사용됨</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_export =</span> <span class="fu">log</span>(export),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">dlog      =</span> (log_export <span class="sc">-</span> <span class="fu">lag</span>(log_export)) <span class="sc">*</span> <span class="dv">100</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df<span class="sc">$</span>g_mom <span class="sc">-</span> df<span class="sc">$</span>dlog)  </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Min.   1st Qu.    Median      Mean   3rd Qu.      Max.       NAs 
+0.0000123 0.0237856 0.1245461 0.3341391 0.3945128 3.5604884         1 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, dlog)) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 로그변화율 (전월 대비)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"로그변화율(%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="실습-1-주가-예제" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="실습-1-주가-예제"><span class="header-section-number">2.4</span> 실습 1: 주가 예제</h3>
+<ul>
+<li>아래 일별 KOSPI 지수 데이터를 이용하여 수준과 로그변화율(로그차분)을 그래프로 나타내고 주요한 특징을 설명하시오
+<ul>
+<li>참고: 데이터에는 주말과 공휴일을 제외한 영업일만을 포함하고 있으므로 <code>lag()</code>는 전영업일을 의미함</li>
+</ul></li>
+</ul>
+<p><a href="data/수출입 총괄_01193017.csv" class="btn btn-outline-primary btn-sm" download="">📥 일별 KOSPI지수 데이터 다운로드</a></p>
+</section>
+<section id="요약통계와-구간-비교" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="요약통계와-구간-비교"><span class="header-section-number">2.5</span> 요약통계와 구간 비교</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 구간 구분 함수: 경계는 예시일 뿐이며 임의로 잡은 것이다</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>add_period <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">case_when</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      date <span class="sc">&lt;</span>  <span class="fu">as.Date</span>(<span class="st">"2008-09-01"</span>) <span class="sc">~</span> <span class="st">"1.위기전"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>      date <span class="sc">&lt;</span>  <span class="fu">as.Date</span>(<span class="st">"2010-01-01"</span>) <span class="sc">~</span> <span class="st">"2.금융위기"</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>      date <span class="sc">&lt;</span>  <span class="fu">as.Date</span>(<span class="st">"2020-03-01"</span>) <span class="sc">~</span> <span class="st">"3.안정기"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                          <span class="sc">~</span> <span class="st">"4.코로나이후"</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 수출액: 전년동월대비 증가율 ----</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 전체 기간</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(g_yoy) <span class="sc">|&gt;</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(g_yoy), <span class="at">sd =</span> <span class="fu">sd</span>(g_yoy),</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">min =</span> <span class="fu">min</span>(g_yoy), <span class="at">max =</span> <span class="fu">max</span>(g_yoy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+      n  mean    sd   min   max
+  &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1   307  7.94  16.8 -34.5  70.4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 구간별 (NA는 C에서 만든 첫 12개월 때문에 생긴 것 -&gt; drop_na로 제거)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(g_yoy) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_period</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(g_yoy), <span class="at">sd =</span> <span class="fu">sd</span>(g_yoy),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">min =</span> <span class="fu">min</span>(g_yoy), <span class="at">max =</span> <span class="fu">max</span>(g_yoy), <span class="at">.by =</span> period) <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(period)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  period           n  mean    sd   min   max
+  &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 1.위기전        92 13.4   14.5 -21.2  43.5
+2 2.금융위기      16 -9.41  20.1 -34.5  32.8
+3 3.안정기       122  4.96  14.0 -19.6  45.4
+4 4.코로나이후    77  9.71  19.4 -25.6  70.4</code></pre>
+</div>
+</div>
+</section>
+<section id="계절성" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="계절성"><span class="header-section-number">2.6</span> 계절성</h3>
+</section>
+<section id="자기상관" class="level3" data-number="2.7">
+<h3 data-number="2.7" class="anchored" data-anchor-id="자기상관"><span class="header-section-number">2.7</span> 자기상관</h3>
+<p>블록별 내용</p>
+<p>A. 자료 불러오기와 날짜 다루기</p>
+<p>작업: CSV 읽기, 문자열 날짜를 Date로 변환, 시간순 정렬 확인 (readr, lubridate) 개념: 관측 순서의 의미, 빈도, 표본기간, 명목/실질, 계절조정 여부</p>
+<p>B. 수준 그림 그리기와 읽기</p>
+<p>작업: geom_line, 축과 제목 정리, 특이 시점에 geom_vline 개념: 추세, 계절성, 변동성 변화, 특이 사건 학생이 그림에서 관찰한 것을 먼저 글로 적고, 이후 블록에서 검증하는 흐름으로 진행</p>
+<p>C. 변환: 로그, 차분, 성장률</p>
+<p>작업: mutate()와 lag()로 전기대비, 전년동기대비 증가율, 로그차분 생성, 세 그림 비교 개념: 로그 변환의 이유, 로그차분이 성장률의 근사라는 점, 전기대비와 전년동기대비의 차이 주가 예제(10분): 같은 코드로 주가 수준과 로그수익률을 그리고 매크로 자료와 비교</p>
+<p>D. 요약통계와 구간 비교</p>
+<p>작업: summarise()로 성장률의 평균, 표준편차, 최소/최대 계산, 기간 구분 변수로 구간별 비교 개념: 수준이 아니라 성장률에 대해 요약통계를 구하는 이유, 변동성의 기간별 변화 주가 예제(10분): 2008, 2020 구간별 수익률 표준편차 비교</p>
+<p>E. 계절성 확인</p>
+<p>작업: 월별 평균 성장률 그림, 연도별 선을 겹친 seasonal plot STL은 제외 (이미 배운 group_by/summarise와 ggplot만 사용)</p>
+<p>F. 자기상관</p>
+<p>작업: lag plot을 먼저 그린 뒤 acf() 소개, 수출액 수준과 성장률의 ACF 비교 개념: 시간 의존성, 수준 시계열의 ACF가 천천히 감소하는 이유 주가 대비(핵심): 주가 수준, 수익률, 제곱(또는 절대) 수익률의 ACF를 나란히 비교 수준: 매우 천천히 감소 / 수익률: 거의 0 / 제곱 수익률: 오래 지속되는 양의 상관 해석은 “수준, 수익률, 변동성이 서로 다른 성질을 갖는다”까지만 하고, 효율적 시장가설로 비약하지 않는다. 선택: 수익률 히스토그램에 정규밀도를 겹쳐 두꺼운 꼬리 제시 (stat_function(fun = dnorm)) 과제</p>
+<p>학생이 고른 변수 하나에 대해 (i) 수준, 로그, 성장률 그림, (ii) 기간별 요약통계, (iii) ACF를 만들고, 그림에서 읽은 내용을 한 단락으로 해석한다.</p>
+</section>
+</section>
+<section id="상세" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="상세"><span class="header-section-number">3</span> 상세</h2>
+<p>A. 자료 불러오기와 날짜 다루기 (15분) 설명 (5분): 횡단면 자료와의 차이(관측 순서가 의미를 가짐), 변수 정의, 단위, 빈도, 표본기간, 명목/실질, 계절조정 여부 실습 (10분) read_csv()로 수출액 읽기 ymd() 또는 as.Date()로 날짜 변환, class()로 확인 arrange(date)로 시간순 정렬, range(date)와 nrow()로 표본기간과 관측치 수 확인 체크포인트: 날짜 열이 Date 클래스인가, 정렬되어 있는가 자주 막히는 곳: 날짜 형식(2020-01처럼 일이 없는 경우, 2020.01 등). 월 자료에 일이 없으면 paste0(x, “-01”)로 붙인 뒤 변환하는 방법을 미리 준비해 두십시오. B. 수준 그림 그리기와 읽기 (20분) 설명 (5분): 시계열의 네 요소(추세, 계절성, 순환, 불규칙 변동)를 그림 위에서 짚기 실습 (15분) ggplot(aes(date, exports)) + geom_line(), 제목과 축 라벨 정리 geom_vline(xintercept = as.Date(“2008-09-15”)), as.Date(“2020-03-01”)로 특이 시점 표시 학생이 그림에서 관찰한 것을 2~3문장으로 먼저 적기 (추세, 계절 진폭, 위기 시점 반응) 의도: 이 관찰 메모를 C, D, E에서 하나씩 검증하는 흐름으로 사용. 특히 “변동폭이 수준이 커지면서 함께 커진다”는 관찰이 C의 로그 변환 동기가 됩니다. C. lag와 변환 (45분)</p>
+<p>C-1. lag() 도입 (10분)</p>
+<p>설명: lag(x)는 한 기간 전 값, lag(x, 12)는 12기간 전 값 실습: mutate(exports_l1 = lag(exports), exports_l12 = lag(exports, 12)) 후 앞부분을 출력해 첫 행들이 NA인 것을 직접 확인 반드시 짚을 것 정렬이 안 되어 있으면 lag가 엉뚱한 값을 가져오므로 arrange(date) 선행이 필수 stats::lag와 이름이 충돌할 수 있으므로 dplyr::lag()로 명시하면 안전 NA는 오류가 아니라 이전 값이 없다는 뜻</p>
+<p>C-2. 증가율 (15분)</p>
+<p>전기대비 증가율: (x / lag(x) - 1) * 100 전년동기대비 증가율: (x / lag(x, 12) - 1) * 100 두 증가율 그림을 비교: 전기대비는 계절 진동이 크고, 전년동기대비는 계절 진동이 제거되어 부드러움 질문: 왜 전년동기대비에서 계절성이 사라지는가? (같은 달끼리 비교하므로)</p>
+<p>C-3. 로그와 로그차분 (10분)</p>
+<p>log(x), log(x) - lag(log(x)) 로그차분이 전기대비 증가율의 근사임을 두 열을 나란히 출력해 확인 (증가율이 작을 때 거의 일치, 클수록 차이) 수준, 로그, 로그차분의 세 그림을 facet_wrap 또는 patchwork로 나열 로그 변환이 B에서 관찰한 “수준에 비례하는 변동폭”을 어떻게 바꾸는지 확인 diff(log(x))는 길이가 1 줄어들어 mutate에 바로 넣으면 오류가 나므로, 이 수업에서는 lag 방식으로 통일하는 것을 권합니다.</p>
+<p>C-4. 주가 예제 (10분)</p>
+<p>같은 변환을 주가에 적용해 수준과 로그수익률 그림 비교 포인트 두 가지 일별 자료에서 lag(1)은 전 영업일이며, 주말과 공휴일은 자료에 없음 일별 자료에는 전년동기대비를 쓰지 않고 일별 수익률만 사용 매크로 성장률과 달리 수익률 그림은 변동성이 구간별로 크게 달라지는 모습이 눈에 띔. 이를 D로 연결. D. 요약통계와 구간 비교 (25분) 설명 (5분): 수준이 아니라 성장률(변환값)에 대한 요약통계를 구하는 이유. 수준의 평균은 어느 기간을 고르느냐에 따라 달라짐. 실습 (20분) summarise(mean = mean(g, na.rm = TRUE), sd = sd(g, na.rm = TRUE), min, max) 기간 구분 변수 만들기: mutate(period = case_when(date &lt; as.Date(“2008-09-01”) ~ “위기 전”, …)) 기간별 비교: group_by(period) 후 summarise (또는 .by = period) 주가 수익률로 같은 작업 반복, 위기 구간의 표준편차 비교 체크포인트: 수출액 성장률과 주가 수익률 모두에서 구간별 표준편차가 달라지는가, 어느 자료에서 더 극적인가 주의: 구간 경계를 임의로 잡았다는 점을 학생에게 명시. “위기 때 변동성이 컸다”를 증명하는 것이 아니라 이 자료에서 관찰된 차이라고 표현하도록 안내. NA 처리: C에서 만든 첫 행 NA 때문에 na.rm = TRUE가 필요함을 여기서 다시 확인. E. 계절성 확인 (10분) 실습 mutate(month = month(date, label = TRUE)), 월별 평균 전기대비 증가율을 geom_col로 그리기 선택: year를 색으로 한 연도별 seasonal plot (geom_line(aes(month, exports, group = year, color = factor(year)))) 포인트: 특정 달(예: 설 연휴가 있는 달)의 패턴을 학생이 스스로 찾게 하기 시간이 모자랄 때: 교수 시연으로 전환하고 그림만 해석하게 함 F. 자기상관 (45분)</p>
+<p>F-1. lag plot (15분)</p>
+<p>ggplot(aes(x = lag(g), y = g)) + geom_point(), cor(g, lag(g), use = “complete.obs”) C에서 배운 lag를 그대로 재사용하는 단계이고, “어제 값이 오늘 값과 관련 있는가”를 눈으로 확인 수출 성장률의 lag 1, lag 12 산점도를 비교하면 계절 구조와 연결됨</p>
+<p>F-2. ACF 소개 (10분)</p>
+<p>acf(x, na.action = na.pass) 또는 na.omit(x)를 넣어 실행 설명: ACF는 lag별 상관계수를 한 그림에 모은 것. 점선은 “0과 구별되기 어려운 범위”의 기준선. 수출액 성장률의 ACF에서 lag 12 근처가 튀는지 확인 (F-1과 연결)</p>
+<p>F-3. 수준, 수익률, 변동성의 대비 (20분)</p>
+<p>매크로: 수출액 수준의 ACF와 성장률의 ACF 비교 수준: 매우 천천히 감소. 설명은 “과거 값의 영향이 오래 간다” 수준으로 하고, 정상성 용어는 쓰지 않음 성장률: 빠르게 감소하거나 계절 lag에서만 튐 주가: 세 개를 나란히 주가 수준의 ACF: 매우 천천히 감소 수익률의 ACF: 거의 0 절대(또는 제곱) 수익률의 ACF: 오래 지속되는 양의 상관 해석 원칙: “수준, 수익률, 변동성은 서로 다른 성질을 갖는다”까지만. 수익률의 ACF가 0에 가깝다는 것은 선형 자기상관이 거의 없다는 관찰이고, 시장 효율성에 대한 결론으로 확대하지 않음. 선택 (시간이 남을 때): 수익률 히스토그램에 stat_function(fun = dnorm, args = list(mean = m, sd = s))를 겹쳐 두꺼운 꼬리 제시 마무리 (10분) 이번 주 흐름 정리: 그림 → 변환 → 요약 → 자기상관 블록별 핵심 문장 한 줄씩 복습 (예: “수준이 아니라 성장률을 본다”, “같은 변환이 자료에 따라 다른 것을 보여 준다”) 과제 안내 과제</p>
+<p>학생이 고른 매크로 변수 하나에 대해</p>
+<p>수준, 로그, 성장률 그림 기간별 요약통계 ACF (수준과 성장률) 그림에서 읽은 내용을 한 단락으로 해석</p>
+<p>변수는 자유 선택이되, 월 또는 분기 자료로 제한하면 lag(x, 12) 또는 lag(x, 4) 선택을 스스로 고민하게 됩니다.</p>
+<p>사전 준비물 수출액 월별 CSV와 주가 CSV를 프로젝트 zip으로 배포 (수업 중 API 호출 실패 방지) 주가 자료: KOSPI 같은 지수는 배당과 액면분할 조정이 필요 없지만, 개별 종목을 쓰면 수정주가(adjusted close)를 써야 함. 수익률 정의(log(p) - lag(log(p)))를 스크립트 주석에 명시. 스크립트는 매크로와 주가에 같은 코드가 돌아가도록 구성하고, 열 이름(date, value)을 통일해 두면 학생이 복사 후 자료만 바꾸어 쓸 수 있음 필요 패키지: tidyverse(readr, dplyr, ggplot2), lubridate, 선택으로 patchwork 남은 확인 사항 lubridate와 case_when이 이미 다뤄졌는지: 안 다뤘다면 A와 D에 각각 5분 정도를 더 배정해야 하고, 그 시간은 E에서 가져오는 것이 가장 자연스럽습니다. 수출액과 주가 자료의 표본기간을 맞출지: 두 자료의 기간이 다르면 D의 위기 구간 비교가 자료마다 다른 구간을 쓰게 되므로, 2008~2020 전후를 모두 포함하도록 미리 확인하십시오.</p>
 
 
 </section>
