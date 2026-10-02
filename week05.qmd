@@ -212,6 +212,34 @@ df |>
 
 ### 요약통계와 구간 비교
 
+```{r}
+# 구간 구분 함수: 경계는 예시일 뿐이며 임의로 잡은 것이다
+add_period <- function(df) {
+  df |>
+    mutate(period = case_when(
+      date <  as.Date("2008-09-01") ~ "1.위기전",
+      date <  as.Date("2010-01-01") ~ "2.금융위기",
+      date <  as.Date("2020-03-01") ~ "3.안정기",
+      TRUE                          ~ "4.코로나이후"
+    ))
+}
+
+# ---- 수출액: 전년동월대비 증가율 ----
+# 전체 기간
+df |>
+  drop_na(g_yoy) |>
+  summarise(n = n(), mean = mean(g_yoy), sd = sd(g_yoy),
+            min = min(g_yoy), max = max(g_yoy))
+
+# 구간별 (NA는 C에서 만든 첫 12개월 때문에 생긴 것 -> drop_na로 제거)
+df |>
+  drop_na(g_yoy) |>
+  add_period() |>
+  summarise(n = n(), mean = mean(g_yoy), sd = sd(g_yoy),
+            min = min(g_yoy), max = max(g_yoy), .by = period) |>
+  arrange(period)
+```
+
 ### 계절성 
 
 ### 자기상관

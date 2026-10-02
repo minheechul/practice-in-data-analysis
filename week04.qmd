@@ -69,7 +69,7 @@ number-sections: true
   | `gender` | 성별 (`Male`, `Female`) | 
   | `age_group` | 연령 그룹 (`Below 30`, `30s`, `40s`, `Above 50`) |
   | `education` | 학력 (`High school and below`, `College`) |
-  | `jot_type` | 정규직/비정규직 (`Regular`, `Non-regular`) |
+  | `job_type` | 정규직/비정규직 (`Regular`, `Non-regular`) |
 
 - 먼저 3개의 필수 패키지 (`tidyverse`, `skimr`, `janitor`)를 준비하고 데이터를 불러오기
 
@@ -153,7 +153,7 @@ klips27p_small |>
     coord_cartesian(xlim = c(0, 1000))       
 ```
 
-- 상위 10% 경계선 소득은 520만원으로 하위 90% 경계선 소득 100만원의 5.2배이며, 상위 10% 평균 소득은 703만원으로 하위 10%의 평균 소득 60만원의 11.7배로 나타남
+- 상위 10% 경계선 소득은 520만원으로 하위 10% 경계선 소득 100만원의 5.2배이며, 상위 10% 평균 소득은 703만원으로 하위 10%의 평균 소득 60만원의 11.7배로 나타남
 
 ```{r}
 #| label: tbl-pctile-ratio
