@@ -1,6 +1,8 @@
 /.quarto/
 **/*.quarto_ipynb
 
+.vdoc.*
+
 _site/
 
 for_later_use/
