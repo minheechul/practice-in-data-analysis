@@ -2,7 +2,7 @@ library(tidyverse)
 library(skimr)
 library(janitor)
 
-df <- read_csv("data/수출입 총괄_30200702.csv",
+df <- read_csv("data/수출입 총괄_03074745.csv",
                skip = 1,
                col_names = c("date", "export", "import"))
 
@@ -16,8 +16,6 @@ df <- df |>
 # =====================================================================
 ggplot(df, aes(date, export)) +
   geom_line() +
-  geom_vline(xintercept = as.Date(c("2008-09-15", "2020-03-01")),
-             linetype = "dashed", color = "grey40") +
   labs(title = "월별 수출액 (수준)", x = NULL, y = "수출액 (자료의 단위에 맞게 수정)")
 
 # =====================================================================
@@ -68,25 +66,20 @@ df |>
 # 확인: 수준에서 커지던 변동폭이 로그에서는 어떻게 보이는가
 
 
-# ---- C-4. 주가 예제: 같은 변환을 일별 자료에 ----
-kospi <- read_csv("data/kospi.csv",
-                  col_types = cols(date = col_date(), value = col_double())) |>
-  arrange(date) |>
-  mutate(ret = (log(value) - dplyr::lag(log(value))) * 100)   # 일별 로그수익률(%)
+df <- df |> 
+  mutate(ddlog = dlog - lag(dlog))
 
-# 일별 자료의 lag(1)은 "전 영업일": 주말/공휴일이 빠져 있다
-kospi |>
-  mutate(gap_days = as.numeric(date - dplyr::lag(date))) |>
-  count(gap_days)                    # 1일, 3일(주말), 그 외(공휴일 등)
+df |> 
+  filter(month(date) == 1) |> 
+  select(date, ddlog) |> 
+  print(n = 25)
 
-kospi |>
-  select(date, level = value, ret) |>
-  pivot_longer(-date, names_to = "series", values_to = "x") |>
-  mutate(series = factor(series, levels = c("level", "ret"))) |>
-  ggplot(aes(date, x)) +
-  geom_line(linewidth = 0.3) +
-  facet_wrap(~ series, ncol = 1, scales = "free_y") +
-  labs(x = NULL, y = NULL)
+
+|> 
+  summarize(mean(ddlog < 0, na.rm = TRUE)) |> 
+  print(digits = 2)
+         
+
 
 
 # =====================================================================
@@ -97,9 +90,9 @@ kospi |>
 add_period <- function(df) {
   df |>
     mutate(period = case_when(
-      date <  as.Date("2008-09-01") ~ "1.위기전",
+      date <  as.Date("2008-01-01") ~ "1.위기전",
       date <  as.Date("2010-01-01") ~ "2.금융위기",
-      date <  as.Date("2020-03-01") ~ "3.안정기",
+      date <  as.Date("2020-01-01") ~ "3.안정기",
       TRUE                          ~ "4.코로나이후"
     ))
 }
