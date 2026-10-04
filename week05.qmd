@@ -411,3 +411,54 @@ acf(df$dlog, na.action = na.pass, lag.max = 24, main = "수출액의 로그차�
 월별자료에서 sd(ret)의 acf
 
   [📥 일별 KOSPI지수 데이터 다운로드](data/***********.csv){.btn .btn-outline-primary .btn-sm download=""}
+
+- 수준과 수익률의 시계열 그래프
+
+```{r}
+kospi <- read_csv("data/주식시장(일)_04191233.csv",
+                  skip = 1,
+                  col_names = c("date", "value"))
+
+kospi <- kospi |>
+  drop_na(value) |>
+  mutate(date = ymd(date),
+         ret = (log(value) - lag(log(value))) * 100,
+         abs_ret = abs(ret))                  
+
+kospi |>
+  ggplot(aes(x = date, y = value)) +
+    geom_line() +
+    labs(title = "KOSPI 지수", x = NULL, y = NULL)
+
+kospi |>
+  ggplot(aes(x = date, y = ret)) +
+    geom_line() +
+    labs(title = "KOSPI 지수 수익률 (로그차분)", x = NULL, y = "수익률 (로그차분, %)")
+```
+
+
+- 일별 수익률과 수익률 절대치의 자기상관함수
+
+```{r}
+acf(kospi$ret,     na.action = na.pass, lag.max = 20, main = "수익률")
+acf(kospi$abs_ret, na.action = na.pass, lag.max = 20, main = "절대수익률")
+
+```                  
+
+- 월별 수익률 표준편차의 자기상관함수
+
+```{r}
+kospi_monthly <- kospi |>
+  mutate(date2 = floor_date(date, unit = "month")) |>
+  group_by(date2) |>
+  summarize(ret_sd = sd(ret, na.rm = TRUE)) |>
+  arrange(date2) 
+
+kospi_monthly |>
+  ggplot(aes(x = date2, y = ret_sd)) +
+    geom_line() +
+    labs(title = "KOSPI 지수 수익률 월별 표준편차", x = NULL, y = NULL)
+
+acf(kospi_monthly$ret_sd, na.action = na.pass, lag.max = 24, main = "수익률의 월별 표준편차")
+
+```
