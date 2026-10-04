@@ -769,11 +769,6 @@ window.Quarto = {
 <li><p>자기상관함수는 시계열의 지속성과 밀접한 관계를 가짐</p></li>
 <li><p>점선은 0과 구분되기 어려운 범위를 나타냄</p></li>
 <li><p>추세가 뚜렷한 시계열(수준)의 자기상관은 시차가 늘어나도 천천히 감소 (시차 1: 0.97, 시차 24: 0.69)</p></li>
-<li><p>증가율로 변환하면 추세에서 오는 지속성은 사라짐</p>
-<ul>
-<li>시차 1은 음의 값(-0.32)이고, 이후 0 주위에서 오르내림</li>
-<li>시차 12, 24에서 다시 양의 값(0.38, 0.30)이 나타남: 계절성의 흔적</li>
-</ul></li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -785,11 +780,20 @@ window.Quarto = {
 </figure>
 </div>
 </div>
+</div>
+<ul>
+<li>증가율로 변환하면 추세에서 오는 지속성은 사라짐
+<ul>
+<li>시차 1은 음의 값(-0.32)이고, 이후 0 주위에서 오르내림</li>
+<li>시차 12, 24에서 다시 양의 값(0.38, 0.30)이 나타남: 계절성의 흔적</li>
+</ul></li>
+</ul>
+<div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(df<span class="sc">$</span>dlog, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">24</span>, <span class="at">main =</span> <span class="st">"수출액의 로그차분"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-13-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="week05_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -799,16 +803,142 @@ window.Quarto = {
 <section id="실습" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="실습"><span class="header-section-number">3</span> 실습</h2>
 <p><strong>실습 1</strong></p>
+<ol type="1">
+<li>2025년 1월 수출액은 492억 달러로 전월 대비 -19.9% 감소하였는데 이러한 감소가 예외적인 급락인지 설명해 보시오. 답변할 때 아래 질문을 참고하시오.</li>
+</ol>
 <ul>
-<li><p>아래 일별 KOSPI 지수 데이터를 이용하여 수준과 로그변화율(로그차분)을 그래프로 나타내고 주요한 특징을 설명하시오</p>
-<ul>
-<li>참고: 데이터에는 주말과 공휴일을 제외한 영업일만을 포함하고 있으므로 <code>lag()</code>는 전영업일을 의미함</li>
+<li>표본기간 중 12월 대비 1월의 수출액 증가율 평균은 얼마인가?</li>
+<li>표본기간 중 12월 대비 1월의 수출액 증가율이 감소한 연도는 모두 몇 개이고 증가한 연도는 모두 몇 개인가?</li>
+<li>2025년 1월 수출액은 2024년 1월보다 몇 % 증가(감소)했는가? 2월은?</li>
+<li>설이 2024년에는 2월 10일, 2025년에는 1월 29일이었다는 사실이 수출액 증가율에 어떤 영향을 주었을 것으로 보이는가?</li>
 </ul>
-<p><a href="data/수출입 총괄_01193017.csv" class="btn btn-outline-primary btn-sm" download="">📥 일별 KOSPI지수 데이터 다운로드</a></p></li>
+<ol start="2" type="1">
+<li><p>2021년 4월의 전년동월대비 수출 증가율은 41.2%로 매우 높은 반면 전월대비 수출 증가율은 -4.6%에 그쳤다. 어떤 이유로 이러한 결과가 나타났는지 설명하시오.</p></li>
+<li><p>전체 기간에 걸쳐 수출액의 평균은 385억 달러, 표준편차는 146억 달러인데, 이는 어떤 시기의 수출액을 대표하는지 설명하시오.</p></li>
+<li><ol start="4" type="1">
+<li>자료에 포함되지는 않았으나 2026년 5월의 전월대비 수출액 증가율은 2.1%, 6월은 16.4%였다. 2026년 7월의 전월대비 증가율은 6월보다 높아졌을지 낮아졌을지 예측하고, 근거를 제시하시오. 답변할 때 다음 질문을 참고하시오.</li>
+</ol></li>
+</ol>
+<ul>
+<li>6월의 16.4%는 과거 6월들과 비교하면 어느 정도인가?</li>
+<li>과거에 증가율이 높았던 달의 다음 달은 어떠했는가?</li>
+<li>7월은 보통 증가하는 달인가, 감소하는 달인가?</li>
 </ul>
 <p><strong>실습 2</strong></p>
-<p>-아래 국고채 3년 만기 금리 (월평균) 데이터를 이용하여 시계열 그래프를 그리고 그 패턴을 간단히 설명하시오.</p>
-<p><a href="data/시장금리(월,분기,년)_03075635.csv" class="btn btn-outline-primary btn-sm" download="">📥 국고채 3년 만기 금리 (월평균) 데이터 다운로드</a></p>
+<ul>
+<li><p>아래 국고채 3년 만기 금리 (월평균) 데이터를 이용하여 아래 질문에 답변하시오.</p>
+<p><a href="data/시장금리(월,분기,년)_03075635.csv" class="btn btn-outline-primary btn-sm" download="">📥 국고채 3년 만기 금리 (월평균) 데이터 다운로드</a></p></li>
+</ul>
+<ol type="1">
+<li><p>시계열 그래프를 그린 후 위에서 제시한 수출액의 시계열 그래프와 비교하여 유사한 점과 다른 점을 설명하시오.</p></li>
+<li><p>이 시계열은 증가율을 구하는 대신 금리 자체를 분석한다면 그 이유가 무엇일지 생각해 보시오.</p></li>
+<li><p>계절 그림을 그리고 계절성이 존재하는지 확인하시오.</p></li>
+<li><p>시차 자기상관함수를 구하고 그 패턴을 설명하시오.</p></li>
+</ol>
+<p><strong>실습 3</strong></p>
+<ul>
+<li><p>한국은행경제통계시스템에서 일별 KOSPI 지수 데이터를 이용하여 아래 질문에 답변하시오.</p>
+<ul>
+<li>데이터는 1. 통화/금융 &gt; 1.5. 주식/채권/재정 &gt; 1.5.1. 주식거래/주가지수 &gt; 1.5.1.1. 주식시장(일)에서 다운로드할 수 있음</li>
+<li>데이터에는 주말과 공휴일을 제외한 영업일만을 포함하고 있으므로 <code>lag()</code>는 전영업일을 의미함을 참고할 것</li>
+</ul></li>
+</ul>
+<ol type="1">
+<li><p>KOSPI 지수의 시계열 그래프를 구하고 주요한 특징을 설명하시오.</p></li>
+<li><p>KOSPI 지수의 로그차분을 구하시오. (아래에서 수익률이란 바로 이 로그차분을 의미함.) KOSPI 지수 수익률의 시계열 그래프를 그리고 주요한 특징을 설명하시오.</p></li>
+<li></li>
+</ol>
+<p>일별자료 ret의 acf, abs(ret)의 acf</p>
+<p>월별자료에서 sd(ret)의 acf</p>
+<p><a href="data/***********.csv" class="btn btn-outline-primary btn-sm" download="">📥 일별 KOSPI지수 데이터 다운로드</a></p>
+<ul>
+<li>수준과 수익률의 시계열 그래프</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>kospi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/주식시장(일)_04191233.csv"</span>,</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">skip =</span> <span class="dv">1</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"date"</span>, <span class="st">"value"</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>kospi <span class="ot">&lt;-</span> kospi <span class="sc">|&gt;</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(value) <span class="sc">|&gt;</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ymd</span>(date),</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">ret =</span> (<span class="fu">log</span>(value) <span class="sc">-</span> <span class="fu">lag</span>(<span class="fu">log</span>(value))) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">abs_ret =</span> <span class="fu">abs</span>(ret))                  </span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>kospi <span class="sc">|&gt;</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"KOSPI 지수"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>kospi <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> ret)) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"KOSPI 지수 수익률 (로그차분)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"수익률 (로그차분, %)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>일별 수익률과 수익률 절대치의 자기상관함수</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(kospi<span class="sc">$</span>ret,     <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">20</span>, <span class="at">main =</span> <span class="st">"수익률"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(kospi<span class="sc">$</span>abs_ret, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">20</span>, <span class="at">main =</span> <span class="st">"절대수익률"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>월별 수익률 표준편차의 자기상관함수</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kospi_monthly <span class="ot">&lt;-</span> kospi <span class="sc">|&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date2 =</span> <span class="fu">floor_date</span>(date, <span class="at">unit =</span> <span class="st">"month"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date2) <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ret_sd =</span> <span class="fu">sd</span>(ret, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date2) </span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>kospi_monthly <span class="sc">|&gt;</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date2, <span class="at">y =</span> ret_sd)) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"KOSPI 지수 수익률 월별 표준편차"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(kospi_monthly<span class="sc">$</span>ret_sd, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">24</span>, <span class="at">main =</span> <span class="st">"수익률의 월별 표준편차"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week05_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
