@@ -2,16 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.8.27">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>5주차. 도구 적용하기 (2): 시계열 데이터 – Practice in Data Analysis</title>
 <style>
-/* Default styles provided by pandoc.
-** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -70,14 +67,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="./">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-f670ab49fb9634e9dab58972b11477cb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-43081d808c96cc46af55a3a816ae9eed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -107,7 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 }</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -244,7 +242,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#base-r에-대한-간단한-소개" id="toc-base-r에-대한-간단한-소개" class="nav-link active" data-scroll-target="#base-r에-대한-간단한-소개"><span class="header-section-number">1</span> Base R에 대한 간단한 소개</a>
+  <li><a href="#base-r-벡터와-데이터-프레임" id="toc-base-r-벡터와-데이터-프레임" class="nav-link active" data-scroll-target="#base-r-벡터와-데이터-프레임"><span class="header-section-number">1</span> Base R: 벡터와 데이터 프레임</a>
   <ul class="collapse">
   <li><a href="#왜-base-r" id="toc-왜-base-r" class="nav-link" data-scroll-target="#왜-base-r"><span class="header-section-number">1.1</span> 왜 base R?</a></li>
   <li><a href="#벡터" id="toc-벡터" class="nav-link" data-scroll-target="#벡터"><span class="header-section-number">1.2</span> 벡터</a></li>
@@ -256,7 +254,7 @@ window.Quarto = {
   <li><a href="#자료-불러오기와-날짜-다루기" id="toc-자료-불러오기와-날짜-다루기" class="nav-link" data-scroll-target="#자료-불러오기와-날짜-다루기"><span class="header-section-number">2.1</span> 자료 불러오기와 날짜 다루기</a></li>
   <li><a href="#시계열-그래프" id="toc-시계열-그래프" class="nav-link" data-scroll-target="#시계열-그래프"><span class="header-section-number">2.2</span> 시계열 그래프</a></li>
   <li><a href="#시계열의-요소" id="toc-시계열의-요소" class="nav-link" data-scroll-target="#시계열의-요소"><span class="header-section-number">2.3</span> 시계열의 요소</a></li>
-  <li><a href="#변환-증가율-로그-차분" id="toc-변환-증가율-로그-차분" class="nav-link" data-scroll-target="#변환-증가율-로그-차분"><span class="header-section-number">2.4</span> 변환: 증가율, 로그, 차분</a></li>
+  <li><a href="#변환-증가율-로그-로그차분" id="toc-변환-증가율-로그-로그차분" class="nav-link" data-scroll-target="#변환-증가율-로그-로그차분"><span class="header-section-number">2.4</span> 변환: 증가율, 로그, 로그차분</a></li>
   <li><a href="#요약통계와-구간-비교" id="toc-요약통계와-구간-비교" class="nav-link" data-scroll-target="#요약통계와-구간-비교"><span class="header-section-number">2.5</span> 요약통계와 구간 비교</a></li>
   <li><a href="#계절성" id="toc-계절성" class="nav-link" data-scroll-target="#계절성"><span class="header-section-number">2.6</span> 계절성</a></li>
   <li><a href="#자기상관" id="toc-자기상관" class="nav-link" data-scroll-target="#자기상관"><span class="header-section-number">2.7</span> 자기상관</a></li>
@@ -287,8 +285,8 @@ window.Quarto = {
 </header>
 
 
-<section id="base-r에-대한-간단한-소개" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="base-r에-대한-간단한-소개"><span class="header-section-number">1</span> Base R에 대한 간단한 소개</h2>
+<section id="base-r-벡터와-데이터-프레임" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="base-r-벡터와-데이터-프레임"><span class="header-section-number">1</span> Base R: 벡터와 데이터 프레임</h2>
 <section id="왜-base-r" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="왜-base-r"><span class="header-section-number">1.1</span> 왜 base R?</h3>
 <ul>
@@ -427,10 +425,10 @@ window.Quarto = {
 <li><p>여기서는 <a href="https://ecos.bok.or.kr/" target="_blank">한국은행경제통계시스템</a>에서 월별 수출액 통계를 다운받아서 분석함</p>
 <ul>
 <li>통계검색 &gt; 3. 환율/통관수출입/외환보유액 &gt; 3.2. 통관기준 수출입 &gt; 3.2.1. 수출입 총괄 &gt; 수출금액</li>
-<li>(2026년 10월 초 현재) 2000년 1월부터 2026년 7월까지 수출금액이 수록</li>
+<li>2000년 1월부터 2025년 12월까지 수출금액을 사용</li>
 <li>빈도: 월, 단위: 천불</li>
 </ul>
-<p><a href="data/수출입 총괄_01193017.csv" class="btn btn-outline-primary btn-sm" download="">📥 월별 수출액 데이터 다운로드</a></p></li>
+<p><a href="data/수출입 총괄_03074745.csv" class="btn btn-outline-primary btn-sm" download="">📥 월별 수출액 데이터 다운로드</a></p></li>
 <li><p>시계열 자료는 횡단면 자료와 달리 관측 순서가 의미를 가짐</p></li>
 <li><p>날짜는 보통 문자 (character)로 저장되고 표시 형식이 다양하므로 이를 시간 순서로 배치하고 간격을 쉽게 계산하기 위하여 Date 클래스로 변환하는 것이 유리함</p>
 <ul>
@@ -541,7 +539,7 @@ window.Quarto = {
 <ul>
 <li><p>시계열의 종류에 따라 상이한 패턴이 나타남</p>
 <ul>
-<li><p>지속적으로 상승하는 추세가 뚜렷한 수출액과 달리 아래 국고채 3년 만기 금리는 과거보다 낮아지는 경향 위에 국면별로 오르내려 단일한 추세로 요약되지 않음</p></li>
+<li><p>장기적으로 상승하는 추세가 뚜렷한 수출액과 달리 아래 국고채 3년 만기 금리는 과거보다 낮아지는 경향 위에 국면별로 오르내려 단일한 추세로 요약되지 않음</p></li>
 <li><p>수출액은 계절성과 조업일수 등의 차이로 월간 변동이 크지만 금리는 상대적으로 월간 변동이 작고 서서히 움직임</p></li>
 </ul></li>
 </ul>
@@ -560,14 +558,14 @@ window.Quarto = {
 <ul>
 <li><p>추세: 수년에 걸쳐 완만하게 오르거나 내리는 장기적인 방향</p></li>
 <li><p>순환: 수 년 단위로 오르내리지만 주기의 길이와 폭이 일정하지 않은 변동 (예: 경기순환)</p></li>
-<li><p>계절성: 매년 같은 시기에 같은 방향으로 반복되는, 주기가 고정된 패턴</p></li>
+<li><p>계절성: 매년 같은 시기에 비슷한 방향과 크기로 반복되는 규칙적인 변동</p></li>
 <li><p>불규칙 변동: 위 세 가지로 설명되지 않는, 예측하기 어려운 나머지 단기 변동</p></li>
 </ul>
 <p>분해의 예</p>
 <p><img src="images/decomposition_real_exports.png" class="img-fluid" style="width:70.0%"></p>
 </section>
-<section id="변환-증가율-로그-차분" class="level3" data-number="2.4">
-<h3 data-number="2.4" class="anchored" data-anchor-id="변환-증가율-로그-차분"><span class="header-section-number">2.4</span> 변환: 증가율, 로그, 차분</h3>
+<section id="변환-증가율-로그-로그차분" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="변환-증가율-로그-로그차분"><span class="header-section-number">2.4</span> 변환: 증가율, 로그, 로그차분</h3>
 <ul>
 <li><p>핵심적 아이디어</p>
 <ul>
@@ -611,10 +609,10 @@ window.Quarto = {
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> df <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">g_mom =</span> (export <span class="sc">/</span> <span class="fu">lag</span>(export)     <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gr_exp =</span> (export <span class="sc">/</span> <span class="fu">lag</span>(export)     <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>) </span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, g_mom)) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, gr_exp)) <span class="sc">+</span></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 증가율"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"증가율(%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -628,8 +626,8 @@ window.Quarto = {
 <ul>
 <li><p>로그와 로그차분</p>
 <ul>
-<li>증가율이 작을 때 로그차분은 증가율과 거의 비슷함</li>
-<li>로그차분은 계산과 모형 분석을 편리하게 하는 장점이 있어 자주 사용됨</li>
+<li><p>증가율이 작을 때 로그차분은 증가율과 거의 비슷함</p></li>
+<li><p>로그차분은 계산과 모형 분석을 편리하게 하는 장점이 있어 자주 사용됨</p></li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -640,7 +638,7 @@ window.Quarto = {
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(date, dlog)) <span class="sc">+</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 로그변화율 (전월 대비)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"로그변화율(%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"월별 수출액 로그차분"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"로그변화율(%)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -653,13 +651,14 @@ window.Quarto = {
 <section id="요약통계와-구간-비교" class="level3" data-number="2.5">
 <h3 data-number="2.5" class="anchored" data-anchor-id="요약통계와-구간-비교"><span class="header-section-number">2.5</span> 요약통계와 구간 비교</h3>
 <ul>
-<li><p>전체 기간을 편의상 위기전(2000~2007), 금융위기(2008~2009), 위기후(2010~2019), 코로나이후(2020~2025)의 네 구간으로 나누어 보았음</p></li>
-<li><p>월별 수출액의 월간 증가율 (로그차분, %)</p>
+<li><p>편의상 전체 기간을 위기전(2000~2007), 금융위기(2008~2009), 위기후(2010~2019), 코로나이후(2020~2025)의 네 구간으로 나누어 보았음</p></li>
+<li><p>수출액 증가율의 구간별 평균</p>
 <ul>
-<li>전체 기간을 하나의 평균과 표준편차로 요약하면 구간별 차이가 가려짐</li>
-<li>평균 증가율은 2000~2007년에 가장 높았음</li>
-<li>변동성은 금융위기 구간에서 크게 나타남</li>
+<li><p>전체 기간을 하나의 평균과 표준편차로 요약하면 구간별 차이가 가려짐</p></li>
+<li><p>평균 증가율은 2000~2007년에 가장 높았음</p></li>
+<li><p>변동성은 금융위기 구간에서 크게 나타남</p></li>
 </ul></li>
+<li><p>주의: 단순증가율의 구간 평균은 실제 연평균 증가율을 과장할 우려가 있음</p></li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
@@ -670,16 +669,16 @@ window.Quarto = {
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">.default =</span> <span class="st">"4.코로나이후"</span></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    )) <span class="sc">|&gt;</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(period) <span class="sc">|&gt;</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(dlog, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">sd =</span> <span class="fu">sd</span>(dlog, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">mean =</span> <span class="fu">mean</span>(gr_exp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">sd =</span> <span class="fu">sd</span>(gr_exp, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(period)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 4
   period           n  mean    sd
   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
-1 1.위기전        96 1.05   6.93
-2 2.금융위기      24 0.360 11.4 
-3 3.위기후       120 0.198  7.99
-4 4.코로나이후    72 0.583  8.35</code></pre>
+1 1.위기전        96 1.30   7.05
+2 2.금융위기      24 0.971 11.1 
+3 3.위기후       120 0.517  8.08
+4 4.코로나이후    72 0.929  8.34</code></pre>
 </div>
 </div>
 </section>
@@ -726,22 +725,22 @@ window.Quarto = {
 <li><p>시차 그림 (lag plot):</p>
 <ul>
 <li><p>시계열의 현재 값과 과거 값을 산점도로 표현</p></li>
-<li><p>전월 수출액 증가율이 평균보다 높았으면 이번 기에는 수출액 증가율이 평균보다 낮아지는 경향</p>
+<li><p>직전 달의 수출액 증가율이 평균보다 높았으면 이번 달의 수출액 증가율이 평균보다 낮아지는 경향</p>
 <ul>
-<li>수출액 로그차분이 평균(약 0.56%)을 넘은 달 다음에는 로그차분의 평균이 -1.7%</li>
-<li>수출액 로그차분이 평균 미만이었던 달 다음에는 로그차분의 평균이 +2.7%</li>
+<li>수출액 증가율이 평균(약 0.89%)을 넘은 달 다음에는 증가율의 평균이 -1.4%</li>
+<li>수출액 증가율이 평균 미만이었던 달 다음에는 증가율의 평균이 +2.8%</li>
 </ul></li>
 </ul></li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">lag</span>(dlog), <span class="at">y =</span> dlog)) <span class="sc">+</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">lag</span>(gr_exp), <span class="at">y =</span> gr_exp)) <span class="sc">+</span> </span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"수출액 로그 증가율 (t-1)"</span>, <span class="at">y =</span> <span class="st">"수출액 로그 증가율 (t)"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"수출액 증가율 (t-1)"</span>, <span class="at">y =</span> <span class="st">"수출액 증가율 (t)"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="week05_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -751,13 +750,13 @@ window.Quarto = {
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df <span class="sc">|&gt;</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">lag</span>(dlog, <span class="dv">12</span>), <span class="at">y =</span> dlog)) <span class="sc">+</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">lag</span>(gr_exp, <span class="dv">12</span>), <span class="at">y =</span> gr_exp)) <span class="sc">+</span> </span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"수출액 로그 증가율 (t-12)"</span>, <span class="at">y =</span> <span class="st">"수출액 로그 증가율 (t)"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"수출액 증가율 (t-12)"</span>, <span class="at">y =</span> <span class="st">"수출액 증가율 (t)"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="week05_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -776,24 +775,24 @@ window.Quarto = {
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="week05_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <ul>
-<li>증가율로 변환하면 추세에서 오는 지속성은 사라짐
+<li><p>증가율(로그차분)으로 변환하면 추세에서 오는 지속성은 사라짐</p>
 <ul>
-<li>시차 1은 음의 값(-0.32)이고, 이후 0 주위에서 오르내림</li>
-<li>시차 12, 24에서 다시 양의 값(0.38, 0.30)이 나타남: 계절성의 흔적</li>
+<li><p>시차 1은 음의 값(-0.32)이고, 이후 0 주위에서 오르내림</p></li>
+<li><p>시차 12, 24에서 다시 양의 값(0.38, 0.30)이 나타남: 계절성의 흔적</p></li>
 </ul></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(df<span class="sc">$</span>dlog, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">24</span>, <span class="at">main =</span> <span class="st">"수출액의 로그차분"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(df<span class="sc">$</span>gr_exp, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">24</span>, <span class="at">main =</span> <span class="st">"수출액의 증가율"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="week05_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -802,9 +801,24 @@ window.Quarto = {
 </section>
 <section id="실습" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="실습"><span class="header-section-number">3</span> 실습</h2>
-<p><strong>실습 1</strong></p>
-<ol type="1">
-<li>2025년 1월 수출액은 492억 달러로 전월 대비 -19.9% 감소하였는데 이러한 감소가 예외적인 급락인지 설명해 보시오. 답변할 때 아래 질문을 참고하시오.</li>
+<div class="callout callout-style-default callout-important callout-titled" title="주의사항">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>주의사항
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>아래 문제 1~3에 대한 답안을 작성하고 week05_ps4_학번.R과 week05_ps4_학번.docx를 E-class의 <strong>과제 4</strong>로 제출하세요.</li>
+</ul>
+</div>
+</div>
+<p><strong>1.</strong> 위의 월별 수출액 시계열 자료를 이용하여 아래 문제에 답변하시오.</p>
+<ol type="a">
+<li>2025년 1월 수출액은 492억 달러로 전월대비 -19.9% 감소하였는데 이러한 감소가 예외적인 급락인지 설명해 보시오. 답변할 때 아래 질문을 참고하시오.</li>
 </ol>
 <ul>
 <li>표본기간 중 12월 대비 1월의 수출액 증가율 평균은 얼마인가?</li>
@@ -812,133 +826,42 @@ window.Quarto = {
 <li>2025년 1월 수출액은 2024년 1월보다 몇 % 증가(감소)했는가? 2월은?</li>
 <li>설이 2024년에는 2월 10일, 2025년에는 1월 29일이었다는 사실이 수출액 증가율에 어떤 영향을 주었을 것으로 보이는가?</li>
 </ul>
-<ol start="2" type="1">
+<ol start="2" type="a">
 <li><p>2021년 4월의 전년동월대비 수출 증가율은 41.2%로 매우 높은 반면 전월대비 수출 증가율은 -4.6%에 그쳤다. 어떤 이유로 이러한 결과가 나타났는지 설명하시오.</p></li>
 <li><p>전체 기간에 걸쳐 수출액의 평균은 385억 달러, 표준편차는 146억 달러인데, 이는 어떤 시기의 수출액을 대표하는지 설명하시오.</p></li>
-<li><ol start="4" type="1">
-<li>자료에 포함되지는 않았으나 2026년 5월의 전월대비 수출액 증가율은 2.1%, 6월은 16.4%였다. 2026년 7월의 전월대비 증가율은 6월보다 높아졌을지 낮아졌을지 예측하고, 근거를 제시하시오. 답변할 때 다음 질문을 참고하시오.</li>
-</ol></li>
-</ol>
+<li><p>자료에 포함되지는 않았으나 2026년 5월의 전월대비 수출액 증가율은 2.1%, 6월은 16.4%였다. 2026년 7월의 전월대비 증가율은 6월보다 높아졌을지 낮아졌을지 예측하고, 근거를 제시하시오. 답변할 때 다음 질문을 참고하시오.</p>
 <ul>
 <li>6월의 16.4%는 과거 6월들과 비교하면 어느 정도인가?</li>
 <li>과거에 증가율이 높았던 달의 다음 달은 어떠했는가?</li>
 <li>7월은 보통 증가하는 달인가, 감소하는 달인가?</li>
-</ul>
-<p><strong>실습 2</strong></p>
-<ul>
-<li><p>아래 국고채 3년 만기 금리 (월평균) 데이터를 이용하여 아래 질문에 답변하시오.</p>
-<p><a href="data/시장금리(월,분기,년)_03075635.csv" class="btn btn-outline-primary btn-sm" download="">📥 국고채 3년 만기 금리 (월평균) 데이터 다운로드</a></p></li>
-</ul>
-<ol type="1">
-<li><p>시계열 그래프를 그린 후 위에서 제시한 수출액의 시계열 그래프와 비교하여 유사한 점과 다른 점을 설명하시오.</p></li>
-<li><p>이 시계열은 증가율을 구하는 대신 금리 자체를 분석한다면 그 이유가 무엇일지 생각해 보시오.</p></li>
-<li><p>계절 그림을 그리고 계절성이 존재하는지 확인하시오.</p></li>
-<li><p>시차 자기상관함수를 구하고 그 패턴을 설명하시오.</p></li>
+</ul></li>
 </ol>
-<p><strong>실습 3</strong></p>
+<p><strong>2.</strong> 아래 국고채 3년 만기 금리 (월평균) 데이터를 이용하여 아래 질문에 답변하시오.</p>
+<p><a href="data/시장금리(월,분기,년)_03075635.csv" class="btn btn-outline-primary btn-sm" download="">📥 국고채 3년 만기 금리 (월평균) 데이터 다운로드</a></p>
+<ol type="a">
+<li><p>시계열 그래프를 그린 후 위에서 제시한 수출액의 시계열 그래프와 비교하여 유사한 점과 다른 점을 설명하시오.</p></li>
+<li><p>이 시계열은 증가율을 구하는 대신 수준 자체를 분석한다면 그 이유가 무엇일지 설명해 보시오.</p></li>
+<li><p>계절 그림을 그리고 계절성이 존재하는지 확인하시오.</p></li>
+<li><p>자기상관함수를 구하고 그 패턴을 설명하시오.</p></li>
+</ol>
+<p><strong>3.</strong> 한국은행경제통계시스템에서 일별 KOSPI 지수 데이터를 이용하여 아래 질문에 답변하시오.</p>
 <ul>
-<li><p>한국은행경제통계시스템에서 일별 KOSPI 지수 데이터를 이용하여 아래 질문에 답변하시오.</p>
+<li><p>데이터는 1. 통화/금융 &gt; 1.5. 주식/채권/재정 &gt; 1.5.1. 주식거래/주가지수 &gt; 1.5.1.1. 주식시장(일)에서 다운로드할 수 있음</p></li>
+<li><p>데이터에는 주말과 공휴일을 제외한 영업일만을 포함하고 있으므로 <code>lag()</code>는 전영업일을 의미함을 참고할 것</p>
 <ul>
-<li>데이터는 1. 통화/금융 &gt; 1.5. 주식/채권/재정 &gt; 1.5.1. 주식거래/주가지수 &gt; 1.5.1.1. 주식시장(일)에서 다운로드할 수 있음</li>
-<li>데이터에는 주말과 공휴일을 제외한 영업일만을 포함하고 있으므로 <code>lag()</code>는 전영업일을 의미함을 참고할 것</li>
+<li>단 초반 데이터에 KOPSI 지수가 결측인 토요일이 포함된 경우가 있으므로 데이터를 읽은 후 KOSPI 지수 값이 결측인 관찰값을 제외하고 분석을 시작하시오</li>
 </ul></li>
 </ul>
-<ol type="1">
+<ol type="a">
 <li><p>KOSPI 지수의 시계열 그래프를 구하고 주요한 특징을 설명하시오.</p></li>
-<li><p>KOSPI 지수의 로그차분을 구하시오. (아래에서 수익률이란 바로 이 로그차분을 의미함.) KOSPI 지수 수익률의 시계열 그래프를 그리고 주요한 특징을 설명하시오.</p></li>
-<li></li>
+<li><p>KOSPI 지수의 단순수익률과 로그차분을 구하고 두 지표가 얼마나 차이가 나는지에 관하여 설명하시오.</p></li>
 </ol>
-<p>일별자료 ret의 acf, abs(ret)의 acf</p>
-<p>월별자료에서 sd(ret)의 acf</p>
-<p><a href="data/***********.csv" class="btn btn-outline-primary btn-sm" download="">📥 일별 KOSPI지수 데이터 다운로드</a></p>
-<ul>
-<li>수준과 수익률의 시계열 그래프</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>kospi <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/주식시장(일)_04191233.csv"</span>,</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">skip =</span> <span class="dv">1</span>,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">col_names =</span> <span class="fu">c</span>(<span class="st">"date"</span>, <span class="st">"value"</span>))</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>kospi <span class="ot">&lt;-</span> kospi <span class="sc">|&gt;</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(value) <span class="sc">|&gt;</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date =</span> <span class="fu">ymd</span>(date),</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>         <span class="at">ret =</span> (<span class="fu">log</span>(value) <span class="sc">-</span> <span class="fu">lag</span>(<span class="fu">log</span>(value))) <span class="sc">*</span> <span class="dv">100</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>         <span class="at">abs_ret =</span> <span class="fu">abs</span>(ret))                  </span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>kospi <span class="sc">|&gt;</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> value)) <span class="sc">+</span></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"KOSPI 지수"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>kospi <span class="sc">|&gt;</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> ret)) <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"KOSPI 지수 수익률 (로그차분)"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"수익률 (로그차분, %)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-15-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<ul>
-<li>일별 수익률과 수익률 절대치의 자기상관함수</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(kospi<span class="sc">$</span>ret,     <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">20</span>, <span class="at">main =</span> <span class="st">"수익률"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(kospi<span class="sc">$</span>abs_ret, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">20</span>, <span class="at">main =</span> <span class="st">"절대수익률"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-16-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<ul>
-<li>월별 수익률 표준편차의 자기상관함수</li>
-</ul>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kospi_monthly <span class="ot">&lt;-</span> kospi <span class="sc">|&gt;</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">date2 =</span> <span class="fu">floor_date</span>(date, <span class="at">unit =</span> <span class="st">"month"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date2) <span class="sc">|&gt;</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">ret_sd =</span> <span class="fu">sd</span>(ret, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date2) </span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>kospi_monthly <span class="sc">|&gt;</span></span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> date2, <span class="at">y =</span> ret_sd)) <span class="sc">+</span></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"KOSPI 지수 수익률 월별 표준편차"</span>, <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">acf</span>(kospi_monthly<span class="sc">$</span>ret_sd, <span class="at">na.action =</span> na.pass, <span class="at">lag.max =</span> <span class="dv">24</span>, <span class="at">main =</span> <span class="st">"수익률의 월별 표준편차"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="week05_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
+<p>아래 문제 c~e에서 KOSPI 지수의 수익률은 로그차분을 이용한 값을 이용하시오.</p>
+<ol start="3" type="a">
+<li><p>KOSPI 지수 수익률의 시계열 그래프를 그리고 주요한 특징을 설명하시오.</p></li>
+<li><p>KOSPI 지수 수익률의 자기상관함수를 구하고 주요한 특징을 설명하시오.</p></li>
+<li><p>KOSPI 지수 수익률의 절대값을 나타내는 새로운 변수를 만들고 자기상관함수를 구하시오. d에서 KOPSI 지수 수익률의 자기상관함수를 구한 결과와 비교하여 주요한 특징을 설명하시오.</p></li>
+</ol>
 
 
 </section>
