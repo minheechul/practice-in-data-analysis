@@ -159,7 +159,7 @@ df <- df |>
 
 ```{r}
 df |>
-ggplot(aes(date, export)) +
+ggplot(aes(x = date, y = export)) +
   geom_line() +
   labs(title = "월별 수출액 (2000년 1월 ~ 2025년 12월)", x = NULL, y = "수출액 (천불)")
 ```
@@ -182,7 +182,7 @@ df2 <- df2 |>
   arrange(date)
 
 df2 |>
-ggplot(aes(date, ktb3y)) +
+ggplot(aes(x = date, y = ktb3y)) +
   geom_line() +
   labs(title = "국고채 3년 금리 (월평균, 2000년 1월 ~ 2025년 12월)", x = NULL, y = "연 %")
 ```
@@ -233,7 +233,7 @@ df <- df |>
   mutate(gr_exp = (export / lag(export)     - 1) * 100) 
 
 df |>
-  ggplot(aes(date, gr_exp)) +
+  ggplot(aes(x = date, y = gr_exp)) +
     geom_line() +
     labs(title = "월별 수출액 증가율", x = NULL, y = "증가율(%)")
 ```
@@ -250,7 +250,7 @@ df <- df |>
          dlog      = (log_export - lag(log_export)) * 100)
 
 df |>
-  ggplot(aes(date, dlog)) +
+  ggplot(aes(x = date, y = dlog)) +
     geom_line() +
     labs(title = "월별 수출액 로그차분", x = NULL, y = "로그변화율(%)")
 ```
@@ -301,9 +301,9 @@ df |>
 #  filter(year >= max(year) - 9) |>   # 최근 10년 (2016~2025)
   group_by(year) |>
   mutate(dev = (log(export) - mean(log(export))) * 100) |>
-  ggplot(aes(month, dev, group = year, color = factor(year))) +
+  ggplot(aes(x = month, y = dev, group = year, color = factor(year))) +
   geom_line() +
-  labs(x = NULL, y = "연평균 대비 (%, 로그 기준)") +
+  labs(x = "월", y = "연평균 대비 (%, 로그 기준)") +
   theme(legend.position = "none")  
 ```
 
