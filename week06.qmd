@@ -270,7 +270,7 @@ $$ \text{Trade}_{ij} = \frac{ \text{A} \times \text{GDP}_i \times \text{GDP}_j}{
 
   또는 
 
-$$ \ln(\text{Trade}_{ij}) = ln(\text{A}) + ln(\text{GDP}_i) + \ln(\text{GDP}_j) - ln(\text{Dist}_{ij}) $$
+$$ \ln(\text{Trade}_{ij}) = \ln(\text{A}) + \ln(\text{GDP}_i) + \ln(\text{GDP}_j) - \ln(\text{Dist}_{ij}) $$
 
 #### 상대국의 GDP와 수출
 
