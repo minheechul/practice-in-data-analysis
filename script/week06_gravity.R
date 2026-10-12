@@ -7,8 +7,8 @@ gravity_small <- read_csv("data/gravity_small.csv")
 df_kor <- gravity_small |> 
   filter(country_id_o == "KOR")
 
-df_kor_2020 <- gravity_small |> 
-  filter(country_id_o == "KOR", year == 2020) 
+df_kor_2020 <- df_kor |> 
+  filter(year == 2020) 
 
 # 0. 미러 불일치
 

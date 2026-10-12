@@ -31,7 +31,7 @@ number-sections: true
 
   - HS 6자리 수준의 데이터로 제공되어 미시적인 산업 분석에 적합
 
-  -  데이터 접근 및 다운로드: [공식 웹사이트](https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=37){target="_blank"}
+  -  데이터 접근 및 다운로드: [공식 웹사이트](https://www.cepii.fr/DATA_DOWNLOAD/baci/doc/baci_webpage.html){target="_blank"}
   
 - Gravity 데이터
 
@@ -41,19 +41,17 @@ number-sections: true
   
   - 양자간 무역액, 거리, 국경 인접 여부,역사적 및 문화적 유대, 제도적 및 정책적 변수, 거시지표 등을 포함
 
+  - 강의 시점에서 가장 최근 데이터는 2022년에 업데이트된 데이터임
+
   - 데이터 접근 및 다운로드: [공식 웹사이트](https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=8){target="_blank"}
   
 ### 실습 데이터
 
 - 이번 주 실습을 위하여 CEPII의 Gravity 데이터와 BACI 데이터의 일부를 강사가 추출하여 별도의 csv 파일로 아래에 제공함
 
-  [📥 gravity_small 데이터 다운로드](data/gravity_small.csv){.btn .btn-outline-primary .btn-sm download=""}
+- 만약 공식 웹사이트에서 직접 다운로드한 데이터를 R에 불러오는 경우에는 파일이 크기 때문에 `data.table::fread()`를 사용하는 것이 편리함
 
-  [📥 baci_small 데이터 다운로드](data/baci_small.csv){.btn .btn-outline-primary .btn-sm download=""}
-
-- 만약 공식 웹사이트에서 데이터를 직접 다운로드하는 경우 파일이 크기 때문에 `data.table::fread()`를 사용하여 csv 파일을 불러오는 것이 편리함
-
-  - `fread()`는 대용량 대용량 텍스트 파일을 빠르고 효율적으로 읽기 위한 함수
+  - `fread()`는 대용량 텍스트 파일을 빠르고 효율적으로 읽기 위한 함수
 
   - 이렇게 읽은 데이터는 기존의 데이터 프레임과 호환성을 유지하므로 지금까지 데이터 프레임을 다루었던 방법을 그대로 사용할 수 있음
 
@@ -62,9 +60,45 @@ number-sections: true
 
 ### 데이터 소개
 
-- Gravity 데이터는 국가
+- `gravity_small.csv`
+
+  - CEPII Gravity 데이터의 개별 관측치는 수출국-수입국-연도의 조합임
+    - 예를 들어, 2017년 한국이 미국으로 수출한 금액이 데이터에 하나의 관측치임
+  - `gravity_small.csv`는 CEPII Gravity 데이터 원자료에서 1980 ~ 2020년 기간과 일부 변수만을 추출한 데이터임
+  - 아래 실습에서는 `gravity_small.csv`로부터 다시 추출한 데이터 프레임을 사용함
+    - `df_kor`:  `gravity_small`에서 수출국이 대한민국인 관측치만 추출한 데이터 프레임
+    - `df_kor_2020`: `df_kor`에서 2020년 관측치만 추출한 데이터 프레임
+
+
+  [📥 gravity_small 데이터 다운로드](https://drive.google.com/uc?export=download&id=1-5aQTGa584mrJvwMwZ1mV-Sju1WyKDgt){.btn .btn-outline-primary .btn-sm target="_blank"}
+
+
+- 변수의 설명
+
+| Variable Name | Content | Level |
+| :--- | :--- | :--- |
+| `year` | Year | - |
+| `country_id_o` | Gravity country ID (Exporter) | unilateral |
+| `country_id_d` | Gravity country ID (Importer) | unilateral |
+| `contig` | Dummy equal to 1 if countries are contiguous | bilateral |
+| `dist` | Geodesic distance between most populated cities (km) | bilateral |
+| `comlang_off` | 1 if countries share common official or primary language | bilateral |
+| `gdp_o` | GDP (current thousands US\$) (Exporter) | unilateral |
+| `gdp_d` | GDP (current thousands US\$) (Importer) | unilateral |
+| `fta_wto` | 1 if pair currently engaged in a regional trade agreement (source: WTO supplemented by Thierry Mayer) | bilateral |
+| `tradeflow_comtrade_o` | Trade flow as reported by the exporter (in thousands current US\$) (source: Comtrade) | bilateral |
+| `tradeflow_comtrade_d` | Trade flow as reported by the importer (in thousands current US\$) (source: Comtrade) | bilateral |
+
+- 환경 및 데이터 준비
+
+  - 모두 몇 개의 상대국이 포함되어 있는지 확인
+  - 주요 변수의 결측치 분포를 살펴볼 것
+  - 특히 무역액 변수 결측치의 의미를 생각해 볼 것
+    - 이 자료의 무역액 변수에서  `NA`는 "무역이 없음"일 수도 있고 "보고되지 않음"일 수도 있으며, 자료만으로는 둘을 구분할 수 없음
+    - 만약 한국이 매년 상대국 전체에 대해 보고한다고 가정하면 한국 출발 자료의 `NA`를 0 무역으로 볼 수 있으며 이에 대해서는 아래에서 추가로 논의할 예정
 
 ```{r}
+
 library(tidyverse)
 library(skimr)
 library(janitor)
@@ -76,22 +110,38 @@ df_kor <- gravity_small |>
 
 df_kor_2020 <- gravity_small |> 
   filter(country_id_o == "KOR", year == 2020) 
+
+#skim(df_kor)
+skim(df_kor_2020)
 ```
 
 
 ### 수출국 보고액과 수입국 보고액 사이의 불일치
 
+- UN Comtrade 데이터는 각국 정부가 보고한 통계에 의존하기 때문에 한국이 보고한 수출과 상대국이 보고한 수입에 차이가 있을 수 있음
+  - CEPII Gravity 데이터도 UN Comtrade 데이터에 기초하므로 동일한 문제가 있음
+  - `gravity_small.csv` 데이터에서는 `tradeflow_comtrade_o`가 수출국이 보고한 금액이고  `tradeflow_comtrade_d`가 수입국이 보고한 금액임
 
+- 이러한 불일치를 거울 데이터 불일치 (Mirror Discrepancy)라고 부름
+  - 불일치가 발생하는 한 가지 이유로는 통상적인 통계에서 수출액은 FOB 가격, 수입액은 CIF 가격을 채택하는 데에서 찾을 수 있음
+  - 그 외에 다른 이유를 생각해 보시오
+<!--
+  - 운송 시차
+  - 중계무역 및 삼각무역
+  - 허위 신고
+  - 환율 적용의 차이
+ -->
 
-# 0. 미러 불일치
-
-# 실습에 쓰실 때의 한 줄
-# 한국 기준으로는 217개 상대국이 있지만, 상대국도 보고한 135개만 
-# 이 그림에 나온다"는 문장을 실습 코드 위에 넣어 두면 충분합니다. 
-# 결측이 임의로 생긴 것이 아니라 상대국의 보고 여부에 따라 생긴다는 
-# 점이 학생에게 자료 읽기의 좋은 소재가 됩니다.
-
-skim(df_kor_2020)
+- 우리나라 보고 수출액과 상대국 보고 수입액의 비교
+  - 만약 거울 데이터 불일치가 FOB/CIF 가격 때문이라면 상대국 수입액이 우리나라 수출액보다 클 것으로 예상됨
+  - 이러한 예측이 데이터에서 확인되는지 설명하시오
+  - `df_kor_2020`에 포함된 상대국 중 아래 그래프에 나타나지 않는 국가는 모두 몇 개나 있고 어떤 국가들인지 간단히 설명하시오
+    - 우리나라의 수출액이 보고되지 않은 상대국은 몇 개인가?
+    - 우리나라로부터의 수입액이 보고되지 않은 국가는 몇 개인가?
+    - 우리나라의 수출액과 상대국의 수입액이 모두 보고되지 않은 경우는 몇 개인가?
+  
+```{r}
+#| echo: false
 
 df_kor_2020 |> 
   ggplot(aes(x = tradeflow_comtrade_o,
@@ -101,49 +151,55 @@ df_kor_2020 |>
   scale_y_log10() +
   geom_point() +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
-  coord_cartesian(xlim = c(1e2, 1e9), ylim = c(1e2, 1e9)) +
+  coord_cartesian(xlim = c(1e+1, 1e9), ylim = c(1e+1, 1e9)) +
   labs(
+    title = "우리나라 보고 수출액과 상대국 보고 수입액의 비교",
     x = "한국 보고 수출액 (천 달러)",
-    y = "상대국 보고 수입국 (천 달러)"
+    y = "상대국 보고 수입액 (천 달러)"
   )
 
 df_kor_2020 |> 
   mutate(gap = log(tradeflow_comtrade_d/tradeflow_comtrade_o)) |> 
   ggplot(aes(x = gap)) +
-  geom_histogram()
+  geom_histogram(breaks = seq(-6, 4, by = 0.5)) +
+  labs(
+    title = "거울 데이터 불일치 (Gap)의 분포",
+    x = "Gap: 로그(상대국수입액/한국수출액)",
+  )
 
 df_kor_2020 |> 
   mutate(gap = log(tradeflow_comtrade_d/tradeflow_comtrade_o)) |> 
   select(gap) |> 
   skim()
 
-## 수입국 보고액이 수출국 보고액보다 낮은 국가
+# df_kor_2020 |> 
+#   mutate(o_na = is.na(tradeflow_comtrade_o),
+#          d_na = is.na(tradeflow_comtrade_d)) |> 
+#   tabyl(o_na, d_na)
 
-## 과제?
+# df_kor_2020 |> 
+#   filter(is.na(tradeflow_comtrade_o) | 
+#          is.na(tradeflow_comtrade_d)) |> 
+#   pull(country_id_d)  
+```
 
-## 차트에 없는 국가는 어떤 특징?
 
-df_kor_2020 |> 
-  mutate(o_na = is.na(tradeflow_comtrade_o),
-         d_na = is.na(tradeflow_comtrade_d)) |> 
-  tabyl(o_na, d_na)
+### 우리나라의 주요 수출 상대국의 변화
 
-df_kor_2020 |> 
-  filter(is.na(tradeflow_comtrade_o) | 
-         is.na(tradeflow_comtrade_d)) |> 
-  pull(country_id_d)
+- 1980년부터 2020년까지 연도별로 우리나라의 3대 수출 상대국을 확인하고 그 변화를 기술하시오.
+  - 우리나라의 최대 수출 상대국이 미국에서 중국으로 바뀌 시점은 언제인가?
+  - 우리나라의 3대 수출 상대국은 1980년, 2000년, 2020년에 각각 어떠한가?
+  - ISO3 코드에 대응하는 국가 이름은 Gravity 데이터셋의 일부인 아래 파일을 참고할 것
 
-# 1. 수출상대국 순위와 비중의 변화
+  [📥 Countries 데이터 다운로드](data/Countries_V202211.csv){.btn .btn-outline-primary .btn-sm target="_blank"}
 
-## 한국의 수출상대국 1위가 매년 어떻게 바뀌었는가?
+<details markdown="1">
+<summary><b> 우리나라의 3대 수출 대상국 (1980~2020년) (클릭하여 펼치기)</b></summary>
 
-df_kor |> 
-  group_by(year) |> 
-  slice_max(tradeflow_comtrade_o) |> 
-  select(year, country_id_d) |> 
-  print(n = Inf)
+```{r}
+#| echo: false
 
-## 한국의 수출상대국 top3의 변화
+library(knitr)
 
 df_kor |> 
   group_by(year) |> 
@@ -151,35 +207,20 @@ df_kor |>
   mutate(rank = row_number()) |> # 1부터 3까지의 순번 부여
   select(year, rank, country_id_d) |> 
   pivot_wider(names_from = rank, values_from = country_id_d) |> 
-  print(n = Inf)
+  kable(align = c("c", "c", "c", "c"))
+```
 
-## 수출액 1위와 수출 비중, HHI
+</details>
 
-df_kor_summary <- df_kor |> 
-  group_by(year) |> 
-  mutate(
-    total_trade = sum(tradeflow_comtrade_o, na.rm = TRUE),
-    share = (tradeflow_comtrade_o / total_trade) * 100,
-    hhi = sum(share^2, na.rm = TRUE)
-  ) |> 
-  slice_max(tradeflow_comtrade_o, n = 1, with_ties = FALSE) |> 
-  select(year, country_id_d, tradeflow_comtrade_o, share, hhi)
+- 주요 수출 상대국의 점유율 변화는 어떠한가?
 
-df_kor_summary |> 
-  ggplot(aes(x = year, y = share)) +
-  geom_point() +
-  geom_line() +
-  labs(title = "Top Partner Trade Share", y = "Share (%)", x = "Year") 
+  - 미국, 중국, 일본, 베트남이 각각 전체 수출에서 차지하는 비중이 연도별로 어떻게 변화했는지 나타내시오
 
+  - 2008~2009년 글로벌 금융위기를 전후하여 상대국별 수출은 어떻게 변화하였는가?
 
-df_kor_summary |> 
-  ggplot(aes(x = year, y = hhi)) +
-  geom_point() +
-  geom_line() +
-  labs(title = "Export Market Concentration (HHI)", y = "HHI", x = "Year")
-
-## 미국, 중국, 일본 대상 수출액 비중의 변화
-
+```{r}
+#| echo: false
+#| 
 df_kor |> 
   group_by(year) |> 
   mutate(
@@ -195,101 +236,371 @@ df_kor |>
     y = "Share (%)",
     color = "Country"
   )
+```
 
-# 00. 2009년 경제 위기 시 상대국별 수출 변화
+- 수출 상대국 점유율을 나타내는 허핀달-허쉬만 인덱스 (Herfindahl-Hirschman Index)를 계산하고 그 추이를 설명하시오.
 
-# 2. Gravity
+$$HHI = \sum_{i=1}^{n} s_i^2$$
 
+```{r}
+#| echo: false
+#| 
+
+df_kor |> 
+  group_by(year) |> 
+  mutate(
+    total_trade = sum(tradeflow_comtrade_o, na.rm = TRUE),
+    share = (tradeflow_comtrade_o / total_trade) * 100 ) |> 
+  summarize(hhi = sum(share^2, na.rm = TRUE)) |>
+  ggplot(aes(x = year, y = hhi)) +
+    geom_point() +
+    geom_line() +
+    labs(title = "Export Market Concentration (HHI)", y = "HHI", x = "Year")
+
+```
+
+### 중력모형의 기본 형태
+
+#### 무역의 중력모형 (Gravity model of trade)
+
+- 물리학의 만유인력 법칙에서 착안하여 두 국가 간의 무역량이 경제 규모 (GDP)에 비례하고 거리에 반비례한다는 관계를 설명하는 실증 분석 모형
+
+$$ \text{Trade}_{ij} = \frac{ \text{A} \times \text{GDP}_i \times \text{GDP}_j}{\text{Dist}_{ij}} $$
+
+  또는 
+
+$$ \ln(\text{Trade}_{ij}) = ln(\text{A}) + ln(\text{GDP}_i) + \ln(\text{GDP}_j) - ln(\text{Dist}_{ij}) $$
+
+#### 상대국의 GDP와 수출
+
+- 상대국의 GDP와 우리나라의 수출 사이에 선형관계가 존재하는지 확인하시오
+- 위 모형이 예측하는 것처럼 기울기가 1에 가까운지 설명하시오
+- 이 선형관계와 가장 벗어난 것처럼 보이는 국가는 어디인가? 왜 그러한지도 생각해 보시오
+
+```{r}
+#| echo: false
+#| 
 df_kor_2020 |> 
-  ggplot(aes(x = dist, y = tradeflow_comtrade_o)) +
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o))) +
   geom_point() +
-  scale_x_log10()+
-  scale_y_log10() +
-  labs(
-    title = "거리별 한국의 수출액",
-    x = "거리 (km)",
-    y = "수출액 (천 달러)"
-  )
-
-df_kor_2020 |> 
-  ggplot(aes(x = gdp_d, y = tradeflow_comtrade_o)) +
-  geom_point() +
-  scale_x_log10() +
-  scale_y_log10() +
   labs(
     title = "상대국 GDP별 한국의 수출액",
-    x = "상대국 GDP (천 달러)",
-    y = "수출액 (천 달러)"
+    x = "상대국 로그 GDP",
+    y = "로그 수출액"
   )  
+```
 
+#### 상대국과의 거리와 수출
 
-# 3. Aside (interactive chart: plotly)
+- 상대국과의 거리와 우리나라의 수출 사이에 선형관계가 존재하는지 확인하시오
+- 위 모형이 예측하는 것처럼 기울기가 -1에 가까운지 설명하시오
+- 이 선형관계와 가장 벗어난 것처럼 보이는 국가는 어디인가? 왜 그러한지도 생각해 보시오
+
+```{r}
+#| echo: false
+
+df_kor_2020 |> 
+  ggplot(aes(x = log(dist), y = log(tradeflow_comtrade_o))) +
+  geom_point() +
+  labs(
+    title = "거리별 한국의 수출액",
+    x = "로그 거리",
+    y = "로그 수출액"
+  )
+```
+
+#### 참고: `plotly` 패키지를 이용한 인터랙티브 그래프
+
+- plotly는 원래 웹 브라우저에서 인터랙티브 그래프를 만드는 기술
+  - R의 `plotly` 패키지는 R 사용자가 plotly 기술을 쓸 수 있도록 연결해 주는 도구
+  - `ggplotly()`는 `ggplot` 그림을 plotly 기술로 넘겨 주는 함수
+
+- 다음 세 가지 기능은 복잡한 사용법을 배우지 않고서도 유용하게 활용할 수 있음
+
+- 호버 (Hover)
+
+  - 산점도에서 개별 관측치의 이름 등 특징을 파악하는 데 유용
+
+```{r}
+#| echo: false
 
 library(plotly)
 
 ## Hover
   
 p1 <- df_kor_2020 |> 
-  ggplot(aes(x = gdp_d, y = tradeflow_comtrade_o, text = country_id_d)) +
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o), text = country_id_d)) +
   geom_point() +
-  scale_x_log10() +
-  scale_y_log10() +
   labs(
     title = "상대국 GDP별 한국의 수출액",
-    x = "상대국 GDP (천 달러)",
-    y = "수출액 (천 달러)"
+    x = "상대국 로그 GDP",
+    y = "로그 수출액"
   ) 
 
 ggplotly(p1, tooltip = "text")
+```
+
+- 범례 토글링 (Toggling legends)
+
+  - 그래프에서 특정 그룹만을 보이거나 사라지게 할 수 있음
+
+```{r}
+#| echo: false
 
 ## Toggling legends
-
+  
 p2 <- df_kor |> 
-  filter(year %in% seq(1980, 2020, by = 20)) |> 
-  ggplot(aes(x = gdp_d, y = tradeflow_comtrade_o, color = as.factor(year))) +
+  filter(year %in% c(1980, 2000, 2020)) |>
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o), color = as.factor(year))) +
   geom_point() +
-  scale_x_log10() +
-  scale_y_log10() +
   labs(
     title = "연도별 상대국 GDP와 한국의 수출액",
-    x = "상대국 GDP (천 달러)",
-    y = "수출액 (천 달러)",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액",
     color = "연도"
   ) 
-  
+
 ggplotly(p2)
+```
 
-## Animation
+- 애니메이션 (Animation)
 
+  - 시간에 따른 그래프의 변화를 연속적으로 관찰할 수 있음
+
+```{r}
+#| echo: false
+#| 
 p3 <- df_kor |> 
   filter(country_id_d %in% c("USA","CHN","JPN"), year >= 1990) |> 
   ggplot(aes(x = gdp_d, y = tradeflow_comtrade_o, frame = year, 
              ids = country_id_d, color = country_id_d)) +
   geom_point() +
-#  scale_x_log10() +
-#  scale_y_log10() +  
   labs(
     title = "미국, 중국, 일본의 GDP와 한국의 수출액 (1990 ~ 2020)",
     x = "상대국 GDP (천 달러)",
-    y = "수출액 (천 달러)",
+    y = "한국의 수출액 (천 달러)",
     color = "상대국"
   ) 
 
 ggplotly(p3)
+```
 
+### FTA와 수출
 
-# FTA
+- 2020년 기준 우리나라와 FTA를 체결한 국가는 몇 개인가? 
 
-df_kor_2020 |> 
-  tabyl(fta_wto)
+- 2020년 기준 우리나라와 FTA를 체결한 국가 그룹과 그렇지 않은 국가 그룹 사이에 우리나라의 수출액의 평균을 비교하시오
+  - 우리나라가 보고한 수출액이 결측인 경우 결측치를 0으로 대체한 경우와 대체하지 않은 경우 각각의 결과를 제시하시오
 
-df_kor_2020 |> 
+- 두 국가 그룹의 평균 수출액 차이를 FTA 체결의 효과로 해석할 수 있는지 설명하시오
+
+```{r}
+#| echo: false
+
+df_fta <- df_kor_2020 |> 
+  mutate(fta_wto = factor(fta_wto, levels = c(0, 1), labels = c("미체결", "체결")),
+         tradeflow_filled_o = replace_na(tradeflow_comtrade_o, 0)
+         ) 
+
+df_fta |>
+  tabyl(fta_wto) |>
+  adorn_pct_formatting(digits = 1) |>
+  kable(align = c("l", "r", "r"))
+
+df_fta |>
   group_by(fta_wto) |> 
   summarize(
-    mean = mean(log(tradeflow_comtrade_o), na.rm = TRUE)
-  )
+    n_raw = sum(!is.na(tradeflow_comtrade_o)),
+    mean_raw = mean(tradeflow_comtrade_o, na.rm = TRUE),
+    n_filled = sum(!is.na(tradeflow_filled_o)),
+    mean_filled = mean(tradeflow_filled_o, na.rm = TRUE)
+  ) |>
+  kable(digits = 0)
 
-t.test(log(tradeflow_comtrade_o)~fta_wto, data = df_kor_2020)  
+t.test(tradeflow_comtrade_o~fta_wto, data = df_fta)  
+t.test(tradeflow_filled_o~fta_wto, data = df_fta)  
+
+```
 
 
 ## 사례 2: 우리나라의 대일 수입 현황
+
+### 데이터 소개
+
+- `BACI` 데이터
+
+  - UN Comtrade 데이터를 바탕으로 국가별 통계 신고의 신뢰도를 평가하여, 수출입 미러 데이터를 통계적으로 정교하게 일치(Reconciliation)
+
+  - HS 6자리 기준의 상세한 품목 분류
+
+  - BACI 데이터의 개별 관측치는 수출국-수입국-품목-연도의 조합임
+
+    - 예를 들어, 2017년 한국이 미국으로 품목 `870323`을 수출한 금액이 하나의 관측치임
+
+- HS 코드 (Harmonized System Code)
+
+  - 전 세계에서 거래되는 각종 상품의 종류를 일정한 번호로 분류하여 통일한 국제통일상품분류체계
+  
+  - 관세 부과와 무역 통계의 표준화를 위해 세계관세기구(WCO)가 제정
+
+  - 계층적 구조: 숫자가 길어질수록 더 구체적인 상품을 의미
+
+    - 2자리 (Chapter): `87` - 철도용, 궤도용 차량을 제외한 육상 운송수단 및 그 부품
+    - 4자리 (Heading): `8703` - 사람을 수송하기 위해 설계된 승용차 및 기타 주행용 모터 차량 (캠핑용 자동차 등 포함)
+    - 6자리 (Subheading): `8703.23` - 불꽃점화식 왕복 피스톤 내연기관을 탑재하고, 배기량이 1,500cc 초과 ~ 3,000cc 이하인 승용차
+
+  - HS 코드가 주기적으로 개정되므로 과거 기준을 선택하면 긴 기간의 데이터를 사용할 수 있으며 최근 기준 HS를 사용하면 가용 데이터의 시간 범위가 줄어듬
+
+- 실습에서 사용할 데이터
+
+  - 이 강의에서 활용한 BACI 데이터는 HS 1992를 기준으로 1995~2024년을 포함
+
+  - `baci_kor_import.csv`는 원자료에서 한국의 수입을 나타내는 관측치를 추출하여 하나의 데이터에 1995~2024년을 묶어 놓았음 (즉, 원자료에서 `j`가 `410`인 관측치를 추출하고 모든 연도를 통합한 것)
+
+    [📥 baci_kor_import 데이터 다운로드](data/baci_kor_import.csv){.btn .btn-outline-primary .btn-sm download=""}
+
+  - `baci_kor_import_hs2.csv`는 `baci_kor_import.csv`를 각 연도의 HS 코드 2자리로 합계한 데이터
+    
+    - 다른 품목 사이에 변수 `q`의 합계는 의미가 없으므로 이 데이터에서는 제외함
+
+    [📥 baci_kor_import_hs2 데이터 다운로드](data/baci_kor_import_hs2.csv){.btn .btn-outline-primary .btn-sm download=""}
+
+
+- 변수의 설명
+
+| Variable | Description |
+| :--- | :--- |
+| `t` | Year |
+| `k` | Product category (HS 6-digit code) |
+| `i` | Exporter (3-digit country code) |
+| `j` | Importer (3-digit country code) |
+| `v` | Value of the trade flow (in thousands current USD) |
+| `q` | Quantity (in metric tons) |
+
+- 데이터 준비
+
+  - HS코드를 숫자로 읽는 경우 `01`이 `1`로 바뀔 수 있으므로 앞 자리 0을 유지하려면 문자로 읽는 것이 안전함
+
+  - HS코드를 해석하기 어려우므로 실습에서 언급되는 주요 품목에 대해서는 레이블을 포함하는 별도 데이터를 직접 만들어 두었음
+
+  - BACI 데이터는 Gravity 데이터와 달리 국가 코드가 알파벳 3자리가 아니라 숫자로 표시됨
+    - 한국: `410`, 일본: `392`
+
+```{r}
+df <- read_csv("data/baci_kor_import_hs2.csv",
+                col_types = "iiicd") # t, i, j (integer), hs2 (character), v (double)
+
+hs2_label <- tribble(
+  ~hs2, ~hs2_label,
+  "29", "유기화학물",
+  "39", "플라스틱",
+  "72", "철강",
+  "84", "일반기계",
+  "85", "전기전자",
+  "90", "정밀기기"
+)
+```
+
+### 대일 수입 품목의 구성과 비중
+
+- 연도별로 대일 수입의 상위 5개 품목을 찾고 그 변화를 서술하시오
+
+```{r}
+#| echo: false
+
+df_jpn <- df |>
+  filter(i == 392)     # 일본 국가기호: 392
+
+yrs <- c(1995, 2000, 2005, 2010, 2015, 2020, 2024)
+
+df_jpn |> 
+  filter(t %in% yrs) |> 
+  left_join(hs2_label, by = "hs2") |> 
+  group_by(t) |>
+  mutate(share = v / sum(v)) |> 
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  mutate(rank = row_number()) |>
+  select(t, rank, hs2_label) |> 
+  pivot_wider(names_from = rank, values_from = hs2_label, names_prefix = "rank") |> 
+  kable(align = rep("c", 6))
+
+```
+
+
+- 지난 30년간 대일 수입 상위 5개 품목의 순위에 일부 변화가 있으나 전체적인 구성은 비교적 안정적임
+
+  - 전기전자, 일반기계, 정밀기기, 철강, 유기화학물, 플라스틱이 상위 품목을 유지
+
+  - 그러나 품목 구성에 큰 변화가 없는 것은 품목 구분이 넓어서 HS코드 2자리 내에서의 변동을 반영하지 못하는 것 때문일 수 있음
+
+- 상위 5개 품목이 전체 대일 수입에서 차지하는 비중의 변화를 서술하시오
+
+```{r}
+#| echo: false
+
+df_jpn |> 
+  group_by(t) |>
+  mutate(share = v / sum(v) * 100) |> 
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  summarize(cum_share = sum(share),
+            cum_value = sum(v)) |> 
+  ggplot(aes(x = t, y = cum_share)) +
+    geom_line() +
+    geom_point() +
+    labs(title = "대일 수입 상위 5개 품목의 점유율 합계 (HS1992 2자리 기준)",
+         x = "연도",
+         y = "상위 5개 품목 점유율 합계 (%)"
+         )
+```         
+
+
+### 품목별 수입의 대일 의존도
+
+- 한국의 전체 수입 중 일본의 비중을 품목별로 구하고 그 추이를 서술하시오
+
+  - 데이터에 매우 많은 품목이 포함되어 있으므로 편의상 2024년 기준 대일 수입 상위 5개 품목인 전기전자(`85`), 일반기계(`84`), 철강(`72`), 정밀기기(`90`), 플라스틱(`39`)에 대해서만 분석
+
+- 한국의 전체 수입 중 일본의 비중으로 정의된 대일 의존도의 변화는 대체로 어떠한가?
+
+- 1995년과 비교하여 2024년에도 대일 의존도가 크게 변화하지 않은 품목은 무엇인가?
+
+```{r}
+#| echo: false
+
+top5 <- df |>
+  filter(i == 392, t == 2024) |>
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  pull(hs2)
+
+df_dep <- df |>
+  filter(hs2 %in% top5) |>
+  group_by(t, hs2) |> 
+  summarise(v_all     = sum(v),
+            v_jpn     = sum(v[i == 392]),
+            share_jpn = v_jpn / v_all * 100) |> 
+  left_join(hs2_label, by = "hs2") 
+
+df_dep |> 
+  ggplot(aes(x = t, y = share_jpn, color = hs2_label)) +
+    geom_line() +
+    geom_point() +
+    labs(
+      title = "품목별 대일 의존도의 변화",
+      y = "품목별 일본산 수입 / 전체 수입 (%)",
+      x = "연도",
+      color = "품목"
+    )  
+```
+
+## 실습
+
+::: {.callout-important title="주의사항"}
+
+- 아래 문제 1과 2에 대한 답안을 작성하고 week06_ex_학번.R과 week06_ex_학번.docx를 E-class로 제출하세요.
+
+:::
+
+1. 우리나라의 주요 수입 상대국에 대하여 2절과 비슷한 분석을 수행하시오.
+
+2. 일본 이외에 다른 나라를 하나 정하여 3절과 비슷한 분석을 수행하시오. 국가 코드는 2.3의 Countries 데이터를 참고하시오.
+
