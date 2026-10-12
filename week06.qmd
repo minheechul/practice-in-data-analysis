@@ -457,7 +457,7 @@ t.test(tradeflow_filled_o~fta_wto, data = df_fta)
 
   - `baci_kor_import.csv`는 원자료에서 한국의 수입을 나타내는 관측치를 추출하여 하나의 데이터에 1995~2024년을 묶어 놓았음 (즉, 원자료에서 `j`가 `410`인 관측치를 추출하고 모든 연도를 통합한 것)
 
-    [📥 baci_kor_import 데이터 다운로드](data/baci_kor_import.csv){.btn .btn-outline-primary .btn-sm download=""}
+    [📥 baci_kor_import 데이터 다운로드](https://drive.google.com/uc?export=download&id=1aUkK3uCd2UrQYmy5BmjmSbHbAiludXGi){.btn .btn-outline-primary .btn-sm}
 
   - `baci_kor_import_hs2.csv`는 `baci_kor_import.csv`를 각 연도의 HS 코드 2자리로 합계한 데이터
     
