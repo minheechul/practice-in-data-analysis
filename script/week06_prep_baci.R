@@ -3,7 +3,7 @@ library(tidyverse)
 
 # 1. 경로 설정
 input_dir  <- "D:/@Teaching/Econometrics II/resources/BACI_HS92_V202601"
-output_dir <- "data"
+output_dir <- "large_data"
 
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)

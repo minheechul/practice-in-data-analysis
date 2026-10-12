@@ -103,7 +103,7 @@ library(tidyverse)
 library(skimr)
 library(janitor)
 
-gravity_small <- read_csv("data/gravity_small.csv")
+gravity_small <- read_csv("large_data/gravity_small.csv")
 
 df_kor <- gravity_small |> 
   filter(country_id_o == "KOR")
@@ -112,7 +112,7 @@ df_kor_2020 <- gravity_small |>
   filter(country_id_o == "KOR", year == 2020) 
 
 #skim(df_kor)
-skim(df_kor_2020)
+#skim(df_kor_2020)
 ```
 
 

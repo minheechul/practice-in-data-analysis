@@ -3,7 +3,7 @@ library(data.table)
 
 
 # fread로 고속 로딩 (k는 6자리 문자열 형태 유지)
-df_hs6 <- fread("data/baci_kor_import.csv", colClasses = c(
+df_hs6 <- fread("large_data/baci_kor_import.csv", colClasses = c(
   t = "integer",
   i = "integer",
   j = "integer",

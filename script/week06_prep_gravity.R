@@ -26,7 +26,7 @@ gravity_small <- gravity |>
 #   left_join(countries, by = c("country_id_d" = "country_id")) |> 
 #   rename(country_d = country) 
   
-write_csv(gravity_small, "data/gravity_small.csv")
+write_csv(gravity_small, "large_data/gravity_small.csv")
 
 
 
