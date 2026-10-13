@@ -280,10 +280,22 @@ $$ \ln(\text{Trade}_{ij}) = \ln(\text{A}) + \ln(\text{GDP}_i) + \ln(\text{GDP}_j
 
 ```{r}
 #| echo: false
-#| 
+
+fit <- lm(log(tradeflow_comtrade_o) ~ log(gdp_d), data = df_kor_2020)
+intercept <- coef(fit)[1]
+slope <- coef(fit)[2]
+
+eq_text <- sprintf("Y = %.2f + %.2f X", intercept, slope)
+
 df_kor_2020 |> 
   ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o))) +
   geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate(
+    "text", 
+    x = 12.5, y = 18, 
+    label = eq_text
+  ) +    
   labs(
     title = "상대국 GDP별 한국의 수출액",
     x = "상대국 로그 GDP",
@@ -300,14 +312,27 @@ df_kor_2020 |>
 ```{r}
 #| echo: false
 
+fit <- lm(log(tradeflow_comtrade_o) ~ log(dist), data = df_kor_2020)
+intercept <- coef(fit)[1]
+slope <- coef(fit)[2]
+
+eq_text <- sprintf("Y = %.2f + %.2f X", intercept, slope)
+
 df_kor_2020 |> 
   ggplot(aes(x = log(dist), y = log(tradeflow_comtrade_o))) +
   geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate(
+    "text", 
+    x = 7.2, y = 1, 
+    label = eq_text, 
+  ) +  
   labs(
     title = "거리별 한국의 수출액",
     x = "로그 거리",
     y = "로그 수출액"
-  )
+  ) +
+  coord_cartesian(xlim = c(6.8, 10))
 ```
 
 #### 참고: `plotly` 패키지를 이용한 인터랙티브 그래프

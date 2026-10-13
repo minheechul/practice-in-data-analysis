@@ -100,6 +100,7 @@ df_kor |>
 df_kor_2020 |> 
   ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o))) +
   geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
   labs(
     title = "상대국 GDP별 한국의 수출액",
     x = "상대국 로그 GDP",
@@ -110,11 +111,13 @@ df_kor_2020 |>
 df_kor_2020 |> 
   ggplot(aes(x = log(dist), y = log(tradeflow_comtrade_o))) +
   geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
   labs(
     title = "거리별 한국의 수출액",
     x = "로그 거리",
     y = "로그 수출액"
-  )
+  ) +
+  coord_cartesian(xlim = c(6.8, 10))
 
 
 # 2.5 plotly
