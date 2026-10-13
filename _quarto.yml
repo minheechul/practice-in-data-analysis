@@ -28,7 +28,6 @@ website:
         text: 일정
 
 
-
   sidebar:
     style: docked
     search: true
