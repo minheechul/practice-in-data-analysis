@@ -1,5 +1,5 @@
 ---
-title: "7주차. 선형회귀분석"
+title: "7주차. 도구 적용하기 (3): 무역 데이터"
 execute:
   echo: true
   message: false
@@ -7,460 +7,628 @@ execute:
 number-sections: true
 ---
 
-## 이번 주 내용
+## 양자간 무역 데이터
 
-- 지금까지는 변수의 분포를 그리고 집단 사이의 평균을 비교하는 방식으로 변수 사이의 관계를 살펴보았음
-  - 4주차: 성별에 따른 임금 비교 (`t.test()`)
-  - 6주차: 로그 GDP와 로그 수출의 산점도에 `geom_smooth(method = "lm")`으로 직선을 추가
-- 이번 주에는 이 직선을 실제로 추정하고 그 결과를 읽는 방법을 배움
-  1. `lm()`으로 회귀모형을 추정하고 결과를 해석
-  2. 범주형 변수와 여러 설명변수를 포함하는 다중회귀
-  3. 결과를 차트로 표현
-  4. 추정된 모형으로 예측
+### UN Comtrade 데이터
+
+- 세계 최대 규모의 무역 통계 DB: 유엔(UN) 통계국이 운영하며, 전 세계 국가들의 상세한 상품별 수출입 실적(연간/월간)을 집계해 제공
+
+- 분류 체계: HS(Harmonized System), SITC(Standard International Trade Classification), BEC(Broad Economic Categories) 등 다양한 국제 상품 분류 기준을 지원
+
+- 데이터 접근 및 다운로드: [공식 웹사이트](https://comtradeplus.un.org/){target="_blank"}
+
+### CEPII 데이터
+
+- 프랑스 파리에 위치한 국제경제 연구기관인 CEPII(Centre d'Études Prospectives et d'Informations Internationales)에서 실증 국제무역 및 세계 경제 분석을 위한 고품질 표준 데이터베이스를 제작·배포
+
+- 연구 목적에 따라 몇 가지 데이터셋으로 나누어져 있음
+
+- BACI (Base pour l'Analyse du Commerce International)
+
+  - UN Comtrade의 원자료를 정교하게 보정 및 조화(Harmonization)하여 구축한 세계 양자간 무역 DB
+  
+  - Comtrade의 문제점인 수출국 보고액과 수입국 보고액 간의 불일치를 통계적 가중치 알고리즘으로 조정하여 단일화된 거래 데이터 제공
+
+  - HS 6자리 수준의 데이터로 제공되어 미시적인 산업 분석에 적합
+
+  -  데이터 접근 및 다운로드: [공식 웹사이트](https://www.cepii.fr/DATA_DOWNLOAD/baci/doc/baci_webpage.html){target="_blank"}
+  
+- Gravity 데이터
+
+  - 표준적인 중력모형 (Gravity model of trade)을 추정하기 위한 통합 데이터셋
+
+    - 중력모형 추정에 필요한 독립변수와 종속변수를 하나의 데이터셋에 결합되어 있어 별도의 매칭 작업을 최소화
+  
+  - 양자간 무역액, 거리, 국경 인접 여부,역사적 및 문화적 유대, 제도적 및 정책적 변수, 거시지표 등을 포함
+
+  - 강의 시점에서 가장 최근 데이터는 2022년에 업데이트된 데이터임
+
+  - 데이터 접근 및 다운로드: [공식 웹사이트](https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=8){target="_blank"}
+  
+### 실습 데이터
+
+- 이번 주 실습을 위하여 CEPII의 Gravity 데이터와 BACI 데이터의 일부를 강사가 추출하여 별도의 csv 파일로 아래에 제공함
+
+- 만약 공식 웹사이트에서 직접 다운로드한 데이터를 R에 불러오는 경우에는 파일이 크기 때문에 `data.table::fread()`를 사용하는 것이 편리함
+
+  - `fread()`는 대용량 텍스트 파일을 빠르고 효율적으로 읽기 위한 함수
+
+  - 이렇게 읽은 데이터는 기존의 데이터 프레임과 호환성을 유지하므로 지금까지 데이터 프레임을 다루었던 방법을 그대로 사용할 수 있음
+
+## 사례 1: 우리나라의 주요 수출 상대국 현황
+
+
+### 데이터 소개
+
+- `gravity_small.csv`
+
+  - CEPII Gravity 데이터의 개별 관측치는 수출국-수입국-연도의 조합임
+    - 예를 들어, 2017년 한국이 미국으로 수출한 금액이 데이터에 하나의 관측치임
+  - `gravity_small.csv`는 CEPII Gravity 데이터 원자료에서 1980 ~ 2020년 기간과 일부 변수만을 추출한 데이터임
+  - 아래 실습에서는 `gravity_small.csv`로부터 다시 추출한 데이터 프레임을 사용함
+    - `df_kor`:  `gravity_small`에서 수출국이 대한민국인 관측치만 추출한 데이터 프레임
+    - `df_kor_2020`: `df_kor`에서 2020년 관측치만 추출한 데이터 프레임
+
+
+  [📥 gravity_small 데이터 다운로드](https://drive.google.com/uc?export=download&id=1-5aQTGa584mrJvwMwZ1mV-Sju1WyKDgt){.btn .btn-outline-primary .btn-sm target="_blank"}
+
+
+- 변수의 설명
+
+| Variable Name | Content | Level |
+| :--- | :--- | :--- |
+| `year` | Year | - |
+| `country_id_o` | Gravity country ID (Exporter) | unilateral |
+| `country_id_d` | Gravity country ID (Importer) | unilateral |
+| `contig` | Dummy equal to 1 if countries are contiguous | bilateral |
+| `dist` | Geodesic distance between most populated cities (km) | bilateral |
+| `comlang_off` | 1 if countries share common official or primary language | bilateral |
+| `gdp_o` | GDP (current thousands US\$) (Exporter) | unilateral |
+| `gdp_d` | GDP (current thousands US\$) (Importer) | unilateral |
+| `fta_wto` | 1 if pair currently engaged in a regional trade agreement (source: WTO supplemented by Thierry Mayer) | bilateral |
+| `tradeflow_comtrade_o` | Trade flow as reported by the exporter (in thousands current US\$) (source: Comtrade) | bilateral |
+| `tradeflow_comtrade_d` | Trade flow as reported by the importer (in thousands current US\$) (source: Comtrade) | bilateral |
+
+- 환경 및 데이터 준비
+
+  - 모두 몇 개의 상대국이 포함되어 있는지 확인
+  - 주요 변수의 결측치 분포를 살펴볼 것
+  - 특히 무역액 변수 결측치의 의미를 생각해 볼 것
+    - 이 자료의 무역액 변수에서  `NA`는 "무역이 없음"일 수도 있고 "보고되지 않음"일 수도 있으며, 자료만으로는 둘을 구분할 수 없음
+    - 만약 한국이 매년 상대국 전체에 대해 보고한다고 가정하면 한국 출발 자료의 `NA`를 0 무역으로 볼 수 있으며 이에 대해서는 아래에서 추가로 논의할 예정
 
 ```{r}
+
 library(tidyverse)
 library(skimr)
 library(janitor)
-library(broom)      # 회귀분석 결과를 데이터 프레임으로 정리
-library(gapminder)
+
+gravity_small <- read_csv("large_data/gravity_small.csv")
+
+df_kor <- gravity_small |> 
+  filter(country_id_o == "KOR")
+
+df_kor_2020 <- gravity_small |> 
+  filter(country_id_o == "KOR", year == 2020) 
+
+#skim(df_kor)
+#skim(df_kor_2020)
 ```
 
-- `broom` 패키지는 `tidyverse`를 설치할 때 함께 설치되지만 `library(tidyverse)`로 자동으로 불러와지지는 않으므로 따로 불러야 함
 
-## 단순회귀: 1인당 GDP와 기대수명
+### 수출국 보고액과 수입국 보고액 사이의 불일치
 
-### 선형회귀모형
+- UN Comtrade 데이터는 각국 정부가 보고한 통계에 의존하기 때문에 한국이 보고한 수출과 상대국이 보고한 수입에 차이가 있을 수 있음
+  - CEPII Gravity 데이터도 UN Comtrade 데이터에 기초하므로 동일한 문제가 있음
+  - `gravity_small.csv` 데이터에서는 `tradeflow_comtrade_o`가 수출국이 보고한 금액이고  `tradeflow_comtrade_d`가 수입국이 보고한 금액임
 
-- 종속변수 $y$를 설명변수 $x$의 직선으로 설명하는 모형
+- 이러한 불일치를 거울 데이터 불일치 (Mirror Discrepancy)라고 부름
+  - 불일치가 발생하는 한 가지 이유로는 통상적인 통계에서 수출액은 FOB 가격, 수입액은 CIF 가격을 채택하는 데에서 찾을 수 있음
+  - 그 외에 다른 이유를 생각해 보시오
+  
+<!-- 
+- 운송 시차
+- 중계무역 및 삼각무역
+- 허위 신고
+- 환율 적용의 차이 
+-->
 
-$$ y_i = \beta_0 + \beta_1 x_i + \varepsilon_i $$
-
-  - $\beta_0$: 절편, $\beta_1$: 기울기, $\varepsilon_i$: 오차항 (직선으로 설명되지 않는 부분)
-  - 최소제곱법 (OLS): 잔차 제곱합 $\sum (y_i - \hat\beta_0 - \hat\beta_1 x_i)^2$을 가장 작게 만드는 $\hat\beta_0, \hat\beta_1$을 선택
-
-- 1주차에서 사용한 `gapminder`의 2007년 자료를 사용
-  - 먼저 산점도를 그려서 직선관계가 적절한지 확인하는 것이 좋음
-
+- 우리나라 보고 수출액과 상대국 보고 수입액의 비교
+  - 만약 거울 데이터 불일치가 FOB/CIF 가격 때문이라면 상대국 수입액이 우리나라 수출액보다 클 것으로 예상됨
+  - 이러한 예측이 데이터에서 확인되는지 설명하시오
+  - `df_kor_2020`에 포함된 상대국 중 아래 그래프에 나타나지 않는 국가는 모두 몇 개나 있고 어떤 국가들인지 간단히 설명하시오
+    - 우리나라가 수출액을 보고하지 않은 상대국은 몇 개인가?
+    - 우리나라로부터의 수입액을 보고하지 않은 국가는 몇 개인가?
+    - 우리나라의 수출액과 상대국의 수입액이 모두 보고되지 않은 경우는 몇 개인가?
+  
 ```{r}
-g07 <- gapminder |>
-  filter(year == 2007)
+#| echo: false
 
-g07 |>
-  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+df_kor_2020 |> 
+  ggplot(aes(x = tradeflow_comtrade_o,
+             y = tradeflow_comtrade_d)
+  ) +
+  scale_x_log10() +
+  scale_y_log10() +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "1인당 GDP와 기대수명 (2007)",
-       x = "1인당 GDP (달러)", y = "기대수명 (세)")
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  coord_cartesian(xlim = c(1e+1, 1e9), ylim = c(1e+1, 1e9)) +
+  labs(
+    title = "우리나라 보고 수출액과 상대국 보고 수입액의 비교",
+    x = "한국 보고 수출액 (천 달러)",
+    y = "상대국 보고 수입액 (천 달러)"
+  )
+
+df_kor_2020 |> 
+  mutate(gap = log(tradeflow_comtrade_d/tradeflow_comtrade_o)) |> 
+  ggplot(aes(x = gap)) +
+  geom_histogram(breaks = seq(-6, 4, by = 0.5)) +
+  labs(
+    title = "거울 데이터 불일치 (Gap)의 분포",
+    x = "Gap: 로그(상대국수입액/한국수출액)",
+  )
+
+df_kor_2020 |> 
+  mutate(gap = log(tradeflow_comtrade_d/tradeflow_comtrade_o)) |> 
+  select(gap) |> 
+  skim()
+
+# df_kor_2020 |> 
+#   mutate(o_na = is.na(tradeflow_comtrade_o),
+#          d_na = is.na(tradeflow_comtrade_d)) |> 
+#   tabyl(o_na, d_na)
+
+# df_kor_2020 |> 
+#   filter(is.na(tradeflow_comtrade_o) | 
+#          is.na(tradeflow_comtrade_d)) |> 
+#   pull(country_id_d)  
 ```
 
-- 1인당 GDP가 낮은 구간에서는 급하게 증가하다가 높은 구간에서는 완만해지는 곡선 모양이므로 직선은 적절하지 않음
-- 1인당 GDP에 로그를 취하면 관계가 훨씬 직선에 가까워짐
+
+### 우리나라의 주요 수출 상대국의 변화
+
+- 1980년부터 2020년까지 연도별로 우리나라의 3대 수출 상대국을 확인하고 그 변화를 기술하시오.
+  - 우리나라의 최대 수출 상대국이 미국에서 중국으로 바뀌 시점은 언제인가?
+  - 우리나라의 3대 수출 상대국은 1980년, 2000년, 2020년에 각각 어떠한가?
+  - ISO3 코드에 대응하는 국가 이름은 Gravity 데이터셋의 일부인 아래 파일을 참고할 것
+
+  [📥 Countries 데이터 다운로드](data/Countries_V202211.csv){.btn .btn-outline-primary .btn-sm target="_blank"}
+
+<details markdown="1">
+<summary><b> 우리나라의 3대 수출 대상국 (1980~2020년) (클릭하여 펼치기)</b></summary>
 
 ```{r}
-g07 |>
-  ggplot(aes(x = log(gdpPercap), y = lifeExp)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "로그 1인당 GDP와 기대수명 (2007)",
-       x = "로그 1인당 GDP", y = "기대수명 (세)")
+#| echo: false
+
+library(knitr)
+
+df_kor |> 
+  group_by(year) |> 
+  slice_max(tradeflow_comtrade_o, n = 3, with_ties = FALSE) |> # 상위 3개 추출
+  mutate(rank = row_number()) |> # 1부터 3까지의 순번 부여
+  select(year, rank, country_id_d) |> 
+  pivot_wider(names_from = rank, values_from = country_id_d) |> 
+  kable(align = c("c", "c", "c", "c"))
 ```
 
-### `lm()`으로 추정하기
+</details>
 
-- `lm(종속변수 ~ 설명변수, data = 데이터)`
-  - 변수에 `log()` 등 변환을 적용한 식을 그대로 쓸 수 있음
-  - 결과는 모형 객체이며 5주차에서 배운 base R의 리스트 구조를 가짐
+- 주요 수출 상대국의 점유율 변화는 어떠한가?
 
-```{r}
-fit1 <- lm(lifeExp ~ log(gdpPercap), data = g07)
+  - 미국, 중국, 일본, 베트남이 각각 전체 수출에서 차지하는 비중이 연도별로 어떻게 변화했는지 나타내시오
 
-summary(fit1)
-```
-
-### 결과의 해석
-
-- `Estimate` (추정계수)
-  - 기울기 7.20: 로그 1인당 GDP가 1 증가하면 기대수명이 평균적으로 약 7.2세 길어지는 관계
-  - 절편 4.95: 로그 1인당 GDP가 0 (1인당 GDP = 1달러)일 때의 기대수명. 자료의 범위를 벗어난 값이므로 그 자체로는 큰 의미가 없음
-- `Std. Error` (표준오차): 추정계수가 표본에 따라 흔들리는 정도
-- `t value`, `Pr(>|t|)`: 계수가 0이라는 귀무가설에 대한 검정 통계량과 p값
-  - 기울기의 p값이 매우 작으므로 로그 GDP와 기대수명 사이의 관계가 0이라고 보기 어려움
-- `Residual standard error` 7.12: 잔차의 표준편차. 모형으로 예측했을 때 대략 ±7세 정도의 오차가 있다는 의미
-- `Multiple R-squared` 0.654: 기대수명의 변동 중 로그 GDP로 설명되는 비율이 약 65%
-
-- 로그를 사용한 변수의 해석
-  - 설명변수만 로그인 경우 (level-log): $x$가 1% 증가하면 $y$가 약 $\beta_1/100$ 증가
-  - 1인당 GDP가 2배가 되면 기대수명은 $\hat\beta_1 \times \ln 2$ 증가
+  - 2008~2009년 글로벌 금융위기를 전후하여 상대국별 수출은 어떻게 변화하였는가?
 
 ```{r}
-b <- coef(fit1)[["log(gdpPercap)"]]
-
-b * log(2)     # 1인당 GDP가 2배가 되면
-b * log(1.1)   # 1인당 GDP가 10% 증가하면
-```
-
-- 불확실성: 신뢰구간
-
-```{r}
-confint(fit1)
-```
-
-  - 기울기의 95% 신뢰구간은 대략 6.3 ~ 8.1
-  - 이 표본으로부터 얻은 추정값이 모집단의 참값과 얼마나 다를 수 있는지를 나타냄
-
-- 해석 시 주의
-  - 이 결과는 2007년 국가 사이의 관계(상관관계)를 보여줄 뿐, 한 나라의 소득이 올라가면 기대수명이 그만큼 길어진다는 인과관계를 의미하지 않음
-  - 6주차에서 FTA 체결 국가와 미체결 국가의 수출 차이를 FTA의 효과로 읽기 어려웠던 것과 같은 이유임
-
-### 결과를 데이터 프레임으로 정리하기: `broom`
-
-- `summary()`의 출력은 읽기에는 좋지만 후속 작업(표, 그래프)에 쓰기 불편함
-- `broom` 패키지의 세 함수는 결과를 데이터 프레임으로 돌려줌
-
-| 함수 | 반환하는 내용 |
-| :--- | :--- |
-| `tidy()` | 계수 표 (추정값, 표준오차, p값, 신뢰구간) |
-| `glance()` | 모형 전체의 요약 (R제곱, 잔차 표준오차, 관측치 수 등) |
-| `augment()` | 원자료에 적합값(`.fitted`)과 잔차(`.resid`) 등을 추가 |
-
-```{r}
-tidy(fit1, conf.int = TRUE)
-
-glance(fit1) |>
-  select(r.squared, adj.r.squared, sigma, nobs)
-```
-
-### 적합값과 잔차
-
-- 적합값 $\hat y_i$: 모형이 예측한 값, 잔차 $e_i = y_i - \hat y_i$: 실제값과 적합값의 차이
-- 잔차가 큰 관측치는 모형으로 설명이 잘 되지 않는 국가들임
-
-```{r}
-g07_fit <- augment(fit1, data = g07)
-
-# 실제 기대수명이 모형 예측보다 가장 낮은 국가
-g07_fit |>
-  select(country, continent, lifeExp, .fitted, .resid) |>
-  slice_min(.resid, n = 5)
-
-# 실제 기대수명이 모형 예측보다 가장 높은 국가
-g07_fit |>
-  select(country, continent, lifeExp, .fitted, .resid) |>
-  slice_max(.resid, n = 5)
-```
-
-- 소득에 비해 기대수명이 매우 낮은 국가들은 어느 대륙에 몰려 있는가? 그 이유는 무엇일까?
-
-### 잔차를 이용한 모형 점검
-
-- 선형회귀모형이 적절하다면 잔차에 뚜렷한 패턴이 없어야 함
-  - 잔차 대 적합값 그림: 0을 중심으로 고르게 흩어져 있어야 함. 곡선 모양이나 부채꼴 모양은 문제의 신호
-  - 정규 Q-Q 그림: 점이 직선 위에 놓일수록 잔차가 정규분포에 가까움
-
-```{r}
-#| fig-width: 5
-#| fig-height: 4
-
-g07_fit |>
-  ggplot(aes(x = .fitted, y = .resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "적합값", y = "잔차")
-
-g07_fit |>
-  ggplot(aes(sample = .std.resid)) +
-  stat_qq() +
-  stat_qq_line() +
-  labs(x = "이론적 분위수", y = "표준화 잔차")
-```
-
-- 기대수명이 낮은 국가들의 잔차가 큰 음수로 나타나 왼쪽 꼬리가 두꺼운 분포임
-  - 이런 관측치를 제거하기보다는 왜 그런지를 먼저 이해하고, 필요하면 대륙 등 다른 변수를 모형에 포함
-
-### 예측
-
-- 추정한 모형에 새로운 값을 넣어 종속변수를 예측: `predict(모형, newdata = 새 데이터)`
-  - `newdata`의 변수 이름은 모형 추정에 사용한 원래 변수 이름(`gdpPercap`)과 같아야 하며, `log()` 변환은 모형이 알아서 적용함
-
-```{r}
-new_gdp <- tibble(gdpPercap = c(1000, 10000, 40000))
-
-predict(fit1, newdata = new_gdp)
-```
-
-- 예측에는 두 가지 구간이 있음
-  - 신뢰구간 (`interval = "confidence"`): 주어진 GDP 수준에서 기대수명의 **평균**이 어디쯤인지에 대한 불확실성
-  - 예측구간 (`interval = "prediction"`): 주어진 GDP 수준의 **개별 국가** 하나의 기대수명이 어디쯤일지에 대한 불확실성. 개별 국가의 오차가 추가되므로 항상 더 넓음
-
-```{r}
-predict(fit1, newdata = new_gdp, interval = "confidence")
-
-predict(fit1, newdata = new_gdp, interval = "prediction")
-```
-
-- 1인당 GDP가 10,000달러인 국가의 기대수명은 평균적으로 약 71세이며 평균의 95% 신뢰구간은 약 70 ~ 72.6세인 반면, 개별 국가 하나에 대한 예측구간은 약 57 ~ 85세로 훨씬 넓음
-- 외삽 (extrapolation) 주의: 자료에 있는 범위를 크게 벗어난 값에 대한 예측은 신뢰하기 어려움
-  - 1인당 GDP 40,000달러의 예측구간 상한은 95세를 넘는데, 이는 현실적이지 않음
-
-- 예측 결과를 그래프로 나타내기
-  - 설명변수의 격자 (grid)를 만들고 `predict()`로 예측값과 구간을 계산한 후 `ggplot`으로 그림
-
-```{r}
-grid <- tibble(gdpPercap = exp(seq(log(300), log(50000), length.out = 100)))
-
-pred <- bind_cols(
-  grid,
-  as_tibble(predict(fit1, grid, interval = "confidence")),
-  as_tibble(predict(fit1, grid, interval = "prediction")) |>
-    select(pred_lwr = lwr, pred_upr = upr)
-)
-
-ggplot() +
-  geom_ribbon(data = pred, aes(x = log(gdpPercap), ymin = pred_lwr, ymax = pred_upr),
-              alpha = 0.15) +
-  geom_ribbon(data = pred, aes(x = log(gdpPercap), ymin = lwr, ymax = upr),
-              alpha = 0.4) +
-  geom_line(data = pred, aes(x = log(gdpPercap), y = fit)) +
-  geom_point(data = g07, aes(x = log(gdpPercap), y = lifeExp)) +
-  labs(title = "회귀선, 신뢰구간(진한 띠), 예측구간(옅은 띠)",
-       x = "로그 1인당 GDP", y = "기대수명 (세)")
-```
-
-  - 대부분의 관측치가 예측구간(옅은 띠) 안에 있고, 신뢰구간(진한 띠)은 훨씬 좁음
-  - `geom_smooth(method = "lm")`이 기본으로 그려주는 띠는 신뢰구간임
-
-## 다중회귀: 임금의 결정요인
-
-### 데이터와 변수의 준비
-
-- 4주차의 KLIPS 데이터(`klips27p_small.csv`)를 다시 사용
-  - 4주차에서는 성별에 따른 임금 분포를 비교하였으나, 남녀의 임금 차이에는 연령, 학력, 고용형태의 차이도 섞여 있음
-  - 다중회귀는 이러한 다른 변수들을 **통제**한 후의 관계를 보여줌
-
-- 임금은 오른쪽으로 크게 치우쳐 있으므로 4주차에서 본 것처럼 로그를 취해서 분석
-  - 종속변수가 로그 임금이면 계수는 임금의 **비율(%) 차이**로 해석할 수 있음
-
-- 범주형 변수는 `factor`로 바꾸고 기준 범주(reference category)를 정해야 함
-  - `lm()`은 첫 번째 레벨을 기준으로 삼고 나머지 레벨마다 더미변수를 자동으로 만듦
-  - 문자형 변수의 기본 순서는 알파벳 순서이므로 `fct_relevel()`로 해석하기 편한 기준을 지정
-
-```{r}
-klips <- read_csv("data/klips27p_small.csv") |>
+#| echo: false
+#| 
+df_kor |> 
+  group_by(year) |> 
   mutate(
-    gender    = fct_relevel(gender, "Female", "Male"),
-    age_group = fct_relevel(age_group, "Below 30", "30s", "40s", "Above 50"),
-    education = fct_relevel(education, "High School", "College"),
-    job_type  = fct_relevel(job_type, "Regular", "Non-regular"),
-    log_wage  = log(wage)
+    total_trade = sum(tradeflow_comtrade_o, na.rm = TRUE),
+    share = (tradeflow_comtrade_o / total_trade) * 100) |> 
+  filter(country_id_d %in% c("USA", "JPN", "CHN", "VNM.2")) |> 
+  ggplot(aes(x = year, y = share, color = country_id_d)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "Export Share for Major Partners",
+    x = "Year",
+    y = "Share (%)",
+    color = "Country"
   )
 ```
 
-### 범주형 설명변수 하나: 성별
+- 수출 상대국 점유율을 나타내는 허핀달-허쉬만 인덱스 (Herfindahl-Hirschman Index)를 계산하고 그 추이를 설명하시오.
 
-- 성별(더미변수)만 설명변수로 사용하면 단순회귀가 집단별 평균의 비교와 같아짐
-
-```{r}
-m0 <- lm(wage ~ gender, data = klips)
-tidy(m0)
-
-klips |>
-  group_by(gender) |>
-  summarize(mean_wage = mean(wage))
-```
-
-  - 절편(226만원)은 기준 범주인 여성의 평균 임금이고, `genderMale`(144만원)은 남성 평균과 여성 평균의 차이임
-  - 4주차의 `t.test(wage ~ gender)`가 보여준 평균 차이와 같음
-
-- 종속변수를 로그 임금으로 바꾸면 비율 차이로 읽을 수 있음
+$$HHI = \sum_{i=1}^{n} s_i^2$$
 
 ```{r}
-m1 <- lm(log_wage ~ gender, data = klips)
-tidy(m1, conf.int = TRUE)
+#| echo: false
+#| 
 
-exp(coef(m1)[["genderMale"]]) - 1
+df_kor |> 
+  group_by(year) |> 
+  mutate(
+    total_trade = sum(tradeflow_comtrade_o, na.rm = TRUE),
+    share = (tradeflow_comtrade_o / total_trade) * 100 ) |> 
+  summarize(hhi = sum(share^2, na.rm = TRUE)) |>
+  ggplot(aes(x = year, y = hhi)) +
+    geom_point() +
+    geom_line() +
+    labs(title = "Export Market Concentration (HHI)", y = "HHI", x = "Year")
+
 ```
 
-  - 계수 0.539는 로그 임금의 차이이며, $e^{0.539} - 1 \approx 0.71$이므로 남성의 임금이 여성보다 약 71% 높다는 의미
-  - 계수의 절대값이 작을 때 (대략 0.1 이하)는 계수 $\times$ 100을 그대로 %로 읽어도 큰 차이가 없음
+### 중력모형의 기본 형태
 
-### 통제변수 추가
+#### 무역의 중력모형 (Gravity model of trade)
 
-- 연령, 학력, 고용형태를 함께 포함
+- 물리학의 만유인력 법칙에서 착안하여 두 국가 간의 무역량이 경제 규모 (GDP)에 비례하고 거리에 반비례한다는 관계를 설명하는 실증 분석 모형
+
+$$ \text{Trade}_{ij} = \frac{ \text{A} \times \text{GDP}_i \times \text{GDP}_j}{\text{Dist}_{ij}} $$
+
+  또는 
+
+$$ \ln(\text{Trade}_{ij}) = \ln(\text{A}) + \ln(\text{GDP}_i) + \ln(\text{GDP}_j) - \ln(\text{Dist}_{ij}) $$
+
+#### 상대국의 GDP와 수출
+
+- 상대국의 GDP와 우리나라의 수출 사이에 선형관계가 존재하는지 확인하시오
+- 위 모형이 예측하는 것처럼 기울기가 1에 가까운지 설명하시오
+- 이 선형관계와 가장 벗어난 것처럼 보이는 국가는 어디인가? 왜 그러한지도 생각해 보시오
 
 ```{r}
-m2 <- lm(log_wage ~ gender + age_group + education + job_type, data = klips)
+#| echo: false
 
-summary(m2)
+fit <- lm(log(tradeflow_comtrade_o) ~ log(gdp_d), data = df_kor_2020)
+intercept <- coef(fit)[1]
+slope <- coef(fit)[2]
+
+eq_text <- sprintf("Y = %.2f + %.2f X", intercept, slope)
+
+df_kor_2020 |> 
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate(
+    "text", 
+    x = 12.5, y = 18, 
+    label = eq_text
+  ) +    
+  labs(
+    title = "상대국 GDP별 한국의 수출액",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액"
+  )  
 ```
 
-- 각 계수의 해석은 "**나머지 변수가 같다면**" 이라는 조건을 붙여서 읽음
+#### 상대국과의 거리와 수출
+
+- 상대국과의 거리와 우리나라의 수출 사이에 선형관계가 존재하는지 확인하시오
+- 위 모형이 예측하는 것처럼 기울기가 -1에 가까운지 설명하시오
+- 이 선형관계와 가장 벗어난 것처럼 보이는 국가는 어디인가? 왜 그러한지도 생각해 보시오
 
 ```{r}
-tidy(m2, conf.int = TRUE) |>
-  filter(term != "(Intercept)") |>
-  mutate(pct = (exp(estimate) - 1) * 100) |>
-  select(term, estimate, pct, conf.low, conf.high, p.value)
+#| echo: false
+
+fit <- lm(log(tradeflow_comtrade_o) ~ log(dist), data = df_kor_2020)
+intercept <- coef(fit)[1]
+slope <- coef(fit)[2]
+
+eq_text <- sprintf("Y = %.2f + %.2f X", intercept, slope)
+
+df_kor_2020 |> 
+  ggplot(aes(x = log(dist), y = log(tradeflow_comtrade_o))) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  annotate(
+    "text", 
+    x = 7.2, y = 1, 
+    label = eq_text, 
+  ) +  
+  labs(
+    title = "거리별 한국의 수출액",
+    x = "로그 거리",
+    y = "로그 수출액"
+  ) +
+  coord_cartesian(xlim = c(6.8, 10))
 ```
 
-  - `genderMale`: 연령, 학력, 고용형태가 같은 남녀를 비교하면 남성의 임금이 약 45% 높음. 통제하기 전의 71%보다 줄어들었으므로 남녀 임금 차이의 상당 부분은 연령, 학력, 고용형태의 차이와 연관되어 있음
-  - `age_group*`: 30세 미만에 비해 30대와 40대는 임금이 더 높음. 50대 이상은 40대보다 낮음
-  - `educationCollege`: 고졸 이하에 비해 대졸 이상은 약 28% 높음
-  - `job_typeNon-regular`: 정규직에 비해 비정규직은 약 48% 낮음. 모든 변수 중 가장 큰 차이
-  - 여전히 남아 있는 약 45%의 차이는 이 모형에 포함되지 않은 다른 요인(직종, 근속연수, 근로시간, 기업 규모 등)이나 차별 등으로 인한 것일 수 있으며, 이 분석만으로는 원인을 구분할 수 없음
+#### 참고: `plotly` 패키지를 이용한 인터랙티브 그래프
 
-- 모형 전체의 설명력
+- plotly는 원래 웹 브라우저에서 인터랙티브 그래프를 만드는 기술
+  - R의 `plotly` 패키지는 R 사용자가 plotly 기술을 쓸 수 있도록 연결해 주는 도구
+  - `ggplotly()`는 `ggplot` 그림을 plotly 기술로 넘겨 주는 함수
+
+- 다음 세 가지 기능은 복잡한 사용법을 배우지 않고서도 유용하게 활용할 수 있음
+
+- 호버 (Hover)
+
+  - 산점도에서 개별 관측치의 이름 등 특징을 파악하는 데 유용
 
 ```{r}
-bind_rows(
-  glance(m1) |> mutate(model = "성별만"),
-  glance(m2) |> mutate(model = "성별 + 연령 + 학력 + 고용형태")
-) |>
-  select(model, r.squared, adj.r.squared, sigma, nobs)
+#| echo: false
+
+library(plotly)
+
+## Hover
+  
+p1 <- df_kor_2020 |> 
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o), text = country_id_d)) +
+  geom_point() +
+  labs(
+    title = "상대국 GDP별 한국의 수출액",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액"
+  ) 
+
+ggplotly(p1, tooltip = "text")
 ```
 
-  - 설명변수를 추가하면 $R^2$는 항상 증가함. 변수의 개수를 반영한 `adj.r.squared` (수정된 결정계수)가 함께 증가하는지를 확인
-  - $R^2$가 0.14에서 0.44로 크게 증가하였으므로 연령, 학력, 고용형태가 임금의 변동을 추가로 상당히 설명함
+- 범례 토글링 (Toggling legends)
 
-### 계수 그림 (Coefficient plot)
-
-- 계수가 많아지면 표보다 그림이 읽기 쉬움
-  - 점은 추정값, 선분은 95% 신뢰구간이며 점선(0)과 겹치면 통계적으로 유의하지 않다는 의미
+  - 그래프에서 특정 그룹만을 보이거나 사라지게 할 수 있음
 
 ```{r}
-tidy(m2, conf.int = TRUE) |>
-  filter(term != "(Intercept)") |>
-  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
-  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  labs(title = "로그 임금 회귀모형의 계수",
-       x = "계수 (로그 임금)", y = NULL)
+#| echo: false
+
+## Toggling legends
+  
+p2 <- df_kor |> 
+  filter(year %in% c(1980, 2000, 2020)) |>
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o), color = as.factor(year))) +
+  geom_point() +
+  labs(
+    title = "연도별 상대국 GDP와 한국의 수출액",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액",
+    color = "연도"
+  ) 
+
+ggplotly(p2)
 ```
 
-### 상호작용
+- 애니메이션 (Animation)
 
-- `m2`는 남녀 임금 차이(약 45%)가 모든 연령대에서 똑같다고 가정함
-- 4주차에서 보았듯이 남녀 임금 차이는 연령대마다 다를 수 있음 → 성별과 연령 그룹의 **상호작용항**을 추가
-  - `gender * age_group`는 `gender + age_group + gender:age_group`과 같음
+  - 시간에 따른 그래프의 변화를 연속적으로 관찰할 수 있음
 
 ```{r}
-m3 <- lm(log_wage ~ gender * age_group + education + job_type, data = klips)
+#| echo: false
+#| 
+p3 <- df_kor |> 
+  filter(country_id_d %in% c("USA","CHN","JPN"), year >= 1990) |> 
+  ggplot(aes(x = gdp_d, y = tradeflow_comtrade_o, frame = year, 
+             ids = country_id_d, color = country_id_d)) +
+  geom_point() +
+  labs(
+    title = "미국, 중국, 일본의 GDP와 한국의 수출액 (1990 ~ 2020)",
+    x = "상대국 GDP (천 달러)",
+    y = "한국의 수출액 (천 달러)",
+    color = "상대국"
+  ) 
 
-tidy(m3) |>
-  filter(str_detect(term, "gender"))
+ggplotly(p3)
 ```
 
-  - 상호작용항(`genderMale:age_group*`)이 양수이고 연령이 높을수록 커짐 → 남녀 임금 차이가 연령이 높은 집단에서 더 크게 벌어짐
-  - 이제 `genderMale`의 계수(0.139)는 **기준 연령 그룹인 30세 미만**에서의 남녀 차이만을 의미함
-  - 상호작용항이 모형에 필요한지는 F-검정으로 확인
+### FTA와 수출
+
+- 2020년 기준 우리나라와 FTA를 체결한 국가는 몇 개인가? 
+
+- 2020년 기준 우리나라와 FTA를 체결한 국가 그룹과 그렇지 않은 국가 그룹 사이에 우리나라의 수출액의 평균을 비교하시오
+  - 우리나라가 보고한 수출액이 결측인 경우 결측치를 0으로 대체한 경우와 대체하지 않은 경우 각각의 결과를 제시하시오
+
+- 두 국가 그룹의 평균 수출액 차이를 FTA 체결의 효과로 해석할 수 있는지 설명하시오
 
 ```{r}
-anova(m2, m3)
+#| echo: false
+
+df_fta <- df_kor_2020 |> 
+  mutate(fta_wto = factor(fta_wto, levels = c(0, 1), labels = c("미체결", "체결")),
+         tradeflow_filled_o = replace_na(tradeflow_comtrade_o, 0)
+         ) 
+
+df_fta |>
+  tabyl(fta_wto) |>
+  adorn_pct_formatting(digits = 1) |>
+  kable(align = c("l", "r", "r"))
+
+df_fta |>
+  group_by(fta_wto) |> 
+  summarize(
+    n_raw = sum(!is.na(tradeflow_comtrade_o)),
+    mean_raw = mean(tradeflow_comtrade_o, na.rm = TRUE),
+    n_filled = sum(!is.na(tradeflow_filled_o)),
+    mean_filled = mean(tradeflow_filled_o, na.rm = TRUE)
+  ) |>
+  kable(digits = 0)
+
+t.test(tradeflow_comtrade_o~fta_wto, data = df_fta)  
+t.test(tradeflow_filled_o~fta_wto, data = df_fta)  
+
 ```
 
-  - p값이 매우 작으므로 상호작용항을 포함하는 것이 모형의 적합도를 유의하게 개선함
 
-### 다중회귀 모형으로 예측하기
+## 사례 2: 우리나라의 대일 수입 현황
 
-- 새로운 데이터는 모형에 사용한 모든 설명변수를 포함해야 함
-- 예: 30대, 대졸, 정규직인 남성과 여성의 예상 임금
+### 데이터 소개
 
-```{r}
-new_people <- tibble(
-  gender    = c("Female", "Male"),
-  age_group = "30s",
-  education = "College",
-  job_type  = "Regular"
-)
+- `BACI` 데이터
 
-new_people |>
-  bind_cols(as_tibble(predict(m3, new_people, interval = "confidence"))) |>
-  mutate(across(c(fit, lwr, upr), exp))
-```
+  - UN Comtrade 데이터를 바탕으로 국가별 통계 신고의 신뢰도를 평가하여, 수출입 미러 데이터를 통계적으로 정교하게 일치(Reconciliation)
 
-  - 종속변수가 로그 임금이므로 예측값에 `exp()`를 적용하여 만원 단위로 되돌림
-  - 이렇게 변환한 값은 임금의 평균이 아니라 대략 중앙값에 해당하므로 평균보다 약간 낮게 나타남
+  - HS 6자리 기준의 상세한 품목 분류
 
-- 예측값을 그림으로 비교: 모든 성별과 연령 그룹의 조합에 대해 (대졸, 정규직) 예측 임금을 계산
+  - BACI 데이터의 개별 관측치는 수출국-수입국-품목-연도의 조합임
 
-```{r}
-grid <- expand_grid(
-  gender    = levels(klips$gender),
-  age_group = levels(klips$age_group),
-  education = "College",
-  job_type  = "Regular"
-) |>
-  mutate(age_group = factor(age_group, levels = levels(klips$age_group)))
+    - 예를 들어, 2017년 한국이 미국으로 품목 `870323`을 수출한 금액이 하나의 관측치임
 
-grid |>
-  bind_cols(as_tibble(predict(m3, grid, interval = "confidence"))) |>
-  ggplot(aes(x = age_group, y = exp(fit), color = gender, group = gender)) +
-  geom_pointrange(aes(ymin = exp(lwr), ymax = exp(upr)),
-                  position = position_dodge(width = 0.2)) +
-  geom_line(position = position_dodge(width = 0.2)) +
-  labs(title = "예측 임금 (대졸, 정규직)",
-       x = "연령 그룹", y = "예측 임금 (만원)", color = "성별")
-```
+- HS 코드 (Harmonized System Code)
 
-  - 남녀 모두 40대에서 가장 높고 이후 낮아지지만, 50대 이상에서는 남녀 차이가 가장 크게 나타남
-  - 4주차에서 `group_by()`로 계산한 연령 그룹별 남녀 평균 비교를 모형을 통해 다시 확인한 것임. 다만 여기서는 학력과 고용형태를 고정한 후의 비교라는 점이 다름
+  - 전 세계에서 거래되는 각종 상품의 종류를 일정한 번호로 분류하여 통일한 국제통일상품분류체계
+  
+  - 관세 부과와 무역 통계의 표준화를 위해 세계관세기구(WCO)가 제정
 
-### 잔차 점검
+  - 계층적 구조: 숫자가 길어질수록 더 구체적인 상품을 의미
 
-- 적합값에 따른 잔차 그림으로 모형의 문제를 점검
+    - 2자리 (Chapter): `87` - 철도용, 궤도용 차량을 제외한 육상 운송수단 및 그 부품
+    - 4자리 (Heading): `8703` - 사람을 수송하기 위해 설계된 승용차 및 기타 주행용 모터 차량 (캠핑용 자동차 등 포함)
+    - 6자리 (Subheading): `8703.23` - 불꽃점화식 왕복 피스톤 내연기관을 탑재하고, 배기량이 1,500cc 초과 ~ 3,000cc 이하인 승용차
 
-```{r}
-#| fig-width: 5
-#| fig-height: 4
+  - HS 코드가 주기적으로 개정되므로 과거 기준을 선택하면 긴 기간의 데이터를 사용할 수 있으며 최근 기준 HS를 사용하면 가용 데이터의 시간 범위가 줄어듬
 
-augment(m2) |>
-  ggplot(aes(x = .fitted, y = .resid)) +
-  geom_point(alpha = 0.3) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "적합값", y = "잔차")
-```
+- 실습에서 사용할 데이터
 
-  - 설명변수가 모두 범주형이므로 적합값이 몇 개의 값에 몰려 세로로 줄지어 나타남
-  - 각 줄의 위아래로 잔차가 비슷한 범위에서 흩어져 있다면 큰 문제는 없으나, 극단적으로 낮은 잔차 (임금이 매우 낮은 관측치)가 보이는 것은 확인할 필요가 있음
+  - 이 강의에서 활용한 BACI 데이터는 HS 1992를 기준으로 1995~2024년을 포함
 
-## 정리
+  - `baci_kor_import.csv`는 원자료에서 한국의 수입을 나타내는 관측치를 추출하여 하나의 데이터에 1995~2024년을 묶어 놓았음 (즉, 원자료에서 `j`가 `410`인 관측치를 추출하고 모든 연도를 통합한 것)
 
-| 하고 싶은 일 | 사용할 코드 |
+    [📥 baci_kor_import 데이터 다운로드](https://drive.google.com/uc?export=download&id=1aUkK3uCd2UrQYmy5BmjmSbHbAiludXGi){.btn .btn-outline-primary .btn-sm}
+
+  - `baci_kor_import_hs2.csv`는 `baci_kor_import.csv`를 각 연도의 HS 코드 2자리로 합계한 데이터
+    
+    - 다른 품목 사이에 변수 `q`의 합계는 의미가 없으므로 이 데이터에서는 제외함
+
+    [📥 baci_kor_import_hs2 데이터 다운로드](data/baci_kor_import_hs2.csv){.btn .btn-outline-primary .btn-sm download=""}
+
+
+- 변수의 설명
+
+| Variable | Description |
 | :--- | :--- |
-| 회귀모형 추정 | `lm(y ~ x1 + x2, data = df)` |
-| 결과 확인 | `summary(fit)`, `confint(fit)` |
-| 결과를 데이터 프레임으로 | `tidy(fit, conf.int = TRUE)`, `glance(fit)`, `augment(fit)` |
-| 범주형 변수의 기준 범주 변경 | `fct_relevel()` |
-| 상호작용 | `x1 * x2` |
-| 모형 비교 | `anova(fit_small, fit_large)` |
-| 예측 | `predict(fit, newdata = ..., interval = "confidence" 또는 "prediction")` |
-| 계수 그림 | `tidy()` + `geom_pointrange()` |
+| `t` | Year |
+| `k` | Product category (HS 6-digit code) |
+| `i` | Exporter (3-digit country code) |
+| `j` | Importer (3-digit country code) |
+| `v` | Value of the trade flow (in thousands current USD) |
+| `q` | Quantity (in metric tons) |
+
+- 데이터 준비
+
+  - HS코드를 숫자로 읽는 경우 `01`이 `1`로 바뀔 수 있으므로 앞 자리 0을 유지하려면 문자로 읽는 것이 안전함
+
+  - HS코드를 해석하기 어려우므로 실습에서 언급되는 주요 품목에 대해서는 레이블을 포함하는 별도 데이터를 직접 만들어 두었음
+
+  - BACI 데이터는 Gravity 데이터와 달리 국가 코드가 알파벳 3자리가 아니라 숫자로 표시됨
+    - 한국: `410`, 일본: `392`
+
+```{r}
+df <- read_csv("data/baci_kor_import_hs2.csv",
+                col_types = "iiicd") # t, i, j (integer), hs2 (character), v (double)
+
+hs2_label <- tribble(
+  ~hs2, ~hs2_label,
+  "29", "유기화학물",
+  "39", "플라스틱",
+  "72", "철강",
+  "84", "일반기계",
+  "85", "전기전자",
+  "90", "정밀기기"
+)
+```
+
+### 대일 수입 품목의 구성과 비중
+
+- 연도별로 대일 수입의 상위 5개 품목을 찾고 그 변화를 서술하시오
+
+```{r}
+#| echo: false
+
+df_jpn <- df |>
+  filter(i == 392)     # 일본 국가기호: 392
+
+yrs <- c(1995, 2000, 2005, 2010, 2015, 2020, 2024)
+
+df_jpn |> 
+  filter(t %in% yrs) |> 
+  left_join(hs2_label, by = "hs2") |> 
+  group_by(t) |>
+  mutate(share = v / sum(v)) |> 
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  mutate(rank = row_number()) |>
+  select(t, rank, hs2_label) |> 
+  pivot_wider(names_from = rank, values_from = hs2_label, names_prefix = "rank") |> 
+  kable(align = rep("c", 6))
+
+```
+
+
+- 지난 30년간 대일 수입 상위 5개 품목의 순위에 일부 변화가 있으나 전체적인 구성은 비교적 안정적임
+
+  - 전기전자, 일반기계, 정밀기기, 철강, 유기화학물, 플라스틱이 상위 품목을 유지
+
+  - 그러나 품목 구성에 큰 변화가 없는 것은 품목 구분이 넓어서 HS코드 2자리 내에서의 변동을 반영하지 못하는 것 때문일 수 있음
+
+- 상위 5개 품목이 전체 대일 수입에서 차지하는 비중의 변화를 서술하시오
+
+```{r}
+#| echo: false
+
+df_jpn |> 
+  group_by(t) |>
+  mutate(share = v / sum(v) * 100) |> 
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  summarize(cum_share = sum(share),
+            cum_value = sum(v)) |> 
+  ggplot(aes(x = t, y = cum_share)) +
+    geom_line() +
+    geom_point() +
+    labs(title = "대일 수입 상위 5개 품목의 점유율 합계 (HS1992 2자리 기준)",
+         x = "연도",
+         y = "상위 5개 품목 점유율 합계 (%)"
+         )
+```         
+
+
+### 품목별 수입의 대일 의존도
+
+- 한국의 전체 수입 중 일본의 비중을 품목별로 구하고 그 추이를 서술하시오
+
+  - 데이터에 매우 많은 품목이 포함되어 있으므로 편의상 2024년 기준 대일 수입 상위 5개 품목인 전기전자(`85`), 일반기계(`84`), 철강(`72`), 정밀기기(`90`), 플라스틱(`39`)에 대해서만 분석
+
+- 한국의 전체 수입 중 일본의 비중으로 정의된 대일 의존도의 변화는 대체로 어떠한가?
+
+- 1995년과 비교하여 2024년에도 대일 의존도가 크게 변화하지 않은 품목은 무엇인가?
+
+```{r}
+#| echo: false
+
+top5 <- df |>
+  filter(i == 392, t == 2024) |>
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  pull(hs2)
+
+df_dep <- df |>
+  filter(hs2 %in% top5) |>
+  group_by(t, hs2) |> 
+  summarise(v_all     = sum(v),
+            v_jpn     = sum(v[i == 392]),
+            share_jpn = v_jpn / v_all * 100) |> 
+  left_join(hs2_label, by = "hs2") 
+
+df_dep |> 
+  ggplot(aes(x = t, y = share_jpn, color = hs2_label)) +
+    geom_line() +
+    geom_point() +
+    labs(
+      title = "품목별 대일 의존도의 변화",
+      y = "품목별 일본산 수입 / 전체 수입 (%)",
+      x = "연도",
+      color = "품목"
+    )  
+```
 
 ## 실습
 
 ::: {.callout-important title="주의사항"}
 
-- 아래 문제 1과 2에 대한 답안을 작성하고 week07_ex_학번.R과 week07_ex_학번.docx를 E-class로 제출하세요.
-
-- 위의 분석을 수행하는 데 사용한 코드는 아래 "참고"에 포함되어 있으니 잘 읽어보고 연습한 후 문제에 답변할 때 활용하세요.
+- 아래 문제 1과 2에 대한 답안을 작성하고 week06_ex_학번.R과 week06_ex_학번.docx를 E-class로 제출하세요.
 
 :::
 
-1. `gapminder` 데이터를 이용하여 아래를 수행하시오.
+1. 우리나라의 주요 수입 상대국에 대하여 2절과 비슷한 분석을 수행하시오.
 
-   (1) 1952년 자료에 대하여 `lifeExp`를 `log(gdpPercap)`에 회귀하고, 2007년의 결과와 기울기, $R^2$를 비교하시오.
-
-   (2) 2007년 자료에서 `continent`를 설명변수로 추가한 모형을 추정하고, `log(gdpPercap)`의 계수가 단순회귀 때와 어떻게 달라지는지 설명하시오. (기준 대륙은 `Africa`로 둘 것)
-
-   (3) (2)의 모형으로 1인당 GDP가 10,000달러인 아시아 국가와 아프리카 국가의 기대수명을 예측하고 예측구간을 제시하시오.
-
-2. `klips27p_small.csv`를 이용하여 아래를 수행하시오.
-
-   (1) `job_type`만을 설명변수로 하는 단순회귀와 `m2`에서 비정규직의 계수를 각각 %로 해석하고, 두 값이 다른 이유를 설명하시오.
-
-   (2) 학력(`education`)과 고용형태(`job_type`)의 상호작용항을 추가하고, 비정규직으로 인한 임금 차이가 학력에 따라 다른지 설명하시오.
-
-   (3) 계수 그림 또는 예측값 그림을 하나 그리고 그림에서 읽을 수 있는 내용을 설명하시오.
+2. 일본 이외에 다른 나라를 하나 정하여 3절과 비슷한 분석을 수행하시오. 국가 코드는 2.3의 Countries 데이터를 참고하시오.
 
 ## 참고
 
@@ -472,185 +640,266 @@ augment(m2) |>
 library(tidyverse)
 library(skimr)
 library(janitor)
-library(broom)      # 회귀분석 결과를 데이터 프레임으로 정리
-library(gapminder)
 
-# =====================================================================
-# A. 단순회귀: 1인당 GDP와 기대수명 (gapminder, 2007)
-# =====================================================================
+# 2.1 데이터 준비
 
-g07 <- gapminder |>
-  filter(year == 2007)
+gravity_small <- read_csv("large_data/gravity_small.csv")
 
-# ---- A-1. 산점도와 회귀선 ----
-g07 |>
-  ggplot(aes(x = gdpPercap, y = lifeExp)) +
+df_kor <- gravity_small |> 
+  filter(country_id_o == "KOR")
+
+df_kor_2020 <- gravity_small |> 
+  filter(country_id_o == "KOR", year == 2020) 
+
+skim(df_kor)
+skim(df_kor_2020)
+
+# 2.2 미러 불일치
+
+df_kor_2020 |> 
+  ggplot(aes(x = tradeflow_comtrade_o,
+             y = tradeflow_comtrade_d)
+  ) +
+  scale_x_log10() +
+  scale_y_log10() +
   geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "1인당 GDP와 기대수명 (2007)",
-       x = "1인당 GDP (달러)", y = "기대수명 (세)")
-
-g07 |>
-  ggplot(aes(x = log(gdpPercap), y = lifeExp)) +
-  geom_point() +
-  geom_smooth(method = "lm", se = FALSE) +
-  labs(title = "로그 1인당 GDP와 기대수명 (2007)",
-       x = "로그 1인당 GDP", y = "기대수명 (세)")
-
-# ---- A-2. 추정 ----
-fit1 <- lm(lifeExp ~ log(gdpPercap), data = g07)
-
-fit1                          # 계수만 간단히 출력
-summary(fit1)                 # 표준오차, t값, p값, R제곱 등
-coef(fit1)                    # 계수 벡터
-confint(fit1)                 # 계수의 95% 신뢰구간
-
-tidy(fit1, conf.int = TRUE)   # 계수 표 (데이터 프레임)
-glance(fit1)                  # 모형 전체의 요약 (R제곱, 관측치 수 등)
-
-# ---- A-3. 해석을 위한 계산 ----
-b <- coef(fit1)[["log(gdpPercap)"]]
-b * log(2)                    # 1인당 GDP가 2배가 되면 기대수명은 몇 세 증가?
-b * log(1.1)                  # 1인당 GDP가 10% 증가하면?
-
-# ---- A-4. 적합값과 잔차 ----
-g07_fit <- augment(fit1, data = g07)   # .fitted, .resid 등이 추가됨
-
-g07_fit |>
-  select(country, continent, lifeExp, .fitted, .resid) |>
-  slice_min(.resid, n = 5)             # 모형이 가장 과대예측한 국가들
-
-g07_fit |>
-  select(country, continent, lifeExp, .fitted, .resid) |>
-  slice_max(.resid, n = 5)             # 모형이 가장 과소예측한 국가들
-
-# ---- A-5. 예측 ----
-new_gdp <- tibble(gdpPercap = c(1000, 10000, 40000))
-
-predict(fit1, newdata = new_gdp)                           # 점예측
-predict(fit1, newdata = new_gdp, interval = "confidence")  # 평균에 대한 신뢰구간
-predict(fit1, newdata = new_gdp, interval = "prediction")  # 개별 관측치에 대한 예측구간
-
-# 예측 결과를 그래프로: 신뢰구간(진한 띠)과 예측구간(옅은 띠)
-grid <- tibble(gdpPercap = exp(seq(log(300), log(50000), length.out = 100)))
-
-pred <- bind_cols(
-  grid,
-  as_tibble(predict(fit1, grid, interval = "confidence")),
-  as_tibble(predict(fit1, grid, interval = "prediction")) |>
-    select(pred_lwr = lwr, pred_upr = upr)
-)
-
-ggplot() +
-  geom_ribbon(data = pred, aes(x = log(gdpPercap), ymin = pred_lwr, ymax = pred_upr),
-              alpha = 0.15) +
-  geom_ribbon(data = pred, aes(x = log(gdpPercap), ymin = lwr, ymax = upr),
-              alpha = 0.4) +
-  geom_line(data = pred, aes(x = log(gdpPercap), y = fit)) +
-  geom_point(data = g07, aes(x = log(gdpPercap), y = lifeExp)) +
-  labs(x = "로그 1인당 GDP", y = "기대수명 (세)")
-
-# ---- A-6. 잔차 진단 ----
-g07_fit |>
-  ggplot(aes(x = .fitted, y = .resid)) +
-  geom_point() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "적합값", y = "잔차")
-
-g07_fit |>
-  ggplot(aes(sample = .std.resid)) +
-  stat_qq() +
-  stat_qq_line() +
-  labs(x = "이론적 분위수", y = "표준화 잔차")
-
-# =====================================================================
-# B. 다중회귀: KLIPS 임금 (4주차 데이터)
-# =====================================================================
-
-klips <- read_csv("data/klips27p_small.csv") |>
-  mutate(
-    gender    = fct_relevel(gender, "Female", "Male"),
-    age_group = fct_relevel(age_group, "Below 30", "30s", "40s", "Above 50"),
-    education = fct_relevel(education, "High School", "College"),
-    job_type  = fct_relevel(job_type, "Regular", "Non-regular"),
-    log_wage  = log(wage)
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  coord_cartesian(xlim = c(1e+1, 1e9), ylim = c(1e+1, 1e9)) +
+  labs(
+    title = "우리나라 보고 수출액과 상대국 보고 수입액의 비교",
+    x = "한국 보고 수출액 (천 달러)",
+    y = "상대국 보고 수입액 (천 달러)"
   )
 
-# ---- B-1. 범주형 변수 하나: 성별 ----
-m0 <- lm(wage ~ gender, data = klips)
-tidy(m0)                         # 4주차 t-test의 평균 차이와 같은 값
-t.test(wage ~ gender, data = klips)
+df_kor_2020 |> 
+  mutate(gap = log(tradeflow_comtrade_d/tradeflow_comtrade_o)) |> 
+  ggplot(aes(x = gap)) +
+  geom_histogram(breaks = seq(-6, 4, by = 0.5)) +
+  labs(
+    title = "거울 데이터 불일치 (Gap)의 분포",
+    x = "Gap: 로그(상대국수입액/한국수출액)",
+  )
 
-m1 <- lm(log_wage ~ gender, data = klips)
-tidy(m1, conf.int = TRUE)
-exp(coef(m1)[["genderMale"]]) - 1      # 남성 임금이 약 몇 % 높은가
+df_kor_2020 |> 
+  mutate(gap = log(tradeflow_comtrade_d/tradeflow_comtrade_o)) |> 
+  select(gap) |> 
+  skim()
 
-# ---- B-2. 통제변수 추가 ----
-m2 <- lm(log_wage ~ gender + age_group + education + job_type, data = klips)
-summary(m2)
-tidy(m2, conf.int = TRUE)
-glance(m2)
+# df_kor_2020 |> 
+#   mutate(o_na = is.na(tradeflow_comtrade_o),
+#          d_na = is.na(tradeflow_comtrade_d)) |> 
+#   tabyl(o_na, d_na)
 
-# 계수를 % 단위로 환산
-tidy(m2, conf.int = TRUE) |>
-  filter(term != "(Intercept)") |>
-  mutate(pct = (exp(estimate) - 1) * 100) |>
-  select(term, estimate, pct, p.value)
+# df_kor_2020 |> 
+#   filter(is.na(tradeflow_comtrade_o) | 
+#          is.na(tradeflow_comtrade_d)) |> 
+#   pull(country_id_d)  
 
-# ---- B-3. 계수 그림 ----
-tidy(m2, conf.int = TRUE) |>
-  filter(term != "(Intercept)") |>
-  ggplot(aes(x = estimate, y = fct_reorder(term, estimate))) +
-  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
-  geom_vline(xintercept = 0, linetype = "dashed") +
-  labs(x = "계수 (로그 임금)", y = NULL)
 
-# ---- B-4. 모형 비교 ----
-bind_rows(
-  glance(m1) |> mutate(model = "성별만"),
-  glance(m2) |> mutate(model = "성별 + 연령 + 학력 + 고용형태")
-) |>
-  select(model, r.squared, adj.r.squared, sigma, nobs)
+# 2.3 우리나라의 주요 수출 상대국의 변화
 
-# ---- B-5. 상호작용: 성별 임금격차가 연령대마다 다른가 ----
-m3 <- lm(log_wage ~ gender * age_group + education + job_type, data = klips)
-tidy(m3)
-anova(m2, m3)                  # 상호작용항이 필요한지 F-검정
+df_kor |> 
+  group_by(year) |> 
+  slice_max(tradeflow_comtrade_o, n = 3, with_ties = FALSE) |> # 상위 3개 추출
+  mutate(rank = row_number()) |> # 1부터 3까지의 순번 부여
+  select(year, rank, country_id_d) |> 
+  pivot_wider(names_from = rank, values_from = country_id_d) |> 
+  print(n = Inf)
 
-# ---- B-6. 예측 ----
-new_people <- tibble(
-  gender    = c("Female", "Male"),
-  age_group = "30s",
-  education = "College",
-  job_type  = "Regular"
+
+df_kor |> 
+  group_by(year) |> 
+  mutate(
+    total_trade = sum(tradeflow_comtrade_o, na.rm = TRUE),
+    share = (tradeflow_comtrade_o / total_trade) * 100) |> 
+  filter(country_id_d %in% c("USA", "JPN", "CHN", "VNM.2")) |> 
+  ggplot(aes(x = year, y = share, color = country_id_d)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "Export Share for Major Partners",
+    x = "Year",
+    y = "Share (%)",
+    color = "Country"
+  )
+
+df_kor |> 
+  group_by(year) |> 
+  mutate(
+    total_trade = sum(tradeflow_comtrade_o, na.rm = TRUE),
+    share = (tradeflow_comtrade_o / total_trade) * 100 ) |> 
+  summarize(hhi = sum(share^2, na.rm = TRUE)) |>
+  ggplot(aes(x = year, y = hhi)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Export Market Concentration (HHI)", y = "HHI", x = "Year")
+
+# 2.4 중력모형의 기본 형태
+
+df_kor_2020 |> 
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o))) +
+  geom_point() +
+  labs(
+    title = "상대국 GDP별 한국의 수출액",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액"
+  )  
+
+
+df_kor_2020 |> 
+  ggplot(aes(x = log(dist), y = log(tradeflow_comtrade_o))) +
+  geom_point() +
+  labs(
+    title = "거리별 한국의 수출액",
+    x = "로그 거리",
+    y = "로그 수출액"
+  )
+
+
+# 2.5 plotly
+
+library(plotly)
+
+## Hover
+
+p1 <- df_kor_2020 |> 
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o), text = country_id_d)) +
+  geom_point() +
+  labs(
+    title = "상대국 GDP별 한국의 수출액",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액"
+  ) 
+
+ggplotly(p1, tooltip = "text")
+
+## Toggling legends
+
+p2 <- df_kor |> 
+  filter(year %in% c(1980, 2000, 2020)) |>
+  ggplot(aes(x = log(gdp_d), y = log(tradeflow_comtrade_o), color = as.factor(year))) +
+  geom_point() +
+  labs(
+    title = "연도별 상대국 GDP와 한국의 수출액",
+    x = "상대국 로그 GDP",
+    y = "로그 수출액",
+    color = "연도"
+  ) 
+
+ggplotly(p2)
+
+## Animation
+
+p3 <- df_kor |> 
+  filter(country_id_d %in% c("USA","CHN","JPN"), year >= 1990) |> 
+  ggplot(aes(x = gdp_d, y = tradeflow_comtrade_o, frame = year, 
+             ids = country_id_d, color = country_id_d)) +
+  geom_point() +
+  labs(
+    title = "미국, 중국, 일본의 GDP와 한국의 수출액 (1990 ~ 2020)",
+    x = "상대국 GDP (천 달러)",
+    y = "한국의 수출액 (천 달러)",
+    color = "상대국"
+  ) 
+
+ggplotly(p3)
+
+
+# 2.6 FTA
+
+df_fta <- df_kor_2020 |> 
+  mutate(fta_wto = factor(fta_wto, levels = c(0, 1), labels = c("미체결", "체결")),
+         tradeflow_filled_o = replace_na(tradeflow_comtrade_o, 0)
+  ) 
+
+df_fta |>
+  tabyl(fta_wto) |>
+  adorn_pct_formatting(digits = 1) 
+
+df_fta |>
+  group_by(fta_wto) |> 
+  summarize(
+    n_raw = sum(!is.na(tradeflow_comtrade_o)),
+    mean_raw = mean(tradeflow_comtrade_o, na.rm = TRUE),
+    n_filled = sum(!is.na(tradeflow_filled_o)),
+    mean_filled = mean(tradeflow_filled_o, na.rm = TRUE)
+  ) 
+
+t.test(tradeflow_comtrade_o~fta_wto, data = df_fta)  
+t.test(tradeflow_filled_o~fta_wto, data = df_fta)  
+
+
+# 3.1 데이터 준비
+
+df <- read_csv("data/baci_kor_import_hs2.csv",
+               col_types = "iiicd") # t, i, j (integer), hs2 (character), v (double)
+
+hs2_label <- tribble(
+  ~hs2, ~hs2_label,
+  "29", "유기화학물",
+  "39", "플라스틱",
+  "72", "철강",
+  "84", "일반기계",
+  "85", "전기전자",
+  "90", "정밀기기"
 )
 
-new_people |>
-  bind_cols(as_tibble(predict(m2, new_people, interval = "confidence"))) |>
-  mutate(across(c(fit, lwr, upr), exp))     # 로그 임금 -> 임금(만원)
 
-# 예측 그래프: 성별 x 연령대 (학력 = College, 정규직)
-grid <- expand_grid(
-  gender    = levels(klips$gender),
-  age_group = levels(klips$age_group),
-  education = "College",
-  job_type  = "Regular"
-) |>
-  mutate(age_group = factor(age_group, levels = levels(klips$age_group)))
+# 3.2 대일 수입 품목의 구성과 비중
 
-grid |>
-  bind_cols(as_tibble(predict(m3, grid, interval = "confidence"))) |>
-  ggplot(aes(x = age_group, y = exp(fit), color = gender, group = gender)) +
-  geom_pointrange(aes(ymin = exp(lwr), ymax = exp(upr)),
-                  position = position_dodge(width = 0.2)) +
-  geom_line(position = position_dodge(width = 0.2)) +
-  labs(title = "예측 임금 (대졸, 정규직)",
-       x = "연령 그룹", y = "예측 임금 (만원)", color = "성별")
+df_jpn <- df |>
+  filter(i == 392)     # 일본 국가기호: 392
 
-# ---- B-7. 잔차 진단 ----
-augment(m2) |>
-  ggplot(aes(x = .fitted, y = .resid)) +
-  geom_point(alpha = 0.3) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(x = "적합값", y = "잔차")
+yrs <- c(1995, 2000, 2005, 2010, 2015, 2020, 2024)
+
+df_jpn |> 
+  filter(t %in% yrs) |> 
+  left_join(hs2_label, by = "hs2") |> 
+  group_by(t) |>
+  mutate(share = v / sum(v)) |> 
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  mutate(rank = row_number()) |>
+  select(t, rank, hs2_label) |> 
+  pivot_wider(names_from = rank, values_from = hs2_label, names_prefix = "rank") 
+
+df_jpn |> 
+  group_by(t) |>
+  mutate(share = v / sum(v) * 100) |> 
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  summarize(cum_share = sum(share),
+            cum_value = sum(v)) |> 
+  ggplot(aes(x = t, y = cum_share)) +
+  geom_line() +
+  geom_point() +
+  labs(title = "대일 수입 상위 5개 품목의 점유율 합계 (HS1992 2자리 기준)",
+       x = "연도",
+       y = "상위 5개 품목 점유율 합계 (%)"
+  )
+
+# 3.3 품목별 수입의 대일 의존도
+
+top5 <- df |>
+  filter(i == 392, t == 2024) |>
+  slice_max(v, n = 5, with_ties = FALSE) |>
+  pull(hs2)
+
+df_dep <- df |>
+  filter(hs2 %in% top5) |>
+  group_by(t, hs2) |> 
+  summarise(v_all     = sum(v),
+            v_jpn     = sum(v[i == 392]),
+            share_jpn = v_jpn / v_all * 100) |> 
+  left_join(hs2_label, by = "hs2") 
+
+df_dep |> 
+  ggplot(aes(x = t, y = share_jpn, color = hs2_label)) +
+  geom_line() +
+  geom_point() +
+  labs(
+    title = "품목별 대일 의존도의 변화",
+    y = "품목별 일본산 수입 / 전체 수입 (%)",
+    x = "연도",
+    color = "품목"
+  )  
+
 ```

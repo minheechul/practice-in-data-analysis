@@ -38,9 +38,9 @@ website:
           - week01.qmd
           - week02.qmd
           - week03.qmd
-          - week04.qmd
-          - week05.qmd   
-          - week06.qmd
+          - week05.qmd
+          - week06.qmd   
+          - week07.qmd
           
 
 format:
