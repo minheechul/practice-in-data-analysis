@@ -5,6 +5,7 @@ project:
     - "*.md"
     - "!CLAUDE.md"
     - "!for_later_use/"
+    - "exam/"
   resources:
     - "data/*.csv"
     - "scripts/*.R"
