@@ -42,6 +42,7 @@ website:
           - week05.qmd
           - week06.qmd   
           - week07.qmd
+          - week08.qmd
           
 
 format:

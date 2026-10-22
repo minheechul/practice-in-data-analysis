@@ -24,13 +24,18 @@ library(janitor)
 library(skimr)
 library(broom)         # 회귀분석 결과를 데이터 프레임으로 정리
 library(modelsummary)  # 회귀분석 결과표
-library(openintro)     # 이번 주 데이터 (elmhurst, acs12)
 ```
 
 - 새로 설치할 패키지: `modelsummary`
   - `broom`은 `tidyverse`를 설치할 때 함께 설치되지만 `library(tidyverse)`로 자동으로 불러와지지는 않으므로 따로 불러야 함
 
-## 단순회귀
+```{r}
+library(openintro)     # 이번 주 데이터 (elmhurst, acs12)
+```
+
+- 분석에 사용할 데이터로는 `openintro` 패키지의 `elmhurst`와 `acs12`를 이용
+
+## Part 1. 단순회귀
 
 ### 데이터: 대학 장학금과 가구소득
 
@@ -63,10 +68,10 @@ elmhurst |>
 ```{r}
 elmhurst |>
   mutate(income_group = cut(family_income, breaks = c(-Inf, 50, 100, 150, Inf))) |>
+  group_by(income_group) |>
   summarize(n = n(),
             mean_income = mean(family_income),
-            mean_aid = mean(gift_aid),
-            .by = income_group) |>
+            mean_aid = mean(gift_aid)) |>
   arrange(income_group)
 ```
 
@@ -159,7 +164,6 @@ glance(fit1)
   - 이 자료에는 가구소득이 0에 가까운 학생이 있으므로 해석할 수 있으나, 일반적으로 $x = 0$이 자료의 범위 밖이면 절편 자체는 큰 의미가 없음
 
 - 해석할 때는 항상 단위를 확인하고, 계수를 "평균적으로", "~한 경향"으로 읽음
-  - 개별 학생이 이 직선 위에 있다는 뜻이 아님
 
 ### 적합값, 잔차, 그리고 `predict()`
 
@@ -232,7 +236,7 @@ elm_fit |>
 
 - 잔차가 0을 중심으로 위아래에 고르게 흩어져 있으면 괜찮음
 - 문제의 신호
-  - 곡선 모양: 관계가 직선이 아님 (Part 2의 비선형 항 참고)
+  - 곡선 모양: 관계가 직선이 아님 
   - 부채꼴 모양: 적합값이 커질수록 잔차가 커지는 경우. 종속변수에 로그를 취하면 나아지는 경우가 많음
   - 다른 점들과 멀리 떨어진 점: 이상치
 
@@ -243,6 +247,8 @@ elm_fit |>
 - 예시: 가구소득 26만 달러이면서 장학금 35천 달러를 받은 학생 한 명이 가상으로 추가되었다면
 
 ```{r}
+#| echo: false
+#| 
 elm_out <- elmhurst |>
   add_row(family_income = 260, gift_aid = 35)
 
@@ -253,6 +259,7 @@ tidy(fit1_out)
 ```
 
 ```{r}
+#| echo: false
 #| fig-width: 6
 #| fig-height: 4
 
@@ -293,7 +300,7 @@ tidy(fit1, conf.int = TRUE)
   - 0을 포함하지 않음 ↔ p값(0.0002)이 0.05보다 작음 → 5% 유의수준에서 "가구소득과 장학금 사이의 관계가 없다"는 귀무가설을 기각
 - 신뢰구간도 단위를 바꿔서 읽으면 이해하기 쉬움: 가구소득이 1만 달러 높을 때 장학금은 약 210 ~ 650달러 적음
 
-#### 통계적 유의성과 효과의 크기는 다름
+<!-- #### 통계적 유의성과 효과의 크기는 다름 -->
 
 - p값은 "0과 다른가"에 대한 답이지 "얼마나 큰가", "중요한가"에 대한 답이 아님
   - 관측치가 매우 많으면 아주 작은 차이도 통계적으로 유의하게 나옴
@@ -313,7 +320,7 @@ glance(fit1) |>
   - $R^2 = 0.249$: 장학금의 변동 중 약 25%가 가구소득으로 설명됨
 - `sigma` (잔차 표준오차): 잔차의 표준편차. 모형으로 예측했을 때 대략 ±4.8천 달러 정도의 오차가 있다는 의미
 
-#### $R^2$가 말해 주지 않는 것
+<!-- #### $R^2$가 말해 주지 않는 것 -->
 
 - $R^2$가 낮다고 해서 기울기가 쓸모없는 것은 아님
   - $R^2$가 0.25로 낮더라도 기울기는 정확히 추정되어 있음 (p값이 매우 작음)
@@ -322,6 +329,7 @@ glance(fit1) |>
 - 예: R에 내장된 `anscombe` 데이터의 네 가지 자료는 회귀계수와 $R^2$가 거의 같지만 모양이 전혀 다름
 
 ```{r}
+#| echo: false
 anscombe_long <- anscombe |>
   pivot_longer(everything(),
                names_to = c(".value", "set"),
@@ -391,11 +399,11 @@ acs_emp <- acs_emp |>
   mutate(log_income = log(income))
 
 m_ll <- lm(income ~ hrs_work, data = acs_emp)
-m_lx <- lm(log_income ~ hrs_work, data = acs_emp)
+m_gl <- lm(log_income ~ hrs_work, data = acs_emp)
 m_gg <- lm(log_income ~ log(hrs_work), data = acs_emp)
 
 tidy(m_ll)
-tidy(m_lx)
+tidy(m_gl)
 tidy(m_gg)
 ```
 
@@ -404,13 +412,13 @@ tidy(m_gg)
   - 정확히는 $e^{0.0579} - 1 \approx 0.060$, 즉 6.0%. 계수가 작을 때(대략 0.1 이하)는 계수 $\times$ 100으로 읽어도 큰 차이가 없음
 
 ```{r}
-exp(coef(m_lx)[["hrs_work"]]) - 1
+exp(coef(m_gl)[["hrs_work"]]) - 1
 ```
 
 - 로그-로그: 주당 근로시간이 1% 많으면 연간 소득이 약 1.7% 많음 (탄력성 1.7)
   - 7주차 중력모형에서 GDP의 계수를 탄력성으로 읽은 것과 같은 해석
 
-- 세 모형의 그림 비교
+<!-- - 세 모형의 그림 비교
 
 ```{r}
 #| fig-width: 5
@@ -435,7 +443,7 @@ p3
 ```
 
 - 수준-수준 모형에서는 소득이 높은 소수의 관측치가 넓게 흩어져 있으나, 로그를 취하면 퍼짐이 비교적 고르게 됨
-- 주의: 종속변수가 다르면 ($y$ vs. $\ln y$) $R^2$를 직접 비교할 수 없음
+- 주의: 종속변수가 다르면 ($y$ vs. $\ln y$) $R^2$를 직접 비교할 수 없음 -->
 
 #### 로그 모형의 예측값
 
@@ -445,7 +453,7 @@ p3
 new_hrs <- tibble(hrs_work = c(20, 40))
 
 new_hrs |>
-  mutate(pred_log = predict(m_lx, newdata = new_hrs),
+  mutate(pred_log = predict(m_gl, newdata = new_hrs),
          pred_income = exp(pred_log))
 ```
 
@@ -460,19 +468,21 @@ new_hrs |>
 
 ```{r}
 modelsummary(
-  list("로그-수준" = m_lx, "로그-로그" = m_gg),
+  list("로그-수준" = m_gl, "로그-로그" = m_gg),
   stars = TRUE,
   gof_map = c("nobs", "r.squared")
 )
 ```
+
+- 마이크로소프트 워드 문서로 출력하려면 `output = table1.docx`와 같이 저장할 파일 이름을 지정할 수 있음 (추가로 `pandoc` 패키지 설치 필요함)
 
 - 계수 표를 파일로 저장하려면 `tidy()`의 결과를 `write_csv()`로 저장
 
 ```{r}
 #| eval: false
 
-tidy(m_lx, conf.int = TRUE) |>
-  write_csv("output/week08_m_lx.csv")
+tidy(m_gl, conf.int = TRUE) |>
+  write_csv("output/week08_m_gl.csv")
 ```
 
 #### 결과를 문장으로 쓰기
@@ -488,12 +498,12 @@ tidy(m_lx, conf.int = TRUE) |>
 > 2012년 미국 취업자 787명의 자료에서 주당 근로시간이 1시간 많은 사람은 연간 소득이 평균적으로 약 6% 높았다 (95% 신뢰구간: 5.4 ~ 6.5%). 근로시간은 소득의 로그값의 변동 중 약 36%를 설명한다. 다만 이 결과는 근로시간과 소득의 연관성을 보여줄 뿐이며, 근로시간을 늘리면 소득이 그만큼 늘어난다는 의미는 아니다.
 
 ```{r}
-tidy(m_lx, conf.int = TRUE) |>
+tidy(m_gl, conf.int = TRUE) |>
   filter(term == "hrs_work") |>
   mutate(across(c(estimate, conf.low, conf.high), \(b) (exp(b) - 1) * 100))
 ```
 
-## 다중회귀
+## Part 2. 다중회귀
 
 ### 다중회귀: "다른 조건이 같다면"
 
@@ -512,9 +522,9 @@ tidy(mm1)
 
 ```{r}
 acs_emp |>
+  group_by(gender) |>
   summarize(mean_hrs = mean(hrs_work),
-            mean_income = mean(income),
-            .by = gender)
+            mean_income = mean(income))
 ```
 
   - 여성의 평균 주당 근로시간이 약 7시간 짧음. 연간 소득의 차이 중 일부는 근로시간의 차이 때문일 수 있음
@@ -599,7 +609,8 @@ tidy(mm_edu)
 
 ```{r}
 acs_emp |>
-  summarize(mean_log_income = mean(log_income), n = n(), .by = edu)
+  group_by(edu) |>
+  summarize(mean_log_income = mean(log_income), n = n())
 ```
 
   - 절편 9.89 = 고졸 이하의 평균
@@ -622,7 +633,7 @@ acs_emp |>
   - 기준 범주를 바꿔도 모형 자체(적합값, $R^2$)는 같고 표현만 달라짐
   - `data = _`: 파이프(`|>`)로 넘어온 데이터를 `data` 인자 자리에 넣으라는 표시
 
-### 교호작용 (interaction)
+<!-- ### 교호작용 (interaction)
 
 - `mm3`는 남녀 소득 차이(약 25%)가 모든 학력에서 똑같다고 가정함
 - 학력에 따라 남녀 차이가 다른지 보려면 성별과 학력의 교호작용항을 추가
@@ -750,7 +761,7 @@ grid_age |>
 anova(mm3, mm5)
 ```
 
-  - p값이 매우 작으므로 제곱항을 추가하는 것이 모형을 유의하게 개선함
+  - p값이 매우 작으므로 제곱항을 추가하는 것이 모형을 유의하게 개선함 -->
 
 ## 정리
 
@@ -761,14 +772,14 @@ anova(mm3, mm5)
 | 결과 확인 | `summary(fit)` |
 | 결과를 데이터 프레임으로 | `tidy(fit, conf.int = TRUE)`, `glance(fit)`, `augment(fit)` |
 | 새로운 값의 예측 | `predict(fit, newdata = ...)` |
-| 예측값의 신뢰구간 | `predict(fit, newdata = ..., interval = "confidence")` |
+<!-- | 예측값의 신뢰구간 | `predict(fit, newdata = ..., interval = "confidence")` | -->
 | 로그 변환 | `lm(log(y) ~ x)`, `lm(log(y) ~ log(x))` |
 | 회귀표 | `modelsummary(list(...), stars = TRUE)` |
 | 계수 그림 | `tidy()` + `geom_pointrange()` |
 | 기준 범주 변경 | `fct_relevel()` |
-| 교호작용 | `x1 * x2` |
+<!-- | 교호작용 | `x1 * x2` |
 | 제곱항 | `I(x^2)` |
-| 모형 비교 (F-검정) | `anova(fit_small, fit_large)` |
+| 모형 비교 (F-검정) | `anova(fit_small, fit_large)` | -->
 
 - 해석할 때의 체크리스트
   - 단위는 무엇인가? 로그를 사용했는가?
@@ -778,31 +789,29 @@ anova(mm3, mm5)
 
 ## 실습
 
-::: {.callout-important title="주의사항"}
+<!-- ::: {.callout-important title="주의사항"}
 
 - 아래 문제 1과 2에 대한 답안을 작성하고 week08_ex_학번.R과 week08_ex_학번.docx를 E-class로 제출하세요.
 
 - 위의 분석을 수행하는 데 사용한 코드는 아래 "참고"에 포함되어 있으니 잘 읽어보고 연습한 후 문제에 답변할 때 활용하세요.
 
-:::
+::: -->
 
 1. `elmhurst` 데이터를 이용하여 아래를 수행하시오.
 
    (1) `price_paid` (실제로 낸 금액)를 `family_income`에 회귀하고, 기울기와 절편을 단위를 포함하여 해석하시오.
 
-   (2) (1)의 모형으로 가구소득이 6만 달러, 12만 달러인 학생이 실제로 낼 금액을 `predict()`로 예측하시오.
+   (2) 1의 모형으로 가구소득이 6만 달러, 12만 달러인 학생이 실제로 낼 금액을 `predict()`로 예측하시오.
 
-   (3) (1)의 기울기와 본문의 `gift_aid` 모형의 기울기를 비교하시오. 등록금이 모든 학생에게 같다면 두 기울기는 어떤 관계여야 하는가? 실제 결과는 그와 같은가? (힌트: `price_paid` = 등록금 - `gift_aid`이므로 `price_paid + gift_aid`를 계산해 보시오)
+   (3) 1의 기울기와 본문의 `gift_aid` 모형의 기울기를 비교하시오. 등록금이 모든 학생에게 같다면 두 기울기는 어떤 관계여야 하는가? 실제 결과는 그와 같은가? (힌트: `price_paid` = 등록금 - `gift_aid`이므로 `price_paid + gift_aid`를 계산해 보시오)
 
-   (4) (1)의 잔차 그림을 그리고 특징을 설명하시오.
+   (4) 1의 잔차 그림을 그리고 특징을 설명하시오.
 
 2. `acs12` 데이터에서 본문과 같은 방법으로 `acs_emp`를 만든 후 아래를 수행하시오.
 
    (1) `log_income`을 `age`에 회귀한 단순회귀와 `age`, `hrs_work`, `edu`, `gender`를 모두 포함한 다중회귀에서 `age`의 계수를 각각 %로 해석하고, 두 값이 다르다면 그 이유를 설명하시오.
 
-   (2) 본문의 `mm3`에 성별과 근로시간의 교호작용항(`gender * hrs_work`)을 추가하여 추정하고, 근로시간과 소득의 관계가 남녀에 따라 다른지 설명하시오.
-
-   (3) `modelsummary()`로 `mm3`와 (2)의 모형을 비교하는 표를 만들고, 결과를 본문의 "결과를 문장으로 쓰기"에서 제시한 네 가지 요소를 포함하여 3~4 문장으로 서술하시오.
+   (2) `modelsummary()`로 1의 두 모형을 비교하는 표를 만들고, 결과를 본문의 "결과를 문장으로 쓰기"에서 제시한 네 가지 요소를 포함하여 3~4 문장으로 서술하시오.
 
 ## 참고
 
@@ -931,24 +940,24 @@ anscombe_long |>
 
 # ---- Part 1-2. 로그 변환 (acs12) ----
 m_ll <- lm(income ~ hrs_work, data = acs_emp)            # 수준-수준
-m_lx <- lm(log_income ~ hrs_work, data = acs_emp)        # 로그-수준
+m_gl <- lm(log_income ~ hrs_work, data = acs_emp)        # 로그-수준
 m_gg <- lm(log_income ~ log(hrs_work), data = acs_emp)   # 로그-로그
 
 tidy(m_ll)
-tidy(m_lx)
+tidy(m_gl)
 tidy(m_gg)
 
-exp(coef(m_lx)[["hrs_work"]]) - 1     # 정확한 % 변화
+exp(coef(m_gl)[["hrs_work"]]) - 1     # 정확한 % 변화
 
 # 로그 모형의 예측값은 exp()로 되돌림
 new_hrs <- tibble(hrs_work = c(20, 40))
 new_hrs |>
-  mutate(pred_log = predict(m_lx, newdata = new_hrs),
+  mutate(pred_log = predict(m_gl, newdata = new_hrs),
          pred_income = exp(pred_log))
 
 # 회귀표
 modelsummary(
-  list("로그-수준" = m_lx, "로그-로그" = m_gg),
+  list("로그-수준" = m_gl, "로그-로그" = m_gg),
   stars = TRUE,
   gof_map = c("nobs", "r.squared")
 )
