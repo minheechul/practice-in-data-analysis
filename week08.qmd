@@ -345,6 +345,7 @@ anscombe_long |>
 
   - 1: 직선이 적절한 경우, 2: 곡선 관계, 3: 이상치 하나가 직선을 끌어당김, 4: 점 하나가 기울기를 결정
   - 숫자만 보지 말고 반드시 그림을 함께 보아야 하는 이유
+  - 비슷한 사례로 다음 [Datasaurus Dozen](data/datasaurus.csv)도 참고
 
 ### 로그 변환과 해석
 
@@ -474,7 +475,7 @@ modelsummary(
 )
 ```
 
-- 마이크로소프트 워드 문서로 출력하려면 `output = table1.docx`와 같이 저장할 파일 이름을 지정할 수 있음 (추가로 `pandoc` 패키지 설치 필요함)
+- 마이크로소프트 워드 문서로 출력하려면 `output = "table1.docx"`와 같이 저장할 파일 이름을 지정할 수 있음 (추가로 `pandoc` 패키지 설치 필요함)
 
 - 계수 표를 파일로 저장하려면 `tidy()`의 결과를 `write_csv()`로 저장
 
@@ -772,14 +773,10 @@ anova(mm3, mm5)
 | 결과 확인 | `summary(fit)` |
 | 결과를 데이터 프레임으로 | `tidy(fit, conf.int = TRUE)`, `glance(fit)`, `augment(fit)` |
 | 새로운 값의 예측 | `predict(fit, newdata = ...)` |
-<!-- | 예측값의 신뢰구간 | `predict(fit, newdata = ..., interval = "confidence")` | -->
 | 로그 변환 | `lm(log(y) ~ x)`, `lm(log(y) ~ log(x))` |
 | 회귀표 | `modelsummary(list(...), stars = TRUE)` |
 | 계수 그림 | `tidy()` + `geom_pointrange()` |
 | 기준 범주 변경 | `fct_relevel()` |
-<!-- | 교호작용 | `x1 * x2` |
-| 제곱항 | `I(x^2)` |
-| 모형 비교 (F-검정) | `anova(fit_small, fit_large)` | -->
 
 - 해석할 때의 체크리스트
   - 단위는 무엇인가? 로그를 사용했는가?
