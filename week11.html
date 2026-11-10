@@ -1,0 +1,2499 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>11주차. 예측하기 (2): 이산적 결과 변수 – Practice in Data Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-43081d808c96cc46af55a3a816ae9eed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Practice in Data Analysis</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./syllabus.html"> 
+<span class="menu-text">강의계획서</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./schedules.html"> 
+<span class="menu-text">일정</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">11주차. 예측하기 (2): 이산적 결과 변수</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">강의자료</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1주차. 도구 배우기 (1): 소개</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2주차. 도구 배우기 (2): 데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3주차. 도구 배우기 (3): 그래프 그리기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5주차. 도구 적용하기 (1): 근로자 수준 데이터</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6주차. 도구 적용하기 (2): 시계열 데이터</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7주차. 도구 적용하기 (3): 무역 데이터</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8주차. 회귀분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10주차. 예측하기 (1): 연속적 결과 변수</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#도입" id="toc-도입" class="nav-link active" data-scroll-target="#도입"><span class="header-section-number">1</span> 도입</a></li>
+  <li><a href="#확률을-예측하기" id="toc-확률을-예측하기" class="nav-link" data-scroll-target="#확률을-예측하기"><span class="header-section-number">2</span> 확률을 예측하기</a>
+  <ul class="collapse">
+  <li><a href="#데이터-신용카드-연체" id="toc-데이터-신용카드-연체" class="nav-link" data-scroll-target="#데이터-신용카드-연체"><span class="header-section-number">2.1</span> 데이터: 신용카드 연체</a></li>
+  <li><a href="#선형확률모형linear-probability-model" id="toc-선형확률모형linear-probability-model" class="nav-link" data-scroll-target="#선형확률모형linear-probability-model"><span class="header-section-number">2.2</span> 선형확률모형(linear probability model)</a></li>
+  <li><a href="#로지스틱-회귀logistic-regression" id="toc-로지스틱-회귀logistic-regression" class="nav-link" data-scroll-target="#로지스틱-회귀logistic-regression"><span class="header-section-number">2.3</span> 로지스틱 회귀(logistic regression)</a></li>
+  <li><a href="#predict로-확률-구하기" id="toc-predict로-확률-구하기" class="nav-link" data-scroll-target="#predict로-확률-구하기"><span class="header-section-number">2.4</span> <code>predict()</code>로 확률 구하기</a></li>
+  <li><a href="#계수의-부호는-무엇을-함께-넣느냐에-따라-바뀔-수-있다" id="toc-계수의-부호는-무엇을-함께-넣느냐에-따라-바뀔-수-있다" class="nav-link" data-scroll-target="#계수의-부호는-무엇을-함께-넣느냐에-따라-바뀔-수-있다"><span class="header-section-number">2.5</span> 계수의 부호는 무엇을 함께 넣느냐에 따라 바뀔 수 있다</a></li>
+  </ul></li>
+  <li><a href="#확률에서-결정으로-임계값threshold" id="toc-확률에서-결정으로-임계값threshold" class="nav-link" data-scroll-target="#확률에서-결정으로-임계값threshold"><span class="header-section-number">3</span> 확률에서 결정으로: 임계값(threshold)</a>
+  <ul class="collapse">
+  <li><a href="#혼동행렬confusion-matrix" id="toc-혼동행렬confusion-matrix" class="nav-link" data-scroll-target="#혼동행렬confusion-matrix"><span class="header-section-number">3.1</span> 혼동행렬(confusion matrix)</a></li>
+  <li><a href="#정확도의-함정-기준선과-비교" id="toc-정확도의-함정-기준선과-비교" class="nav-link" data-scroll-target="#정확도의-함정-기준선과-비교"><span class="header-section-number">3.2</span> 정확도의 함정: 기준선과 비교</a></li>
+  <li><a href="#민감도sensitivity와-특이도specificity" id="toc-민감도sensitivity와-특이도specificity" class="nav-link" data-scroll-target="#민감도sensitivity와-특이도specificity"><span class="header-section-number">3.3</span> 민감도(sensitivity)와 특이도(specificity)</a></li>
+  <li><a href="#임계값을-바꾸면" id="toc-임계값을-바꾸면" class="nav-link" data-scroll-target="#임계값을-바꾸면"><span class="header-section-number">3.4</span> 임계값을 바꾸면</a></li>
+  </ul></li>
+  <li><a href="#비용으로-임계값-정하기" id="toc-비용으로-임계값-정하기" class="nav-link" data-scroll-target="#비용으로-임계값-정하기"><span class="header-section-number">4</span> 비용으로 임계값 정하기</a>
+  <ul class="collapse">
+  <li><a href="#두-오류의-비용은-다르다" id="toc-두-오류의-비용은-다르다" class="nav-link" data-scroll-target="#두-오류의-비용은-다르다"><span class="header-section-number">4.1</span> 두 오류의 비용은 다르다</a></li>
+  <li><a href="#비용-비율이-바뀌면" id="toc-비용-비율이-바뀌면" class="nav-link" data-scroll-target="#비용-비율이-바뀌면"><span class="header-section-number">4.2</span> 비용 비율이 바뀌면</a></li>
+  </ul></li>
+  <li><a href="#신용-심사-자료-교차검증과-roc-곡선" id="toc-신용-심사-자료-교차검증과-roc-곡선" class="nav-link" data-scroll-target="#신용-심사-자료-교차검증과-roc-곡선"><span class="header-section-number">5</span> 신용 심사 자료: 교차검증과 ROC 곡선</a>
+  <ul class="collapse">
+  <li><a href="#데이터-대출-심사-결과" id="toc-데이터-대출-심사-결과" class="nav-link" data-scroll-target="#데이터-대출-심사-결과"><span class="header-section-number">5.1</span> 데이터: 대출 심사 결과</a></li>
+  <li><a href="#결측치" id="toc-결측치" class="nav-link" data-scroll-target="#결측치"><span class="header-section-number">5.2</span> 결측치</a></li>
+  <li><a href="#정확도-대신-roc-곡선" id="toc-정확도-대신-roc-곡선" class="nav-link" data-scroll-target="#정확도-대신-roc-곡선"><span class="header-section-number">5.3</span> 정확도 대신: ROC 곡선</a></li>
+  <li><a href="#auc" id="toc-auc" class="nav-link" data-scroll-target="#auc"><span class="header-section-number">5.4</span> AUC</a></li>
+  <li><a href="#겹-교차검증" id="toc-겹-교차검증" class="nav-link" data-scroll-target="#겹-교차검증"><span class="header-section-number">5.5</span> 5-겹 교차검증</a></li>
+  <li><a href="#고른-모형으로-심사하기" id="toc-고른-모형으로-심사하기" class="nav-link" data-scroll-target="#고른-모형으로-심사하기"><span class="header-section-number">5.6</span> 고른 모형으로 심사하기</a></li>
+  <li><a href="#생각해-볼-문제" id="toc-생각해-볼-문제" class="nav-link" data-scroll-target="#생각해-볼-문제"><span class="header-section-number">5.7</span> 생각해 볼 문제</a></li>
+  </ul></li>
+  <li><a href="#정리" id="toc-정리" class="nav-link" data-scroll-target="#정리"><span class="header-section-number">6</span> 정리</a></li>
+  <li><a href="#더-공부할-주제" id="toc-더-공부할-주제" class="nav-link" data-scroll-target="#더-공부할-주제"><span class="header-section-number">7</span> 더 공부할 주제</a></li>
+  <li><a href="#실습" id="toc-실습" class="nav-link" data-scroll-target="#실습"><span class="header-section-number">8</span> 실습</a></li>
+  <li><a href="#참고" id="toc-참고" class="nav-link" data-scroll-target="#참고"><span class="header-section-number">9</span> 참고</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">11주차. 예측하기 (2): 이산적 결과 변수</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="도입" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="도입"><span class="header-section-number">1</span> 도입</h2>
+<ul>
+<li>이번 주의 질문: 결과가 숫자가 아니라 “예/아니오”일 때 무엇이 달라지는가?
+<ul>
+<li>이 고객이 카드 대금을 연체할까? 이 대출 신청을 승인해도 될까? 이 메일은 스팸일까?</li>
+<li>결과 변수가 두 값(0과 1) 중 하나만 갖는 경우: 이산적(discrete) 결과 변수, 그중에서도 이항(binary) 결과 변수</li>
+</ul></li>
+<li>핵심 아이디어
+<ul>
+<li>모형이 예측하는 것은 “예/아니오”가 아니라 “예”일 확률(probability)</li>
+<li>확률을 “예/아니오”라는 결정으로 바꾸는 기준(임계값)은 통계가 아니라 의사결정의 문제</li>
+<li>지난주의 RMSE 대신 쓸 오차 지표가 필요함</li>
+</ul></li>
+<li>지난주와 같은 점
+<ul>
+<li>예측력은 모형을 만들 때 쓰지 않은 자료로 측정</li>
+<li>기준선(baseline) 모형과 비교</li>
+<li>모형은 교차검증으로 고름</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeldata)     <span class="co"># credit_data (지난주에 설치)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>새로 설치할 패키지: 없음</li>
+</ul>
+</section>
+<section id="확률을-예측하기" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="확률을-예측하기"><span class="header-section-number">2</span> 확률을 예측하기</h2>
+<section id="데이터-신용카드-연체" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="데이터-신용카드-연체"><span class="header-section-number">2.1</span> 데이터: 신용카드 연체</h3>
+<ul>
+<li><a href="data/Default.csv">Default.csv</a>: 신용카드 고객 10,000명. 교재 <em>An Introduction to Statistical Learning</em>의 <code>ISLR2</code> 패키지에 들어 있는 <code>Default</code>를 csv로 저장한 것
+<ul>
+<li>실제 고객 자료가 아니라 교재 저자들이 만든 시뮬레이션 자료</li>
+<li><code>default</code>: 연체 여부 (Yes, No)</li>
+<li><code>student</code>: 학생 여부 (Yes, No)</li>
+<li><code>balance</code>: 월말 카드 잔액 (달러)</li>
+<li><code>income</code>: 연소득 (달러)</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Default.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">default</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">10000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">default</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">student</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">balance</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">835.37</td>
+<td style="text-align: right;">483.71</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">481.73</td>
+<td style="text-align: right;">823.64</td>
+<td style="text-align: right;">1166.31</td>
+<td style="text-align: right;">2654.32</td>
+<td style="text-align: left;">▆▇▅▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">income</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">33516.98</td>
+<td style="text-align: right;">13336.64</td>
+<td style="text-align: right;">771.97</td>
+<td style="text-align: right;">21340.46</td>
+<td style="text-align: right;">34552.64</td>
+<td style="text-align: right;">43807.73</td>
+<td style="text-align: right;">73554.23</td>
+<td style="text-align: left;">▂▇▇▅▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><code>default</code>는 문자(“Yes”, “No”)로 읽힘. 연체이면 1, 아니면 0인 숫자 변수로 바꿈
+<ul>
+<li><code>default == "Yes"</code>는 TRUE/FALSE, <code>as.integer()</code>는 TRUE를 1, FALSE를 0으로 바꿈</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> default <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">as.integer</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(default)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> default    n percent
+       0 9667  0.9667
+       1  333  0.0333</code></pre>
+</div>
+</div>
+<ul>
+<li>연체한 고객은 333명, 3.33%. 결과가 드문(rare) 자료</li>
+</ul>
+</section>
+<section id="선형확률모형linear-probability-model" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="선형확률모형linear-probability-model"><span class="header-section-number">2.2</span> 선형확률모형(linear probability model)</h3>
+<ul>
+<li>8주차의 <code>lm()</code>을 0/1 결과 변수에 그대로 쓰면: 예측값을 “연체할 확률”로 읽을 수 있음
+<ul>
+<li>0/1 변수의 평균은 1의 비율이므로, <span class="math inline">\(x\)</span>가 주어졌을 때 <span class="math inline">\(y\)</span>의 평균은 <span class="math inline">\(y = 1\)</span>일 확률</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fit_lpm <span class="ot">&lt;-</span> <span class="fu">lm</span>(default <span class="sc">~</span> balance, <span class="at">data =</span> default)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(fit_lpm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term         estimate  std.error statistic   p.value
+  &lt;chr&gt;           &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept) -0.0752   0.00335        -22.4 1.26e-108
+2 balance      0.000130 0.00000347      37.4 2.77e-286</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred =</span> <span class="fu">predict</span>(fit_lpm)) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">min_pred =</span> <span class="fu">min</span>(pred),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_pred =</span> <span class="fu">max</span>(pred),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">share_negative =</span> <span class="fu">mean</span>(pred <span class="sc">&lt;</span> <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  min_pred max_pred share_negative
+     &lt;dbl&gt;    &lt;dbl&gt;          &lt;dbl&gt;
+1  -0.0752    0.270          0.312</code></pre>
+</div>
+</div>
+<ul>
+<li>예측값의 31%가 0보다 작음: “연체할 확률이 −7%”는 말이 되지 않음</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default)) <span class="sc">+</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.03</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"카드 잔액 (달러)"</span>, <span class="at">y =</span> <span class="st">"연체 여부 (1 = 연체)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week11_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><code>geom_jitter(height = 0.03)</code>: 점을 위아래로 조금씩 흔들어 겹치지 않게 그림. 실제 값은 0 또는 1</li>
+<li>확률은 0과 1 사이여야 하므로 직선 대신 0과 1 사이에 머무는 S자 곡선이 필요</li>
+</ul>
+</section>
+<section id="로지스틱-회귀logistic-regression" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="로지스틱-회귀logistic-regression"><span class="header-section-number">2.3</span> 로지스틱 회귀(logistic regression)</h3>
+<ul>
+<li>로지스틱 회귀 모형</li>
+</ul>
+<p><span class="math display">\[ \Pr(y = 1 \mid x) = \frac{1}{1 + e^{-(b_0 + b_1 x)}} \]</span></p>
+<ul>
+<li><p>괄호 안의 <span class="math inline">\(b_0 + b_1 x\)</span>는 어떤 값이든 될 수 있지만, 전체 값은 항상 0과 1 사이</p></li>
+<li><p><span class="math inline">\(b_1 &gt; 0\)</span>이면 <span class="math inline">\(x\)</span>가 클수록 확률이 커지고, <span class="math inline">\(b_1 &lt; 0\)</span>이면 작아짐</p></li>
+<li><p><code>glm(y ~ x, family = binomial, data = )</code></p>
+<ul>
+<li><code>glm</code>: 일반화 선형모형(generalized linear model). <code>lm()</code>과 사용법이 거의 같음</li>
+<li><code>family = binomial</code>: 결과 변수가 0/1이라는 뜻. 빠뜨리면 <code>lm()</code>과 같은 결과가 나옴</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit_bal <span class="ot">&lt;-</span> <span class="fu">glm</span>(default <span class="sc">~</span> balance, <span class="at">family =</span> binomial, <span class="at">data =</span> default)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(fit_bal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term         estimate std.error statistic   p.value
+  &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept) -10.7      0.361        -29.5 3.62e-191
+2 balance       0.00550  0.000220      25.0 1.98e-137</code></pre>
+</div>
+</div>
+<ul>
+<li>잔액의 계수가 양수: 잔액이 클수록 연체할 확률이 큼</li>
+<li>계수의 크기를 해석하는 방법(오즈비, odds ratio)은 이 강의에서는 다루지 않음
+<ul>
+<li>이번 주의 관심은 지난주와 마찬가지로 계수가 아니라 예측값, 즉 예측 확률</li>
+</ul></li>
+</ul>
+</section>
+<section id="predict로-확률-구하기" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="predict로-확률-구하기"><span class="header-section-number">2.4</span> <code>predict()</code>로 확률 구하기</h3>
+<ul>
+<li><code>predict(fit, newdata = , type = "response")</code>: 확률을 예측</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>new_balance <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">balance =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>new_balance <span class="sc">|&gt;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(fit_bal, <span class="at">newdata =</span> new_balance, <span class="at">type =</span> <span class="st">"response"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  balance    prob
+    &lt;dbl&gt;   &lt;dbl&gt;
+1    1000 0.00575
+2    1500 0.0829 
+3    2000 0.586  
+4    2500 0.957  </code></pre>
+</div>
+</div>
+<ul>
+<li>잔액이 1,000달러이면 연체 확률 0.6%, 2,000달러이면 59%</li>
+<li>주의: <code>type = "response"</code>를 빼면 확률이 아니라 괄호 안의 값 <span class="math inline">\(b_0 + b_1 x\)</span>가 나옴</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit_bal, <span class="at">newdata =</span> new_balance)    <span class="co"># 확률이 아님 (음수도 나옴)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1          2          3          4 
+-5.1524137 -2.4029552  0.3465032  3.0959617 </code></pre>
+</div>
+</div>
+<ul>
+<li>선형확률모형과 로지스틱 회귀의 비교</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lpm =</span> <span class="fu">predict</span>(fit_lpm),</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">logit =</span> <span class="fu">predict</span>(fit_bal, <span class="at">type =</span> <span class="st">"response"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> balance)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">y =</span> default), <span class="at">height =</span> <span class="fl">0.03</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> lpm), <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> logit), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"카드 잔액 (달러)"</span>, <span class="at">y =</span> <span class="st">"연체 여부 / 예측 확률"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"점선: 선형확률모형, 파란 선: 로지스틱 회귀"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week11_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>로지스틱 회귀의 예측 확률은 잔액이 작은 구간에서 0에 붙어 있다가 1,500달러 근처부터 빠르게 커짐</li>
+</ul>
+</section>
+<section id="계수의-부호는-무엇을-함께-넣느냐에-따라-바뀔-수-있다" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="계수의-부호는-무엇을-함께-넣느냐에-따라-바뀔-수-있다"><span class="header-section-number">2.5</span> 계수의 부호는 무엇을 함께 넣느냐에 따라 바뀔 수 있다</h3>
+<ul>
+<li>학생 여부만 넣은 모형과 잔액을 함께 넣은 모형</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glm</span>(default <span class="sc">~</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default) <span class="sc">|&gt;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  term        estimate std.error statistic  p.value
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+1 (Intercept)   -3.50     0.0707    -49.6  0       
+2 studentYes     0.405    0.115       3.52 0.000431</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glm</span>(default <span class="sc">~</span> balance <span class="sc">+</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default) <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  term         estimate std.error statistic   p.value
+  &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept) -10.7      0.369       -29.1  2.23e-186
+2 balance       0.00574  0.000232     24.7  3.14e-135
+3 studentYes   -0.715    0.148        -4.85 1.26e-  6</code></pre>
+</div>
+</div>
+<ul>
+<li>학생만 넣으면 학생의 계수가 양수, 잔액을 함께 넣으면 음수
+<ul>
+<li>학생의 연체율(4.3%)은 학생이 아닌 고객(2.9%)보다 높음</li>
+<li>하지만 학생은 평균적으로 잔액이 큼. 잔액이 같은 고객끼리 비교하면 학생이 덜 연체함</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(student) <span class="sc">|&gt;</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_balance =</span> <span class="fu">mean</span>(balance),</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">default_rate =</span> <span class="fu">mean</span>(default))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  student mean_balance default_rate
+  &lt;chr&gt;          &lt;dbl&gt;        &lt;dbl&gt;
+1 No              772.       0.0292
+2 Yes             988.       0.0431</code></pre>
+</div>
+</div>
+<ul>
+<li>8주차 다중회귀의 “다른 조건이 같다면”과 같은 이야기. 예측 확률은 두 모형 모두 계산할 수 있지만, 계수의 의미는 다름</li>
+</ul>
+</section>
+</section>
+<section id="확률에서-결정으로-임계값threshold" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="확률에서-결정으로-임계값threshold"><span class="header-section-number">3</span> 확률에서 결정으로: 임계값(threshold)</h2>
+<section id="혼동행렬confusion-matrix" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="혼동행렬confusion-matrix"><span class="header-section-number">3.1</span> 혼동행렬(confusion matrix)</h3>
+<ul>
+<li>이제 잔액, 소득, 학생 여부를 모두 넣은 모형을 사용</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fit_def <span class="ot">&lt;-</span> <span class="fu">glm</span>(default <span class="sc">~</span> balance <span class="sc">+</span> income <span class="sc">+</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>default_pred <span class="ot">&lt;-</span> default <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(fit_def, <span class="at">type =</span> <span class="st">"response"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>카드사는 확률이 아니라 결정(한도를 줄일지 말지)이 필요함</li>
+<li>가장 단순한 규칙: 예측 확률이 0.5보다 크면 “연체”로 예측</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>default_pred <span class="ot">&lt;-</span> default_pred <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred =</span> <span class="fu">as.integer</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(default, pred)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> default    0   1
+       0 9627  40
+       1  228 105</code></pre>
+</div>
+</div>
+<ul>
+<li>실제(행) × 예측(열)의 2×2 표: 혼동행렬</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: center;">예측: 정상 (0)</th>
+<th style="text-align: center;">예측: 연체 (1)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">실제: 정상 (0)</td>
+<td style="text-align: center;">맞음</td>
+<td style="text-align: center;">잘못 거절</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">실제: 연체 (1)</td>
+<td style="text-align: center;">놓침</td>
+<td style="text-align: center;">맞음</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>정확도(accuracy): 맞게 예측한 비율</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">accuracy =</span> <span class="fu">mean</span>(pred <span class="sc">==</span> default))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  accuracy
+     &lt;dbl&gt;
+1    0.973</code></pre>
+</div>
+</div>
+<ul>
+<li>이 절에서는 개념을 보이기 위해 모형을 추정한 자료에서 바로 계산함. 실제로 모형을 평가할 때는 지난주처럼 추정에 쓰지 않은 자료를 사용해야 함 (4절)</li>
+</ul>
+</section>
+<section id="정확도의-함정-기준선과-비교" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="정확도의-함정-기준선과-비교"><span class="header-section-number">3.2</span> 정확도의 함정: 기준선과 비교</h3>
+<ul>
+<li>정확도 97.3%는 높아 보이지만, 비교 대상이 필요함</li>
+<li>가장 단순한 예측: 모든 고객을 “정상”으로 예측. 연체율이 3.33%이므로 정확도는 96.7%</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">accuracy_model =</span> <span class="fu">mean</span>(pred <span class="sc">==</span> default),</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">accuracy_baseline =</span> <span class="fu">mean</span>(default <span class="sc">==</span> <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  accuracy_model accuracy_baseline
+           &lt;dbl&gt;             &lt;dbl&gt;
+1          0.973             0.967</code></pre>
+</div>
+</div>
+<ul>
+<li>모형은 기준선보다 0.6%p 나을 뿐</li>
+<li>혼동행렬을 다시 보면: 실제 연체자 333명 중 105명만 연체로 예측했고 228명은 놓침</li>
+<li>결과가 드물 때는 정확도만으로 모형을 평가할 수 없음</li>
+</ul>
+</section>
+<section id="민감도sensitivity와-특이도specificity" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="민감도sensitivity와-특이도specificity"><span class="header-section-number">3.3</span> 민감도(sensitivity)와 특이도(specificity)</h3>
+<ul>
+<li>두 종류의 오류를 따로 봄
+<ul>
+<li>민감도: 실제 연체자 중 연체로 예측한 비율 (연체자를 잡아내는 능력)</li>
+<li>특이도: 실제 정상 고객 중 정상으로 예측한 비율 (정상 고객을 괴롭히지 않는 능력)</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">sensitivity =</span> <span class="fu">mean</span>(pred[default <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">specificity =</span> <span class="fu">mean</span>(pred[default <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">==</span> <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  sensitivity specificity
+        &lt;dbl&gt;       &lt;dbl&gt;
+1       0.315       0.996</code></pre>
+</div>
+</div>
+<ul>
+<li><code>pred[default == 1]</code>: <code>default</code>가 1인 행의 <code>pred</code>만 골라냄 (base R의 인덱싱)</li>
+<li>특이도는 99.6%이지만 민감도는 31.5%</li>
+</ul>
+</section>
+<section id="임계값을-바꾸면" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="임계값을-바꾸면"><span class="header-section-number">3.4</span> 임계값을 바꾸면</h3>
+<ul>
+<li>임계값을 0.5가 아니라 더 낮게 잡으면 연체로 예측하는 고객이 늘어남
+<ul>
+<li>민감도는 올라가고 특이도는 내려감</li>
+</ul></li>
+<li>임계값을 0.01부터 0.99까지 바꾸어 가며 계산 (지난주의 <code>for</code> 루프)</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">threshold =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>),</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">accuracy =</span> <span class="cn">NA</span>, <span class="at">sensitivity =</span> <span class="cn">NA</span>, <span class="at">specificity =</span> <span class="cn">NA</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n_miss =</span> <span class="cn">NA</span>, <span class="at">n_reject =</span> <span class="cn">NA</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> default_pred<span class="sc">$</span>default</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(thr_result)) {</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(default_pred<span class="sc">$</span>prob <span class="sc">&gt;</span> thr_result<span class="sc">$</span>threshold[i])</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>accuracy[i]    <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred <span class="sc">==</span> y)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>sensitivity[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred[y <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>specificity[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred[y <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>n_miss[i]      <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">0</span>)   <span class="co"># 놓친 연체자 수</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>n_reject[i]    <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">1</span>)   <span class="co"># 잘못 거절한 정상 고객 수</span></span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(threshold <span class="sc">%in%</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 6
+  threshold accuracy sensitivity specificity n_miss n_reject
+      &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;  &lt;int&gt;    &lt;int&gt;
+1      0.05    0.898       0.844       0.900     52      965
+2      0.2     0.959       0.610       0.971    130      277
+3      0.3     0.970       0.508       0.986    164      137
+4      0.5     0.973       0.315       0.996    228       40</code></pre>
+</div>
+</div>
+<ul>
+<li>임계값을 0.5에서 0.2로 낮추면 민감도가 31.5%에서 61.0%로 오르고, 특이도는 99.6%에서 97.1%로 내려감</li>
+<li>두 종류의 오류를 동시에 줄일 수는 없음 → 어느 쪽을 얼마나 줄일지 정해야 함</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(sensitivity, specificity), <span class="at">names_to =</span> <span class="st">"measure"</span>, <span class="at">values_to =</span> <span class="st">"value"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> threshold, <span class="at">y =</span> value, <span class="at">color =</span> measure)) <span class="sc">+</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"임계값"</span>, <span class="at">y =</span> <span class="cn">NULL</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week11_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="비용으로-임계값-정하기" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="비용으로-임계값-정하기"><span class="header-section-number">4</span> 비용으로 임계값 정하기</h2>
+<section id="두-오류의-비용은-다르다" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="두-오류의-비용은-다르다"><span class="header-section-number">4.1</span> 두 오류의 비용은 다르다</h3>
+<ul>
+<li>카드사 입장에서
+<ul>
+<li>연체할 고객을 정상으로 판단(놓침): 받지 못한 대금만큼 손실</li>
+<li>정상 고객을 연체로 판단(잘못 거절): 한도를 줄였으므로 그 고객에게서 얻을 수수료와 이자 수입을 잃음</li>
+</ul></li>
+<li>보통 놓침의 비용이 훨씬 큼</li>
+<li>가정: 놓침 1건의 비용이 잘못 거절 1건의 비용의 5배</li>
+</ul>
+<p><span class="math display">\[ \text{총비용} = 5 \times (\text{놓침의 수}) + 1 \times (\text{잘못 거절의 수}) \]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> thr_result <span class="sc">|&gt;</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cost =</span> <span class="dv">5</span> <span class="sc">*</span> n_miss <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> n_reject)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_min</span>(cost)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 7
+  threshold accuracy sensitivity specificity n_miss n_reject  cost
+      &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;  &lt;int&gt;    &lt;int&gt; &lt;dbl&gt;
+1      0.21    0.962       0.604       0.974    132      253   913</code></pre>
+</div>
+</div>
+<ul>
+<li><code>slice_min(변수)</code>: 그 변수가 가장 작은 행</li>
+<li>총비용이 가장 작은 임계값은 0.21. 0.5일 때(1,180)보다 총비용이 약 23% 작음
+<ul>
+<li>모두 승인하면(놓침 333건) 총비용은 <span class="math inline">\(5 \times 333 = 1{,}665\)</span></li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> threshold, <span class="at">y =</span> cost)) <span class="sc">+</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.5</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"임계값"</span>, <span class="at">y =</span> <span class="st">"총비용 (잘못 거절 1건 = 1)"</span>,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"점선: 임계값 0.5"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week11_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>곡선의 바닥이 평평함: 0.15에서 0.25 사이는 총비용이 913~935로, 어느 값을 골라도 크게 다르지 않음</li>
+</ul>
+</section>
+<section id="비용-비율이-바뀌면" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="비용-비율이-바뀌면"><span class="header-section-number">4.2</span> 비용 비율이 바뀌면</h3>
+<ul>
+<li>비용 비율을 5배가 아니라 10배, 20배로 가정하면 최적 임계값은 0.10, 0.05로 내려감 (직접 확인해 보기)</li>
+<li>정답인 임계값은 자료가 아니라 비용 구조가 정함</li>
+<li>참고: 예측 확률 <span class="math inline">\(p\)</span>가 정확하다면, 연체로 판단해 얻는 기대 절약 <span class="math inline">\(5p\)</span>가 잘못 거절의 기대 비용 <span class="math inline">\(1 \times (1-p)\)</span>보다 클 때 거절하는 것이 이득
+<ul>
+<li><span class="math inline">\(5p &gt; 1 - p\)</span>, 즉 <span class="math inline">\(p &gt; 1/6 \approx 0.17\)</span>. 일반적으로 비용 비율이 <span class="math inline">\(c\)</span>이면 임계값은 <span class="math inline">\(1/(1+c)\)</span></li>
+<li>자료에서 찾은 0.21은 이 값에 가까움 (예측 확률이 정확히 맞지는 않으므로 완전히 같지는 않음)</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="신용-심사-자료-교차검증과-roc-곡선" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="신용-심사-자료-교차검증과-roc-곡선"><span class="header-section-number">5</span> 신용 심사 자료: 교차검증과 ROC 곡선</h2>
+<section id="데이터-대출-심사-결과" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="데이터-대출-심사-결과"><span class="header-section-number">5.1</span> 데이터: 대출 심사 결과</h3>
+<ul>
+<li><code>credit_data</code> (modeldata 패키지): 대출을 받은 4,454명의 결과
+<ul>
+<li>스페인의 한 금융회사 자료로 알려져 있음. 금액 변수의 단위는 자료 설명에 나와 있지 않음</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">변수</th>
+<th style="text-align: left;">내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>Status</code></td>
+<td style="text-align: left;">대출 결과: bad (부실), good (정상)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Seniority</code></td>
+<td style="text-align: left;">현 직장 근속연수</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Home</code></td>
+<td style="text-align: left;">주거 형태 (owner, rent, parents, priv, other, ignore)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Time</code></td>
+<td style="text-align: left;">대출 기간 (개월)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Age</code></td>
+<td style="text-align: left;">나이</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Marital</code></td>
+<td style="text-align: left;">혼인 상태 (married, single, separated, widow, divorced)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Records</code></td>
+<td style="text-align: left;">기록 존재 여부 (no, yes). 자료 설명에는 “existence of records”로만 되어 있음</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Job</code></td>
+<td style="text-align: left;">고용 형태 (fixed, freelance, partime, others)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Expenses</code></td>
+<td style="text-align: left;">지출</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Income</code></td>
+<td style="text-align: left;">소득</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Assets</code></td>
+<td style="text-align: left;">자산</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Debt</code></td>
+<td style="text-align: left;">부채</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Amount</code></td>
+<td style="text-align: left;">대출액</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Price</code></td>
+<td style="text-align: left;">구매하려는 물건의 가격</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>credit_data <span class="sc">|&gt;</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">credit_data</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">4454</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">factor</td>
+<td style="text-align: left;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 42%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: left;">ordered</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: left;">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Status</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">goo: 3200, bad: 1254</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Home</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">own: 2107, ren: 973, par: 783, oth: 319</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Marital</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">mar: 3241, sin: 977, sep: 130, wid: 67</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Records</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">no: 3681, yes: 773</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Job</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">fix: 2805, fre: 1024, par: 452, oth: 171</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 10%">
+<col style="width: 15%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 4%">
+<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Seniority</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">7.99</td>
+<td style="text-align: right;">8.17</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">12.0</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: left;">▇▃▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Time</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">46.44</td>
+<td style="text-align: right;">14.66</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">36.00</td>
+<td style="text-align: right;">48</td>
+<td style="text-align: right;">60.0</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: left;">▁▂▅▃▇</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Age</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">37.08</td>
+<td style="text-align: right;">10.98</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">28.00</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">45.0</td>
+<td style="text-align: right;">68</td>
+<td style="text-align: left;">▆▇▆▃▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Expenses</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">55.57</td>
+<td style="text-align: right;">19.52</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">35.00</td>
+<td style="text-align: right;">51</td>
+<td style="text-align: right;">72.0</td>
+<td style="text-align: right;">180</td>
+<td style="text-align: left;">▇▃▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Income</td>
+<td style="text-align: right;">381</td>
+<td style="text-align: right;">0.91</td>
+<td style="text-align: right;">141.69</td>
+<td style="text-align: right;">80.75</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">90.00</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">170.0</td>
+<td style="text-align: right;">959</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Assets</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: right;">0.99</td>
+<td style="text-align: right;">5403.98</td>
+<td style="text-align: right;">11574.42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">3000</td>
+<td style="text-align: right;">6000.0</td>
+<td style="text-align: right;">300000</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Debt</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">343.03</td>
+<td style="text-align: right;">1245.99</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">30000</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Amount</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1038.92</td>
+<td style="text-align: right;">474.55</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">700.00</td>
+<td style="text-align: right;">1000</td>
+<td style="text-align: right;">1300.0</td>
+<td style="text-align: right;">5000</td>
+<td style="text-align: left;">▇▆▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Price</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">1462.78</td>
+<td style="text-align: right;">628.13</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">1117.25</td>
+<td style="text-align: right;">1400</td>
+<td style="text-align: right;">1691.5</td>
+<td style="text-align: right;">11140</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>주의: <code>Status</code>의 수준(level) 순서는 bad, good
+<ul>
+<li><code>glm()</code>은 두 번째 수준을 1로 보므로 <code>Status</code>를 그대로 넣으면 good일 확률을 모형화함</li>
+<li>부실이면 1인 변수 <code>bad</code>를 따로 만들어 사용</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit_data <span class="sc">|&gt;</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bad =</span> <span class="fu">as.integer</span>(Status <span class="sc">==</span> <span class="st">"bad"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Status)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>credit <span class="sc">|&gt;</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(bad)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> bad    n   percent
+   0 3200 0.7184553
+   1 1254 0.2815447</code></pre>
+</div>
+</div>
+<ul>
+<li>부실 비율 28.2%. 모두 “정상”으로 예측하는 기준선의 정확도는 71.8%</li>
+</ul>
+</section>
+<section id="결측치" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="결측치"><span class="header-section-number">5.2</span> 결측치</h3>
+<ul>
+<li>결측이 하나라도 있는 행이 415개. 대부분 <code>Income</code>의 결측 (381개)</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>credit <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">any_na =</span> <span class="sc">!</span><span class="fu">complete.cases</span>(credit)) <span class="sc">|&gt;</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(any_na) <span class="sc">|&gt;</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">bad_rate =</span> <span class="fu">mean</span>(bad))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  any_na     n bad_rate
+  &lt;lgl&gt;  &lt;int&gt;    &lt;dbl&gt;
+1 FALSE   4039    0.254
+2 TRUE     415    0.549</code></pre>
+</div>
+</div>
+<ul>
+<li><code>complete.cases()</code>: 결측이 하나도 없는 행이면 TRUE</li>
+<li>결측이 있는 행의 부실 비율은 54.9%로, 결측이 없는 행(25.4%)의 두 배가 넘음
+<ul>
+<li>소득을 밝히지 않은 신청자가 더 위험함. 결측 자체가 정보일 수 있음</li>
+<li>결측 행을 빼면 남은 자료는 원래 자료보다 덜 위험한 사람들로 구성됨</li>
+</ul></li>
+<li>이번 주에는 결측 행을 빼고 사용하되, 이 점을 기억해 둠 (4,039명)</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(credit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4039</code></pre>
+</div>
+</div>
+<ul>
+<li><p>결측 행을 뺀 뒤의 부실 비율은 25.4%. 이제 기준선의 정확도는 74.6%</p></li>
+<li><p>주거 형태 중 <code>ignore</code>는 19명뿐. 지난주의 동네처럼, 교차검증에서 학습 자료에 이 범주가 없으면 예측할 수 없으므로 <code>other</code>와 묶어 둠</p></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Home =</span> <span class="fu">fct_lump_min</span>(Home, <span class="at">min =</span> <span class="dv">30</span>, <span class="at">other_level =</span> <span class="st">"other"</span>))</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>credit <span class="sc">|&gt;</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(Home)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Home    n
+1   owner 1930
+2 parents  721
+3    priv  227
+4    rent  883
+5   other  278</code></pre>
+</div>
+</div>
+</section>
+<section id="정확도-대신-roc-곡선" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="정확도-대신-roc-곡선"><span class="header-section-number">5.3</span> 정확도 대신: ROC 곡선</h3>
+<ul>
+<li>정확도로 모형을 비교하려면 임계값을 하나 정해야 함. 그런데 임계값은 비용 구조에 따라 달라짐</li>
+<li>임계값을 정하지 않고 모형을 비교하는 방법: 임계값을 0부터 1까지 모두 바꾸어 보는 것</li>
+<li>ROC 곡선(receiver operating characteristic curve): 임계값을 바꾸면서 가로축에 1 − 특이도(정상 고객을 잘못 거절한 비율), 세로축에 민감도(부실을 잡아낸 비율)를 찍어 이은 곡선
+<ul>
+<li>3절에서 만든 <code>thr_result</code> 표를 그림으로 그린 것</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity)) <span class="sc">+</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"1 - 특이도 (잘못 거절한 비율)"</span>, <span class="at">y =</span> <span class="st">"민감도 (잡아낸 비율)"</span>,</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"카드 연체 모형의 ROC 곡선"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week11_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="432"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>왼쪽 아래(임계값 1: 아무도 거절하지 않음)에서 오른쪽 위(임계값 0: 모두 거절)로 가는 곡선</li>
+<li>점선(대각선): 예측 확률을 무작위로 주는 모형. 기준선</li>
+<li>곡선이 왼쪽 위로 붙을수록 좋은 모형: 정상 고객을 조금만 거절해도 부실을 많이 잡아냄</li>
+</ul>
+</section>
+<section id="auc" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="auc"><span class="header-section-number">5.4</span> AUC</h3>
+<ul>
+<li>AUC(area under the curve): ROC 곡선 아래의 면적. 0.5(대각선)이면 무작위 예측과 같고, 1이면 완벽</li>
+<li>AUC의 의미: 부실 1명과 정상 1명을 무작위로 뽑았을 때, 모형이 부실 쪽에 더 높은 확률을 줄 확률
+<ul>
+<li>모형이 사람들의 순서를 얼마나 잘 매기는지를 나타냄. 임계값과 상관없음</li>
+</ul></li>
+<li>아래 함수로 계산. 함수를 정의한 부분은 이해하지 않아도 됨</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>auc <span class="ot">&lt;-</span> <span class="cf">function</span>(y, prob) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  r  <span class="ot">&lt;-</span> <span class="fu">rank</span>(prob)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  n1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  n0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">sum</span>(r[y <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> n1 <span class="sc">*</span> (n1 <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">/</span> (n1 <span class="sc">*</span> n0)</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="fu">auc</span>(default_pred<span class="sc">$</span>default, default_pred<span class="sc">$</span>prob)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9495581</code></pre>
+</div>
+</div>
+<ul>
+<li>카드 연체 모형의 AUC는 0.95
+<ul>
+<li>위 그림은 임계값을 0.01 간격으로만 바꾸어 그린 것이라, 그림의 면적은 이 값보다 조금 작음 (0.94)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></li>
+</ul></li>
+</ul>
+</section>
+<section id="겹-교차검증" class="level3" data-number="5.5">
+<h3 data-number="5.5" class="anchored" data-anchor-id="겹-교차검증"><span class="header-section-number">5.5</span> 5-겹 교차검증</h3>
+<ul>
+<li>지난주와 같은 방식으로 겹 번호를 붙임</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>credit_cv <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fold =</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">n</span>())))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>비교할 모형</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">이름</th>
+<th style="text-align: left;">설명변수</th>
+<th style="text-align: right;">계수의 수</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>c0</code></td>
+<td style="text-align: left;">없음 (기준선)</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>c1</code></td>
+<td style="text-align: left;">소득, 대출액</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>c2</code></td>
+<td style="text-align: left;">+ 근속연수, 기록, 고용 형태</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>c3</code></td>
+<td style="text-align: left;">13개 변수 모두</td>
+<td style="text-align: right;">22</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">c0 =</span> bad <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">c1 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount,</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">c2 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount <span class="sc">+</span> Seniority <span class="sc">+</span> Records <span class="sc">+</span> Job,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">c3 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount <span class="sc">+</span> Seniority <span class="sc">+</span> Records <span class="sc">+</span> Job <span class="sc">+</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>             Home <span class="sc">+</span> Marital <span class="sc">+</span> Time <span class="sc">+</span> Age <span class="sc">+</span> Expenses <span class="sc">+</span> Assets <span class="sc">+</span> Debt <span class="sc">+</span> Price</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>지난주와 달라지는 점
+<ul>
+<li><code>lm()</code> 대신 <code>glm(family = binomial)</code>, <code>predict()</code>에 <code>type = "response"</code></li>
+<li>겹마다 오차를 계산하는 대신, 각 관측치가 평가 겹에 들어갔을 때의 예측 확률을 모아 두었다가 마지막에 AUC를 한 번 계산
+<ul>
+<li>지난주의 “모든 관측치의 평가 오차를 모아 RMSE를 한 번 계산하는 것”과 같은 구조</li>
+</ul></li>
+<li>교차검증 예측 확률은 나중에 쓰기 위해 <code>prob_cv</code>라는 표에 모형별로 저장</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>cv_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">model =</span> <span class="fu">names</span>(models),</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">train_auc =</span> <span class="cn">NA</span>, <span class="at">cv_auc =</span> <span class="cn">NA</span>, <span class="at">cv_accuracy =</span> <span class="cn">NA</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>prob_cv <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">bad =</span> credit_cv<span class="sc">$</span>bad)</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(models)) {</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (1) 전체 자료로 추정한 학습 AUC (비교용)</span></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>  fit_all <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[j]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit_cv)</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>train_auc[j] <span class="ot">&lt;-</span> <span class="fu">auc</span>(credit_cv<span class="sc">$</span>bad, <span class="fu">predict</span>(fit_all, <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (2) 5-겹 교차검증: 평가 겹의 예측 확률을 모음</span></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(credit_cv))</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    cv_train <span class="ot">&lt;-</span> credit_cv <span class="sc">|&gt;</span> <span class="fu">filter</span>(fold <span class="sc">!=</span> k)</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    cv_test  <span class="ot">&lt;-</span> credit_cv <span class="sc">|&gt;</span> <span class="fu">filter</span>(fold <span class="sc">==</span> k)</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>    fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[j]], <span class="at">family =</span> binomial, <span class="at">data =</span> cv_train)</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    prob[credit_cv<span class="sc">$</span>fold <span class="sc">==</span> k] <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> cv_test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>cv_auc[j]      <span class="ot">&lt;-</span> <span class="fu">auc</span>(credit_cv<span class="sc">$</span>bad, prob)</span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>cv_accuracy[j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.integer</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>) <span class="sc">==</span> credit_cv<span class="sc">$</span>bad)</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>  prob_cv[[<span class="fu">names</span>(models)[j]]] <span class="ot">&lt;-</span> prob</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>cv_result <span class="sc">|&gt;</span></span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="sc">-</span>model, \(x) <span class="fu">round</span>(x, <span class="dv">3</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 4
+  model train_auc cv_auc cv_accuracy
+  &lt;chr&gt;     &lt;dbl&gt;  &lt;dbl&gt;       &lt;dbl&gt;
+1 c0        0.5    0.482       0.746
+2 c1        0.669  0.666       0.748
+3 c2        0.804  0.802       0.789
+4 c3        0.839  0.833       0.809</code></pre>
+</div>
+</div>
+<ul>
+<li><p><code>prob[credit_cv$fold == k] &lt;- ...</code>: <code>prob</code> 중 k번 겹에 해당하는 자리에만 예측 확률을 채워 넣음</p></li>
+<li><p><code>prob_cv[[이름]] &lt;- prob</code>: <code>prob_cv</code> 표에 그 이름의 열을 추가</p></li>
+<li><p>결과 읽기</p>
+<ul>
+<li>변수를 늘릴수록 교차검증 AUC가 커짐: <code>c3</code>(0.83)가 가장 좋음</li>
+<li>학습 AUC와 교차검증 AUC의 차이가 작음: 이 정도의 모형에서는 과적합이 거의 없음 (지난주 <code>m5</code>와 비교)</li>
+<li>정확도(임계값 0.5)로는 차이가 잘 보이지 않음. <code>c1</code>의 정확도는 기준선(74.6%)과 거의 같지만 AUC로는 기준선보다 분명히 나음</li>
+<li><code>c0</code>의 교차검증 AUC가 정확히 0.5가 아닌 이유: 기준선 모형은 각 겹 안에서 모든 사람에게 같은 확률을 주지만, 그 값이 겹마다 조금씩 다름. 그 차이로 생긴 우연한 순서일 뿐 의미는 없음</li>
+</ul></li>
+<li><p>교차검증 예측 확률로 그린 ROC 곡선</p>
+<ul>
+<li>모형마다 임계값을 바꾸어 가며 민감도와 1 − 특이도를 계산해야 하므로, 아래 함수로 표를 만듦. 함수를 정의한 부분은 이해하지 않아도 됨 (3절의 <code>for</code> 루프와 같은 일을 함)</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>roc_table <span class="ot">&lt;-</span> <span class="cf">function</span>(y, prob) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  thr <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">threshold =</span> thr,</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">sensitivity =</span> <span class="fu">map_dbl</span>(thr, \(t) <span class="fu">mean</span>(prob[y <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">&gt;</span> t)),</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">specificity =</span> <span class="fu">map_dbl</span>(thr, \(t) <span class="fu">mean</span>(prob[y <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">&lt;=</span> t)))</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c1) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c1"</span>),</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c2) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c2"</span>),</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c3) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c3"</span>)</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity, <span class="at">color =</span> model)) <span class="sc">+</span></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>() <span class="sc">+</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"1 - 특이도 (잘못 거절한 비율)"</span>, <span class="at">y =</span> <span class="st">"민감도 (잡아낸 비율)"</span>, <span class="at">color =</span> <span class="st">"모형"</span>) <span class="sc">+</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week11_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><code>c3</code>의 곡선이 대부분의 구간에서 가장 왼쪽 위에 있음</li>
+</ul>
+</section>
+<section id="고른-모형으로-심사하기" class="level3" data-number="5.6">
+<h3 data-number="5.6" class="anchored" data-anchor-id="고른-모형으로-심사하기"><span class="header-section-number">5.6</span> 고른 모형으로 심사하기</h3>
+<ul>
+<li>모형 선택: 교차검증 AUC가 가장 큰 <code>c3</code></li>
+<li>임계값 선택: 3절과 같이 비용으로. 부실 대출을 승인하는 비용이 정상 고객을 거절하는 비용의 5배라고 가정
+<ul>
+<li>이때 확률은 학습 자료의 예측 확률이 아니라 교차검증 예측 확률(<code>prob_cv$c3</code>)을 사용: 새 신청자에게 모형이 줄 확률에 더 가까움</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>cost_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">threshold =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>), <span class="at">cost =</span> <span class="cn">NA</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cost_result)) {</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(prob_cv<span class="sc">$</span>c3 <span class="sc">&gt;</span> cost_result<span class="sc">$</span>threshold[i])</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>  n_miss   <span class="ot">&lt;-</span> <span class="fu">sum</span>(prob_cv<span class="sc">$</span>bad <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  n_reject <span class="ot">&lt;-</span> <span class="fu">sum</span>(prob_cv<span class="sc">$</span>bad <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  cost_result<span class="sc">$</span>cost[i] <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">*</span> n_miss <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> n_reject</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>cost_result <span class="sc">|&gt;</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_min</span>(cost)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  threshold  cost
+      &lt;dbl&gt; &lt;dbl&gt;
+1      0.16  1813</code></pre>
+</div>
+</div>
+<ul>
+<li>총비용이 가장 작은 임계값은 0.16: 부실 확률이 16%를 넘으면 거절
+<ul>
+<li>3절의 이론값 <span class="math inline">\(1/(1+5) \approx 0.17\)</span>과 거의 같음</li>
+<li>부실 확률이 16%만 넘어도 거절하는 이유: 부실 대출 1건의 손실이 정상 고객 5명을 거절하는 손실과 같다고 가정했기 때문</li>
+</ul></li>
+<li>실제로 심사할 때는 지난주처럼 고른 모형을 전체 자료로 다시 추정해서 사용</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[<span class="st">"c3"</span>]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>new_applicant <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Income =</span> <span class="dv">130</span>, <span class="at">Amount =</span> <span class="dv">1000</span>, <span class="at">Seniority =</span> <span class="dv">5</span>, <span class="at">Records =</span> <span class="st">"no"</span>,</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Job =</span> <span class="st">"fixed"</span>, <span class="at">Home =</span> <span class="st">"rent"</span>, <span class="at">Marital =</span> <span class="st">"married"</span>, <span class="at">Time =</span> <span class="dv">48</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Age =</span> <span class="dv">35</span>, <span class="at">Expenses =</span> <span class="dv">60</span>, <span class="at">Assets =</span> <span class="dv">0</span>, <span class="at">Debt =</span> <span class="dv">0</span>, <span class="at">Price =</span> <span class="dv">1300</span>)</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit_final, <span class="at">newdata =</span> new_applicant, <span class="at">type =</span> <span class="st">"response"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1 
+0.2092013 </code></pre>
+</div>
+</div>
+<ul>
+<li>이 신청자의 부실 확률은 약 21%. 임계값 0.16보다 크므로 거절
+<ul>
+<li>임계값 0.5를 썼다면 승인했을 신청자. 비용 가정이 결정을 바꿈</li>
+</ul></li>
+<li>이 모형의 예측 성능으로 보고할 숫자는 교차검증 AUC (학습 AUC가 아님)</li>
+</ul>
+</section>
+<section id="생각해-볼-문제" class="level3" data-number="5.7">
+<h3 data-number="5.7" class="anchored" data-anchor-id="생각해-볼-문제"><span class="header-section-number">5.7</span> 생각해 볼 문제</h3>
+<ul>
+<li>이 자료에는 대출을 받은 사람만 들어 있음
+<ul>
+<li>과거에 거절된 신청자는 부실이 될지 알 수 없으므로 자료에 없음</li>
+<li>이 모형을 모든 신청자에게 적용해도 될까?</li>
+</ul></li>
+<li>예측력이 좋다면 어떤 변수든 써도 될까?
+<ul>
+<li>예를 들어 나이나 혼인 상태로 대출을 거절하는 것은 공정한가?</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="정리" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="정리"><span class="header-section-number">6</span> 정리</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">하고 싶은 일</th>
+<th style="text-align: left;">사용할 코드</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0/1 변수 만들기</td>
+<td style="text-align: left;"><code>mutate(y = as.integer(x == "Yes"))</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">로지스틱 회귀</td>
+<td style="text-align: left;"><code>glm(y ~ x, family = binomial, data = )</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">확률 예측</td>
+<td style="text-align: left;"><code>predict(fit, newdata = , type = "response")</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">임계값으로 분류</td>
+<td style="text-align: left;"><code>mutate(pred = as.integer(prob &gt; 0.5))</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">혼동행렬</td>
+<td style="text-align: left;"><code>tabyl(y, pred)</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">정확도, 민감도, 특이도</td>
+<td style="text-align: left;"><code>mean(pred == y)</code>, <code>mean(pred[y == 1] == 1)</code>, <code>mean(pred[y == 0] == 0)</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">가장 작은 행</td>
+<td style="text-align: left;"><code>slice_min(cost)</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AUC</td>
+<td style="text-align: left;">본문의 <code>auc(y, prob)</code> 함수</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ROC 곡선</td>
+<td style="text-align: left;">본문의 <code>roc_table(y, prob)</code> 함수 + <code>geom_line()</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>이산적 결과를 예측할 때의 체크리스트 (지난주 체크리스트에 추가)
+<ul>
+<li><code>predict()</code>에 <code>type = "response"</code>를 넣었는가?</li>
+<li>결과가 드물다면, 모두 다수 범주로 예측하는 기준선과 비교했는가?</li>
+<li>정확도만 보지 않고 민감도와 특이도, 또는 AUC를 보았는가?</li>
+<li>임계값을 왜 그 값으로 정했는지 설명할 수 있는가?</li>
+</ul></li>
+</ul>
+</section>
+<section id="더-공부할-주제" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="더-공부할-주제"><span class="header-section-number">7</span> 더 공부할 주제</h2>
+<ul>
+<li>의사결정나무(decision tree)
+<ul>
+<li>“소득이 얼마 미만이고 기록이 있으면 거절”과 같은 규칙의 나무로 예측. 결과를 읽기 쉽고, 범주형 변수를 그대로 쓸 수 있음</li>
+<li>나무를 여러 개 합친 랜덤 포레스트(random forest), 부스팅(boosting)은 예측력이 좋은 방법으로 널리 쓰임</li>
+<li>R: <code>rpart</code> 패키지</li>
+</ul></li>
+<li>ROC 곡선과 AUC를 계산해 주는 패키지: <code>pROC</code>, <code>yardstick</code>
+<ul>
+<li>둘 다 어느 쪽을 1(사건)로 볼지 정하는 기본 설정이 있어, 지정하지 않으면 엉뚱한 값이 나올 수 있음
+<ul>
+<li><code>pROC::roc()</code>: <code>levels = c(0, 1), direction = "&lt;"</code>를 지정</li>
+<li><code>yardstick::roc_auc()</code>: 결과 변수를 factor로 바꾸고 <code>event_level</code>을 확인</li>
+</ul></li>
+</ul></li>
+<li>계수의 해석: 오즈비(odds ratio)</li>
+<li>결과 범주가 셋 이상인 경우: 다항 로짓(multinomial logit)</li>
+</ul>
+</section>
+<section id="실습" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="실습"><span class="header-section-number">8</span> 실습</h2>
+<div class="callout callout-style-default callout-important callout-titled" title="주의사항">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>주의사항
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>마감: 11월 16일 (월) 오후 6시</p></li>
+<li><p>아래 문제 1에 대한 답안을 작성하고 week11_ex_학번.R과 week11_ex_학번.docx를 E-class로 제출하세요.</p></li>
+<li><p>위의 분석을 수행하는 데 사용한 코드는 아래 “참고”에 포함되어 있으니 잘 읽어보고 연습한 후 문제에 답변할 때 활용하세요.</p></li>
+</ul>
+</div>
+</div>
+<ul>
+<li>데이터: <a href="data/email.csv">email.csv</a> (3,921통)
+<ul>
+<li>2012년 첫 3개월 동안 한 사람이 받은 메일. 8주차에 사용한 <code>openintro</code> 패키지의 <code>email</code>을 csv로 저장한 것</li>
+<li>스팸은 367통 (9.4%)</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">변수</th>
+<th style="text-align: left;">내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>spam</code></td>
+<td style="text-align: left;">스팸 여부 (1 = 스팸)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>to_multiple</code></td>
+<td style="text-align: left;">받는 사람이 여러 명인지 (1 = 여러 명)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>winner</code></td>
+<td style="text-align: left;">본문에 “winner”라는 단어가 있는지 (yes, no)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>format</code></td>
+<td style="text-align: left;">HTML 형식인지 (1 = HTML)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>re_subj</code></td>
+<td style="text-align: left;">제목이 “Re:”로 시작하는지 (1 = 예)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>attach</code></td>
+<td style="text-align: left;">첨부 파일 수</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;">본문의 숫자 (none: 없음, small: 작은 숫자만, big: 100만 이상의 숫자가 있음)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>num_char</code></td>
+<td style="text-align: left;">본문의 글자 수 (천 자)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>line_breaks</code></td>
+<td style="text-align: left;">본문의 줄 수</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>자료에는 이 밖의 변수도 있으나 문제에서는 위의 변수만 사용</li>
+</ul>
+<ol type="1">
+<li><p><code>spam</code>을 예측하는 아래 모형들을 5-겹 교차검증으로 비교하시오. 겹 번호를 붙이기 전에 <code>set.seed()</code>에 본인 학번의 마지막 네 자리를 넣으시오.</p>
+<ul>
+<li><code>e0</code>: <code>spam ~ 1</code> (기준선)</li>
+<li><code>e1</code>: <code>spam ~ to_multiple + winner + format + re_subj + attach + number</code></li>
+<li><code>e2</code>: <code>spam ~ to_multiple + winner + format + re_subj + attach + number + num_char + line_breaks</code></li>
+</ul>
+<ol type="1">
+<li><p>각 모형의 학습 AUC와 교차검증 AUC를 하나의 표로 정리하고, 교차검증 AUC를 기준으로 모형을 하나 고르시오.</p></li>
+<li><p>(1)에서 고른 모형의 교차검증 예측 확률로 임계값 0.5에서 혼동행렬을 만들고 정확도, 민감도, 특이도를 계산하시오. 모든 메일을 “스팸 아님”으로 예측하는 기준선과 정확도를 비교하여 해석하시오.</p></li>
+<li><p>“스팸이 아닌 메일을 스팸으로 분류하는 실수”와 “스팸을 걸러내지 못하는 실수” 중 어느 쪽이 몇 배 더 비싸다고 보는지 본인의 기준을 정하고 그 이유를 한두 문장으로 쓰시오. 그 기준에서 총비용이 가장 작은 임계값을 (2)와 같은 교차검증 예측 확률로 찾으시오.</p></li>
+</ol></li>
+</ol>
+</section>
+<section id="참고" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="참고"><span class="header-section-number">9</span> 참고</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>R 스크립트 코드 보기/접기</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 환경 준비</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeldata)     <span class="co"># credit_data</span></span>
+<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a><span class="co"># AUC 계산 함수 (정의 부분은 이해하지 않아도 됨)</span></span>
+<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>auc <span class="ot">&lt;-</span> <span class="cf">function</span>(y, prob) {</span>
+<span id="cb60-13"><a href="#cb60-13" aria-hidden="true" tabindex="-1"></a>  r  <span class="ot">&lt;-</span> <span class="fu">rank</span>(prob)</span>
+<span id="cb60-14"><a href="#cb60-14" aria-hidden="true" tabindex="-1"></a>  n1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb60-15"><a href="#cb60-15" aria-hidden="true" tabindex="-1"></a>  n0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">sum</span>(r[y <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> n1 <span class="sc">*</span> (n1 <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">/</span> (n1 <span class="sc">*</span> n0)</span>
+<span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC 곡선용 표를 만드는 함수 (정의 부분은 이해하지 않아도 됨)</span></span>
+<span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>roc_table <span class="ot">&lt;-</span> <span class="cf">function</span>(y, prob) {</span>
+<span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>  thr <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.01</span>)</span>
+<span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">threshold =</span> thr,</span>
+<span id="cb60-23"><a href="#cb60-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">sensitivity =</span> <span class="fu">map_dbl</span>(thr, \(t) <span class="fu">mean</span>(prob[y <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">&gt;</span> t)),</span>
+<span id="cb60-24"><a href="#cb60-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">specificity =</span> <span class="fu">map_dbl</span>(thr, \(t) <span class="fu">mean</span>(prob[y <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">&lt;=</span> t)))</span>
+<span id="cb60-25"><a href="#cb60-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-26"><a href="#cb60-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-27"><a href="#cb60-27" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-28"><a href="#cb60-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 데이터 불러오기</span></span>
+<span id="cb60-29"><a href="#cb60-29" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-30"><a href="#cb60-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-31"><a href="#cb60-31" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Default.csv"</span>)</span>
+<span id="cb60-32"><a href="#cb60-32" aria-hidden="true" tabindex="-1"></a>credit_data            <span class="co"># modeldata 패키지에 포함</span></span>
+<span id="cb60-33"><a href="#cb60-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-34"><a href="#cb60-34" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-35"><a href="#cb60-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 데이터의 특성 파악</span></span>
+<span id="cb60-36"><a href="#cb60-36" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-37"><a href="#cb60-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-38"><a href="#cb60-38" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span> <span class="fu">skim</span>()</span>
+<span id="cb60-39"><a href="#cb60-39" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span> <span class="fu">tabyl</span>(default)</span>
+<span id="cb60-40"><a href="#cb60-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-41"><a href="#cb60-41" aria-hidden="true" tabindex="-1"></a>credit_data <span class="sc">|&gt;</span> <span class="fu">skim</span>()</span>
+<span id="cb60-42"><a href="#cb60-42" aria-hidden="true" tabindex="-1"></a>credit_data <span class="sc">|&gt;</span> <span class="fu">tabyl</span>(Status)</span>
+<span id="cb60-43"><a href="#cb60-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-44"><a href="#cb60-44" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-45"><a href="#cb60-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 데이터 변형</span></span>
+<span id="cb60-46"><a href="#cb60-46" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-47"><a href="#cb60-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-48"><a href="#cb60-48" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> default <span class="sc">|&gt;</span></span>
+<span id="cb60-49"><a href="#cb60-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">as.integer</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>))</span>
+<span id="cb60-50"><a href="#cb60-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-51"><a href="#cb60-51" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit_data <span class="sc">|&gt;</span></span>
+<span id="cb60-52"><a href="#cb60-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bad =</span> <span class="fu">as.integer</span>(Status <span class="sc">==</span> <span class="st">"bad"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb60-53"><a href="#cb60-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Status)</span>
+<span id="cb60-54"><a href="#cb60-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-55"><a href="#cb60-55" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측이 있는 행과 없는 행의 부실 비율 비교</span></span>
+<span id="cb60-56"><a href="#cb60-56" aria-hidden="true" tabindex="-1"></a>credit <span class="sc">|&gt;</span></span>
+<span id="cb60-57"><a href="#cb60-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">any_na =</span> <span class="sc">!</span><span class="fu">complete.cases</span>(credit)) <span class="sc">|&gt;</span></span>
+<span id="cb60-58"><a href="#cb60-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(any_na) <span class="sc">|&gt;</span></span>
+<span id="cb60-59"><a href="#cb60-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">bad_rate =</span> <span class="fu">mean</span>(bad))</span>
+<span id="cb60-60"><a href="#cb60-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-61"><a href="#cb60-61" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
+<span id="cb60-62"><a href="#cb60-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb60-63"><a href="#cb60-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Home =</span> <span class="fu">fct_lump_min</span>(Home, <span class="at">min =</span> <span class="dv">30</span>, <span class="at">other_level =</span> <span class="st">"other"</span>))</span>
+<span id="cb60-64"><a href="#cb60-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-65"><a href="#cb60-65" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-66"><a href="#cb60-66" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 시각화</span></span>
+<span id="cb60-67"><a href="#cb60-67" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-68"><a href="#cb60-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-69"><a href="#cb60-69" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
+<span id="cb60-70"><a href="#cb60-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default)) <span class="sc">+</span></span>
+<span id="cb60-71"><a href="#cb60-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.03</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb60-72"><a href="#cb60-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb60-73"><a href="#cb60-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-74"><a href="#cb60-74" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-75"><a href="#cb60-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 모형 추정</span></span>
+<span id="cb60-76"><a href="#cb60-76" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-77"><a href="#cb60-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-78"><a href="#cb60-78" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 1. 선형확률모형과 로지스틱 회귀 ----</span></span>
+<span id="cb60-79"><a href="#cb60-79" aria-hidden="true" tabindex="-1"></a>fit_lpm <span class="ot">&lt;-</span> <span class="fu">lm</span>(default <span class="sc">~</span> balance, <span class="at">data =</span> default)</span>
+<span id="cb60-80"><a href="#cb60-80" aria-hidden="true" tabindex="-1"></a>fit_bal <span class="ot">&lt;-</span> <span class="fu">glm</span>(default <span class="sc">~</span> balance, <span class="at">family =</span> binomial, <span class="at">data =</span> default)</span>
+<span id="cb60-81"><a href="#cb60-81" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(fit_bal)</span>
+<span id="cb60-82"><a href="#cb60-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-83"><a href="#cb60-83" aria-hidden="true" tabindex="-1"></a>new_balance <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">balance =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>))</span>
+<span id="cb60-84"><a href="#cb60-84" aria-hidden="true" tabindex="-1"></a>new_balance <span class="sc">|&gt;</span></span>
+<span id="cb60-85"><a href="#cb60-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(fit_bal, <span class="at">newdata =</span> new_balance, <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb60-86"><a href="#cb60-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-87"><a href="#cb60-87" aria-hidden="true" tabindex="-1"></a><span class="fu">glm</span>(default <span class="sc">~</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span>
+<span id="cb60-88"><a href="#cb60-88" aria-hidden="true" tabindex="-1"></a><span class="fu">glm</span>(default <span class="sc">~</span> balance <span class="sc">+</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span>
+<span id="cb60-89"><a href="#cb60-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-90"><a href="#cb60-90" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 2. 임계값, 혼동행렬 ----</span></span>
+<span id="cb60-91"><a href="#cb60-91" aria-hidden="true" tabindex="-1"></a>fit_def <span class="ot">&lt;-</span> <span class="fu">glm</span>(default <span class="sc">~</span> balance <span class="sc">+</span> income <span class="sc">+</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default)</span>
+<span id="cb60-92"><a href="#cb60-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-93"><a href="#cb60-93" aria-hidden="true" tabindex="-1"></a>default_pred <span class="ot">&lt;-</span> default <span class="sc">|&gt;</span></span>
+<span id="cb60-94"><a href="#cb60-94" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(fit_def, <span class="at">type =</span> <span class="st">"response"</span>),</span>
+<span id="cb60-95"><a href="#cb60-95" aria-hidden="true" tabindex="-1"></a>         <span class="at">pred =</span> <span class="fu">as.integer</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>))</span>
+<span id="cb60-96"><a href="#cb60-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-97"><a href="#cb60-97" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span> <span class="fu">tabyl</span>(default, pred)</span>
+<span id="cb60-98"><a href="#cb60-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-99"><a href="#cb60-99" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span></span>
+<span id="cb60-100"><a href="#cb60-100" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">accuracy    =</span> <span class="fu">mean</span>(pred <span class="sc">==</span> default),</span>
+<span id="cb60-101"><a href="#cb60-101" aria-hidden="true" tabindex="-1"></a>            <span class="at">baseline    =</span> <span class="fu">mean</span>(default <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb60-102"><a href="#cb60-102" aria-hidden="true" tabindex="-1"></a>            <span class="at">sensitivity =</span> <span class="fu">mean</span>(pred[default <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb60-103"><a href="#cb60-103" aria-hidden="true" tabindex="-1"></a>            <span class="at">specificity =</span> <span class="fu">mean</span>(pred[default <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb60-104"><a href="#cb60-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-105"><a href="#cb60-105" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">threshold =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>),</span>
+<span id="cb60-106"><a href="#cb60-106" aria-hidden="true" tabindex="-1"></a>                     <span class="at">accuracy =</span> <span class="cn">NA</span>, <span class="at">sensitivity =</span> <span class="cn">NA</span>, <span class="at">specificity =</span> <span class="cn">NA</span>,</span>
+<span id="cb60-107"><a href="#cb60-107" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n_miss =</span> <span class="cn">NA</span>, <span class="at">n_reject =</span> <span class="cn">NA</span>)</span>
+<span id="cb60-108"><a href="#cb60-108" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> default_pred<span class="sc">$</span>default</span>
+<span id="cb60-109"><a href="#cb60-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-110"><a href="#cb60-110" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(thr_result)) {</span>
+<span id="cb60-111"><a href="#cb60-111" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(default_pred<span class="sc">$</span>prob <span class="sc">&gt;</span> thr_result<span class="sc">$</span>threshold[i])</span>
+<span id="cb60-112"><a href="#cb60-112" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>accuracy[i]    <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred <span class="sc">==</span> y)</span>
+<span id="cb60-113"><a href="#cb60-113" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>sensitivity[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred[y <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb60-114"><a href="#cb60-114" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>specificity[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred[y <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb60-115"><a href="#cb60-115" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>n_miss[i]      <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb60-116"><a href="#cb60-116" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>n_reject[i]    <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb60-117"><a href="#cb60-117" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-118"><a href="#cb60-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-119"><a href="#cb60-119" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 3. 비용으로 임계값 정하기 ----</span></span>
+<span id="cb60-120"><a href="#cb60-120" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> thr_result <span class="sc">|&gt;</span></span>
+<span id="cb60-121"><a href="#cb60-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cost =</span> <span class="dv">5</span> <span class="sc">*</span> n_miss <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> n_reject)</span>
+<span id="cb60-122"><a href="#cb60-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-123"><a href="#cb60-123" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span> <span class="fu">slice_min</span>(cost)</span>
+<span id="cb60-124"><a href="#cb60-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-125"><a href="#cb60-125" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb60-126"><a href="#cb60-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> threshold, <span class="at">y =</span> cost)) <span class="sc">+</span></span>
+<span id="cb60-127"><a href="#cb60-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span>
+<span id="cb60-128"><a href="#cb60-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-129"><a href="#cb60-129" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4. ROC 곡선과 AUC ----</span></span>
+<span id="cb60-130"><a href="#cb60-130" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb60-131"><a href="#cb60-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity)) <span class="sc">+</span></span>
+<span id="cb60-132"><a href="#cb60-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb60-133"><a href="#cb60-133" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb60-134"><a href="#cb60-134" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>()</span>
+<span id="cb60-135"><a href="#cb60-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-136"><a href="#cb60-136" aria-hidden="true" tabindex="-1"></a><span class="fu">auc</span>(default_pred<span class="sc">$</span>default, default_pred<span class="sc">$</span>prob)</span>
+<span id="cb60-137"><a href="#cb60-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-138"><a href="#cb60-138" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 5. 5-겹 교차검증 ----</span></span>
+<span id="cb60-139"><a href="#cb60-139" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb60-140"><a href="#cb60-140" aria-hidden="true" tabindex="-1"></a>credit_cv <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
+<span id="cb60-141"><a href="#cb60-141" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fold =</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">n</span>())))</span>
+<span id="cb60-142"><a href="#cb60-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-143"><a href="#cb60-143" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb60-144"><a href="#cb60-144" aria-hidden="true" tabindex="-1"></a>  <span class="at">c0 =</span> bad <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb60-145"><a href="#cb60-145" aria-hidden="true" tabindex="-1"></a>  <span class="at">c1 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount,</span>
+<span id="cb60-146"><a href="#cb60-146" aria-hidden="true" tabindex="-1"></a>  <span class="at">c2 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount <span class="sc">+</span> Seniority <span class="sc">+</span> Records <span class="sc">+</span> Job,</span>
+<span id="cb60-147"><a href="#cb60-147" aria-hidden="true" tabindex="-1"></a>  <span class="at">c3 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount <span class="sc">+</span> Seniority <span class="sc">+</span> Records <span class="sc">+</span> Job <span class="sc">+</span></span>
+<span id="cb60-148"><a href="#cb60-148" aria-hidden="true" tabindex="-1"></a>             Home <span class="sc">+</span> Marital <span class="sc">+</span> Time <span class="sc">+</span> Age <span class="sc">+</span> Expenses <span class="sc">+</span> Assets <span class="sc">+</span> Debt <span class="sc">+</span> Price</span>
+<span id="cb60-149"><a href="#cb60-149" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-150"><a href="#cb60-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-151"><a href="#cb60-151" aria-hidden="true" tabindex="-1"></a>cv_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">model =</span> <span class="fu">names</span>(models),</span>
+<span id="cb60-152"><a href="#cb60-152" aria-hidden="true" tabindex="-1"></a>                    <span class="at">train_auc =</span> <span class="cn">NA</span>, <span class="at">cv_auc =</span> <span class="cn">NA</span>, <span class="at">cv_accuracy =</span> <span class="cn">NA</span>)</span>
+<span id="cb60-153"><a href="#cb60-153" aria-hidden="true" tabindex="-1"></a>prob_cv <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">bad =</span> credit_cv<span class="sc">$</span>bad)</span>
+<span id="cb60-154"><a href="#cb60-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-155"><a href="#cb60-155" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(models)) {</span>
+<span id="cb60-156"><a href="#cb60-156" aria-hidden="true" tabindex="-1"></a>  fit_all <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[j]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit_cv)</span>
+<span id="cb60-157"><a href="#cb60-157" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>train_auc[j] <span class="ot">&lt;-</span> <span class="fu">auc</span>(credit_cv<span class="sc">$</span>bad, <span class="fu">predict</span>(fit_all, <span class="at">type =</span> <span class="st">"response"</span>))</span>
+<span id="cb60-158"><a href="#cb60-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-159"><a href="#cb60-159" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(credit_cv))</span>
+<span id="cb60-160"><a href="#cb60-160" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb60-161"><a href="#cb60-161" aria-hidden="true" tabindex="-1"></a>    cv_train <span class="ot">&lt;-</span> credit_cv <span class="sc">|&gt;</span> <span class="fu">filter</span>(fold <span class="sc">!=</span> k)</span>
+<span id="cb60-162"><a href="#cb60-162" aria-hidden="true" tabindex="-1"></a>    cv_test  <span class="ot">&lt;-</span> credit_cv <span class="sc">|&gt;</span> <span class="fu">filter</span>(fold <span class="sc">==</span> k)</span>
+<span id="cb60-163"><a href="#cb60-163" aria-hidden="true" tabindex="-1"></a>    fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[j]], <span class="at">family =</span> binomial, <span class="at">data =</span> cv_train)</span>
+<span id="cb60-164"><a href="#cb60-164" aria-hidden="true" tabindex="-1"></a>    prob[credit_cv<span class="sc">$</span>fold <span class="sc">==</span> k] <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> cv_test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb60-165"><a href="#cb60-165" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb60-166"><a href="#cb60-166" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>cv_auc[j]      <span class="ot">&lt;-</span> <span class="fu">auc</span>(credit_cv<span class="sc">$</span>bad, prob)</span>
+<span id="cb60-167"><a href="#cb60-167" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>cv_accuracy[j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.integer</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>) <span class="sc">==</span> credit_cv<span class="sc">$</span>bad)</span>
+<span id="cb60-168"><a href="#cb60-168" aria-hidden="true" tabindex="-1"></a>  prob_cv[[<span class="fu">names</span>(models)[j]]] <span class="ot">&lt;-</span> prob</span>
+<span id="cb60-169"><a href="#cb60-169" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-170"><a href="#cb60-170" aria-hidden="true" tabindex="-1"></a>cv_result</span>
+<span id="cb60-171"><a href="#cb60-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-172"><a href="#cb60-172" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb60-173"><a href="#cb60-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c1) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c1"</span>),</span>
+<span id="cb60-174"><a href="#cb60-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c2) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c2"</span>),</span>
+<span id="cb60-175"><a href="#cb60-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c3) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c3"</span>)</span>
+<span id="cb60-176"><a href="#cb60-176" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb60-177"><a href="#cb60-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity, <span class="at">color =</span> model)) <span class="sc">+</span></span>
+<span id="cb60-178"><a href="#cb60-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb60-179"><a href="#cb60-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb60-180"><a href="#cb60-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>()</span>
+<span id="cb60-181"><a href="#cb60-181" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-182"><a href="#cb60-182" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 6. 비용 기준 임계값과 새 신청자 예측 ----</span></span>
+<span id="cb60-183"><a href="#cb60-183" aria-hidden="true" tabindex="-1"></a>cost_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">threshold =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>), <span class="at">cost =</span> <span class="cn">NA</span>)</span>
+<span id="cb60-184"><a href="#cb60-184" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(cost_result)) {</span>
+<span id="cb60-185"><a href="#cb60-185" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(prob_cv<span class="sc">$</span>c3 <span class="sc">&gt;</span> cost_result<span class="sc">$</span>threshold[i])</span>
+<span id="cb60-186"><a href="#cb60-186" aria-hidden="true" tabindex="-1"></a>  cost_result<span class="sc">$</span>cost[i] <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">*</span> <span class="fu">sum</span>(prob_cv<span class="sc">$</span>bad <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb60-187"><a href="#cb60-187" aria-hidden="true" tabindex="-1"></a>                         <span class="dv">1</span> <span class="sc">*</span> <span class="fu">sum</span>(prob_cv<span class="sc">$</span>bad <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">1</span>)</span>
+<span id="cb60-188"><a href="#cb60-188" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb60-189"><a href="#cb60-189" aria-hidden="true" tabindex="-1"></a>cost_result <span class="sc">|&gt;</span> <span class="fu">slice_min</span>(cost)</span>
+<span id="cb60-190"><a href="#cb60-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-191"><a href="#cb60-191" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[<span class="st">"c3"</span>]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit)</span>
+<span id="cb60-192"><a href="#cb60-192" aria-hidden="true" tabindex="-1"></a>new_applicant <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Income =</span> <span class="dv">130</span>, <span class="at">Amount =</span> <span class="dv">1000</span>, <span class="at">Seniority =</span> <span class="dv">5</span>, <span class="at">Records =</span> <span class="st">"no"</span>,</span>
+<span id="cb60-193"><a href="#cb60-193" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Job =</span> <span class="st">"fixed"</span>, <span class="at">Home =</span> <span class="st">"rent"</span>, <span class="at">Marital =</span> <span class="st">"married"</span>, <span class="at">Time =</span> <span class="dv">48</span>,</span>
+<span id="cb60-194"><a href="#cb60-194" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Age =</span> <span class="dv">35</span>, <span class="at">Expenses =</span> <span class="dv">60</span>, <span class="at">Assets =</span> <span class="dv">0</span>, <span class="at">Debt =</span> <span class="dv">0</span>, <span class="at">Price =</span> <span class="dv">1300</span>)</span>
+<span id="cb60-195"><a href="#cb60-195" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit_final, <span class="at">newdata =</span> new_applicant, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb60-196"><a href="#cb60-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-197"><a href="#cb60-197" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-198"><a href="#cb60-198" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. 결과 저장</span></span>
+<span id="cb60-199"><a href="#cb60-199" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
+<span id="cb60-200"><a href="#cb60-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-201"><a href="#cb60-201" aria-hidden="true" tabindex="-1"></a>cv_result <span class="sc">|&gt;</span></span>
+<span id="cb60-202"><a href="#cb60-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"output/week11_cv_result.csv"</span>)</span>
+<span id="cb60-203"><a href="#cb60-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-204"><a href="#cb60-204" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
+<span id="cb60-205"><a href="#cb60-205" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"output/week11_threshold.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>예측 확률이 대부분 0 근처에 몰려 있어서 0.01 간격으로는 낮은 쪽을 거칠게 지나가기 때문입니다. <code>auc()</code> 함수는 모든 예측값을 임계값으로 쓴 것과 같은 값을 계산합니다.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/minheechul\.github\.io\/practice-in-data-analysis\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
