@@ -179,7 +179,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">11주차. 예측하기 (2): 이산적 결과 변수</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./week01.html">강의자료</a></li><li class="breadcrumb-item"><a href="./week11.html">11주차. 예측하기 (2): 이산적 결과 변수</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -256,6 +256,12 @@ window.Quarto = {
  <span class="menu-text">10주차. 예측하기 (1): 연속적 결과 변수</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week11.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">11주차. 예측하기 (2): 이산적 결과 변수</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -300,14 +306,13 @@ window.Quarto = {
   </ul></li>
   <li><a href="#정리" id="toc-정리" class="nav-link" data-scroll-target="#정리"><span class="header-section-number">6</span> 정리</a></li>
   <li><a href="#실습" id="toc-실습" class="nav-link" data-scroll-target="#실습"><span class="header-section-number">7</span> 실습</a></li>
-  <li><a href="#참고" id="toc-참고" class="nav-link" data-scroll-target="#참고"><span class="header-section-number">8</span> 참고</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./week01.html">강의자료</a></li><li class="breadcrumb-item"><a href="./week11.html">11주차. 예측하기 (2): 이산적 결과 변수</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">11주차. 예측하기 (2): 이산적 결과 변수</h1>
 </div>
@@ -332,7 +337,7 @@ window.Quarto = {
 <li>이번 주의 질문: 결과가 숫자가 아니라 “예/아니오”일 때 무엇이 달라지는가?
 <ul>
 <li>이 고객이 카드 대금을 연체할까? 이 대출 신청을 승인해도 될까? 이 메일은 스팸일까?</li>
-<li>결과 변수가 두 값(0과 1) 중 하나만 갖는 경우: 이산적(discrete) 결과 변수, 그중에서도 이항(binary) 결과 변수</li>
+<li>결과 변수가 두 값(0과 1) 중 하나만 갖는 경우: 이산적(discrete) 결과 변수 중에서도 이항(binary) 결과 변수</li>
 </ul></li>
 <li>핵심 아이디어
 <ul>
@@ -354,22 +359,20 @@ window.Quarto = {
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeldata)     <span class="co"># credit_data (지난주에 설치)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<ul>
-<li>새로 설치할 패키지: 없음</li>
-</ul>
+<!-- - 새로 설치할 패키지: 없음 -->
 </section>
 <section id="확률을-예측하기" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="확률을-예측하기"><span class="header-section-number">2</span> 확률을 예측하기</h2>
 <section id="데이터-신용카드-연체" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="데이터-신용카드-연체"><span class="header-section-number">2.1</span> 데이터: 신용카드 연체</h3>
 <ul>
-<li><a href="data/Default.csv">Default.csv</a>: 신용카드 고객 10,000명. 교재 <em>An Introduction to Statistical Learning</em>의 <code>ISLR2</code> 패키지에 들어 있는 <code>Default</code>를 csv로 저장한 것
+<li><a href="data/Default.csv">Default.csv</a>: 신용카드 고객 10,000명. <code>ISLR2</code> 패키지에 들어 있는 <code>Default</code>를 csv로 저장한 것
 <ul>
 <li><code>default</code>: 연체 여부 (Yes, No)</li>
 <li><code>student</code>: 학생 여부 (Yes, No)</li>
 <li><code>balance</code>: 매달 결제한 뒤 카드에 남아 있는 평균 잔액</li>
 <li><code>income</code>: 소득</li>
-<li>실제 고객 자료가 아니라 교재 저자들이 만든 모의(simulated) 자료. 평균을 낸 기간, 연체의 시점과 기준, 금액의 단위는 설명되어 있지 않음. 로지스틱 회귀와 임계값의 개념을 보이는 데에만 사용</li>
+<li>실제 고객 자료가 아니라 교재 저자들이 만든 모의(simulated) 자료. 금액의 단위는 설명되어 있지 않음.</li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -546,7 +549,7 @@ window.Quarto = {
 </div>
 </div>
 <ul>
-<li>연체한 고객은 333명, 3.33%. 결과가 드문(rare) 자료</li>
+<li>연체한 고객은 333명, 3.33%.</li>
 </ul>
 </section>
 <section id="선형확률모형linear-probability-model" class="level3" data-number="2.2">
@@ -583,7 +586,7 @@ window.Quarto = {
 </div>
 </div>
 <ul>
-<li>예측값의 31%가 0보다 작음: “연체할 확률이 −7%”는 말이 되지 않음</li>
+<li>예측값의 31%가 0보다 작음: 음의 확률을 해석하기 어렵다는 문제</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
@@ -601,7 +604,6 @@ window.Quarto = {
 </div>
 <ul>
 <li><code>geom_jitter(height = 0.03)</code>: 점을 위아래로 조금씩 흔들어 겹치지 않게 그림. 실제 값은 0 또는 1</li>
-<li>확률은 0과 1 사이여야 하므로 직선 대신 0과 1 사이에 머무는 S자 곡선이 필요</li>
 </ul>
 </section>
 <section id="로지스틱-회귀logistic-regression" class="level3" data-number="2.3">
@@ -633,10 +635,7 @@ window.Quarto = {
 </div>
 <ul>
 <li>잔액의 계수가 양수: 잔액이 클수록 연체할 확률이 큼</li>
-<li>계수의 크기를 해석하는 방법(오즈비, odds ratio)은 이 강의에서는 다루지 않음
-<ul>
-<li>이번 주의 관심은 지난주와 마찬가지로 계수가 아니라 예측값, 즉 예측 확률</li>
-</ul></li>
+<li>계수의 크기를 해석하는 방법은 이 강의에서는 다루지 않음</li>
 </ul>
 </section>
 <section id="predict로-확률-구하기" class="level3" data-number="2.4">
@@ -791,7 +790,7 @@ default |>
 </div>
 </div>
 <ul>
-<li>이 절에서는 개념을 보이기 위해 모형을 추정한 자료에서 바로 계산함. 실제로 모형을 평가할 때는 지난주처럼 추정에 쓰지 않은 자료를 사용해야 함 (4절)</li>
+<li>이 절에서는 개념을 보이기 위해 모형을 추정한 자료에서 바로 계산함. 모형을 평가할 때는 지난주처럼 추정에 쓰지 않은 자료를 사용해야 함 (4절)</li>
 </ul>
 </section>
 <section id="정확도의-함정-기준선과-비교" class="level3" data-number="3.2">
@@ -849,7 +848,7 @@ default |>
 <ul>
 <li>민감도는 올라가고 특이도는 내려감</li>
 </ul></li>
-<li>임계값을 0.01부터 0.99까지 바꾸어 가며 계산 (지난주의 <code>for</code> 루프)</li>
+<li>임계값을 0.01부터 0.99까지 바꾸어 가며 계산</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">threshold =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>),</span>
@@ -932,7 +931,7 @@ default |>
 <li><code>slice_min(변수)</code>: 그 변수가 가장 작은 행</li>
 <li>총비용이 가장 작은 임계값은 0.21. 0.5일 때(1,180)보다 총비용이 약 23% 작음
 <ul>
-<li>설명변수를 쓰지 않는 기준선: 모두 승인하면(놓침 333건) 총비용은 <span class="math inline">\(5 \times 333 = 1{,}665\)</span>, 모두 거절하면 9,667</li>
+<li>설명변수를 쓰지 않는 기준선: 모두 승인하면(놓침 333건) 총비용은 5 <span class="math inline">\(\times\)</span> 333 = 1,665, 모두 거절하면 9,667</li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -958,7 +957,7 @@ default |>
 <h3 data-number="4.2" class="anchored" data-anchor-id="비용-비율이-바뀌면"><span class="header-section-number">4.2</span> 비용 비율이 바뀌면</h3>
 <ul>
 <li>비용 비율을 10배, 20배로 가정하면 최적 임계값은 0.10, 0.05로 내려감. 정답인 임계값은 자료가 아니라 비용 구조가 정함</li>
-<li>참고: 예측 확률이 정확하다면 비용 비율이 <span class="math inline">\(c\)</span>일 때 임계값은 <span class="math inline">\(1/(1+c)\)</span>. 5배이면 <span class="math inline">\(1/6 \approx 0.17\)</span>로, 자료에서 찾은 0.21과 가까움</li>
+<li>참고: 예측 확률이 정확하다면 비용 비율이 <span class="math inline">\(c\)</span>일 때 임계값은 1/(1+c). 5배이면 1/6 <span class="math inline">\(\approx\)</span> 0.17로, 자료에서 찾은 0.21과 가까움</li>
 </ul>
 </section>
 </section>
@@ -1348,10 +1347,10 @@ default |>
 <li><code>complete.cases()</code>: 결측이 하나도 없는 행이면 TRUE</li>
 <li>결측이 있는 행의 부실 비율은 54.9%로, 결측이 없는 행(25.4%)의 두 배가 넘음
 <ul>
-<li>소득을 밝히지 않은 신청자가 더 위험함. 결측 자체가 정보일 수 있음</li>
+<li>소득을 밝히지 않은 신청자가 더 위험할 수 있음</li>
 <li>결측 행을 빼면 남은 자료는 원래 자료보다 덜 위험한 사람들로 구성됨</li>
 </ul></li>
-<li>이번 주에는 결측 행을 빼고 사용하되, 이 점을 기억해 둠 (4,039명)</li>
+<li>다만 편의상 이번 주에는 결측 행을 빼고 사용</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
@@ -1390,9 +1389,9 @@ default |>
 <li>임계값을 정하지 않고 모형을 비교하는 방법: 임계값을 0부터 1까지 모두 바꾸어 보는 것</li>
 <li>ROC 곡선(receiver operating characteristic curve): 임계값을 바꾸면서 가로축에 1 − 특이도(정상 고객을 잘못 거절한 비율), 세로축에 민감도(부실을 잡아낸 비율)를 찍어 이은 곡선
 <ul>
-<li>3절의 <code>for</code> 루프와 같은 계산을 임계값마다 반복한 것</li>
-<li>다만 3절의 표는 임계값이 0.01부터 0.99까지뿐인데, 이 모형에서는 고객의 72%가 예측 확률이 0.01보다 작음. 그 표로 그리면 곡선이 가로축 0.26 근처에서 끊김</li>
-<li>그래서 모든 예측 확률을 임계값으로 하나씩 써 보는 아래 함수로 표를 만듦. 함수를 정의한 부분은 이해하지 않아도 됨</li>
+<li>3절의 <code>for</code> 루프와 같은 계산을 반복한 것</li>
+<li>다만 3절의 코드를 사용하면 이 모형에서는 곡선 중간에 근처에서 끊기게 되어 아래 함수를 사용하였음</li>
+<li>함수를 정의한 부분은 이해하지 않아도 됨</li>
 </ul></li>
 </ul>
 <div class="cell">
@@ -1601,7 +1600,7 @@ default |>
 <ul>
 <li>부실 확률이 17%만 넘어도 거절: 부실 대출 1건의 손실이 정상 고객 5명을 거절하는 손실과 같다고 가정했기 때문</li>
 </ul></li>
-<li>실제로 심사할 때는 지난주처럼 고른 모형을 전체 자료로 다시 추정해서 사용</li>
+<li>심사할 때는 지난주처럼 고른 모형을 전체 자료로 다시 추정해서 사용</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[<span class="st">"c3"</span>]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit)</span>
@@ -1809,208 +1808,6 @@ default |>
 <li><p>“스팸이 아닌 메일을 스팸으로 분류하는 실수”와 “스팸을 걸러내지 못하는 실수” 중 어느 쪽이 몇 배 더 비싸다고 보는지 본인의 기준을 정하고 그 이유를 한두 문장으로 쓰시오. 그 기준에서 총비용이 가장 작은 임계값을 (2)와 같은 교차검증 예측 확률로 찾으시오.</p></li>
 </ol></li>
 </ol>
-</section>
-<section id="참고" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="참고"><span class="header-section-number">8</span> 참고</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>R 스크립트 코드 보기/접기</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. 환경 준비</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modeldata)     <span class="co"># credit_data</span></span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="co"># AUC 계산 함수 (정의 부분은 이해하지 않아도 됨)</span></span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>auc <span class="ot">&lt;-</span> <span class="cf">function</span>(y, prob) {</span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>  r  <span class="ot">&lt;-</span> <span class="fu">rank</span>(prob)</span>
-<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>  n1 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>  n0 <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>  (<span class="fu">sum</span>(r[y <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> n1 <span class="sc">*</span> (n1 <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">/</span> (n1 <span class="sc">*</span> n0)</span>
-<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC 곡선용 표를 만드는 함수 (정의 부분은 이해하지 않아도 됨)</span></span>
-<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>roc_table <span class="ot">&lt;-</span> <span class="cf">function</span>(y, prob) {</span>
-<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>  thr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">sort</span>(<span class="fu">unique</span>(prob)), <span class="dv">1</span>)</span>
-<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">threshold =</span> thr,</span>
-<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">sensitivity =</span> <span class="fu">map_dbl</span>(thr, \(t) <span class="fu">mean</span>(prob[y <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">&gt;</span> t)),</span>
-<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">specificity =</span> <span class="fu">map_dbl</span>(thr, \(t) <span class="fu">mean</span>(prob[y <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">&lt;=</span> t)))</span>
-<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. 데이터 불러오기</span></span>
-<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-31"><a href="#cb52-31" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/Default.csv"</span>)</span>
-<span id="cb52-32"><a href="#cb52-32" aria-hidden="true" tabindex="-1"></a>credit_data            <span class="co"># modeldata 패키지에 포함</span></span>
-<span id="cb52-33"><a href="#cb52-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-34"><a href="#cb52-34" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-35"><a href="#cb52-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. 데이터의 특성 파악</span></span>
-<span id="cb52-36"><a href="#cb52-36" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-37"><a href="#cb52-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-38"><a href="#cb52-38" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span> <span class="fu">skim</span>()</span>
-<span id="cb52-39"><a href="#cb52-39" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span> <span class="fu">tabyl</span>(default)</span>
-<span id="cb52-40"><a href="#cb52-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-41"><a href="#cb52-41" aria-hidden="true" tabindex="-1"></a>credit_data <span class="sc">|&gt;</span> <span class="fu">skim</span>()</span>
-<span id="cb52-42"><a href="#cb52-42" aria-hidden="true" tabindex="-1"></a>credit_data <span class="sc">|&gt;</span> <span class="fu">tabyl</span>(Status)</span>
-<span id="cb52-43"><a href="#cb52-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-44"><a href="#cb52-44" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-45"><a href="#cb52-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. 데이터 변형</span></span>
-<span id="cb52-46"><a href="#cb52-46" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-47"><a href="#cb52-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-48"><a href="#cb52-48" aria-hidden="true" tabindex="-1"></a>default <span class="ot">&lt;-</span> default <span class="sc">|&gt;</span></span>
-<span id="cb52-49"><a href="#cb52-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">default =</span> <span class="fu">as.integer</span>(default <span class="sc">==</span> <span class="st">"Yes"</span>))</span>
-<span id="cb52-50"><a href="#cb52-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-51"><a href="#cb52-51" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit_data <span class="sc">|&gt;</span></span>
-<span id="cb52-52"><a href="#cb52-52" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bad =</span> <span class="fu">as.integer</span>(Status <span class="sc">==</span> <span class="st">"bad"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb52-53"><a href="#cb52-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Status)</span>
-<span id="cb52-54"><a href="#cb52-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-55"><a href="#cb52-55" aria-hidden="true" tabindex="-1"></a><span class="co"># 결측이 있는 행과 없는 행의 부실 비율 비교</span></span>
-<span id="cb52-56"><a href="#cb52-56" aria-hidden="true" tabindex="-1"></a>credit <span class="sc">|&gt;</span></span>
-<span id="cb52-57"><a href="#cb52-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">any_na =</span> <span class="sc">!</span><span class="fu">complete.cases</span>(credit)) <span class="sc">|&gt;</span></span>
-<span id="cb52-58"><a href="#cb52-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(any_na) <span class="sc">|&gt;</span></span>
-<span id="cb52-59"><a href="#cb52-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">bad_rate =</span> <span class="fu">mean</span>(bad))</span>
-<span id="cb52-60"><a href="#cb52-60" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-61"><a href="#cb52-61" aria-hidden="true" tabindex="-1"></a>credit <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
-<span id="cb52-62"><a href="#cb52-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
-<span id="cb52-63"><a href="#cb52-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Home =</span> <span class="fu">fct_lump_min</span>(Home, <span class="at">min =</span> <span class="dv">30</span>, <span class="at">other_level =</span> <span class="st">"other"</span>))</span>
-<span id="cb52-64"><a href="#cb52-64" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-65"><a href="#cb52-65" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-66"><a href="#cb52-66" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. 시각화</span></span>
-<span id="cb52-67"><a href="#cb52-67" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-68"><a href="#cb52-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-69"><a href="#cb52-69" aria-hidden="true" tabindex="-1"></a>default <span class="sc">|&gt;</span></span>
-<span id="cb52-70"><a href="#cb52-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> balance, <span class="at">y =</span> default)) <span class="sc">+</span></span>
-<span id="cb52-71"><a href="#cb52-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">height =</span> <span class="fl">0.03</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb52-72"><a href="#cb52-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb52-73"><a href="#cb52-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-74"><a href="#cb52-74" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-75"><a href="#cb52-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 6. 모형 추정</span></span>
-<span id="cb52-76"><a href="#cb52-76" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-77"><a href="#cb52-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-78"><a href="#cb52-78" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 1. 선형확률모형과 로지스틱 회귀 ----</span></span>
-<span id="cb52-79"><a href="#cb52-79" aria-hidden="true" tabindex="-1"></a>fit_lpm <span class="ot">&lt;-</span> <span class="fu">lm</span>(default <span class="sc">~</span> balance, <span class="at">data =</span> default)</span>
-<span id="cb52-80"><a href="#cb52-80" aria-hidden="true" tabindex="-1"></a>fit_bal <span class="ot">&lt;-</span> <span class="fu">glm</span>(default <span class="sc">~</span> balance, <span class="at">family =</span> binomial, <span class="at">data =</span> default)</span>
-<span id="cb52-81"><a href="#cb52-81" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(fit_bal)</span>
-<span id="cb52-82"><a href="#cb52-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-83"><a href="#cb52-83" aria-hidden="true" tabindex="-1"></a>new_balance <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">balance =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2500</span>))</span>
-<span id="cb52-84"><a href="#cb52-84" aria-hidden="true" tabindex="-1"></a>new_balance <span class="sc">|&gt;</span></span>
-<span id="cb52-85"><a href="#cb52-85" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(fit_bal, <span class="at">newdata =</span> new_balance, <span class="at">type =</span> <span class="st">"response"</span>))</span>
-<span id="cb52-86"><a href="#cb52-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-87"><a href="#cb52-87" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 2. 임계값, 혼동행렬 ----</span></span>
-<span id="cb52-88"><a href="#cb52-88" aria-hidden="true" tabindex="-1"></a>fit_def <span class="ot">&lt;-</span> <span class="fu">glm</span>(default <span class="sc">~</span> balance <span class="sc">+</span> income <span class="sc">+</span> student, <span class="at">family =</span> binomial, <span class="at">data =</span> default)</span>
-<span id="cb52-89"><a href="#cb52-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-90"><a href="#cb52-90" aria-hidden="true" tabindex="-1"></a>default_pred <span class="ot">&lt;-</span> default <span class="sc">|&gt;</span></span>
-<span id="cb52-91"><a href="#cb52-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob =</span> <span class="fu">predict</span>(fit_def, <span class="at">type =</span> <span class="st">"response"</span>),</span>
-<span id="cb52-92"><a href="#cb52-92" aria-hidden="true" tabindex="-1"></a>         <span class="at">pred =</span> <span class="fu">as.integer</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>))</span>
-<span id="cb52-93"><a href="#cb52-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-94"><a href="#cb52-94" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span> <span class="fu">tabyl</span>(default, pred)</span>
-<span id="cb52-95"><a href="#cb52-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-96"><a href="#cb52-96" aria-hidden="true" tabindex="-1"></a>default_pred <span class="sc">|&gt;</span></span>
-<span id="cb52-97"><a href="#cb52-97" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">accuracy    =</span> <span class="fu">mean</span>(pred <span class="sc">==</span> default),</span>
-<span id="cb52-98"><a href="#cb52-98" aria-hidden="true" tabindex="-1"></a>            <span class="at">baseline    =</span> <span class="fu">mean</span>(default <span class="sc">==</span> <span class="dv">0</span>),</span>
-<span id="cb52-99"><a href="#cb52-99" aria-hidden="true" tabindex="-1"></a>            <span class="at">sensitivity =</span> <span class="fu">mean</span>(pred[default <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">==</span> <span class="dv">1</span>),</span>
-<span id="cb52-100"><a href="#cb52-100" aria-hidden="true" tabindex="-1"></a>            <span class="at">specificity =</span> <span class="fu">mean</span>(pred[default <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">==</span> <span class="dv">0</span>))</span>
-<span id="cb52-101"><a href="#cb52-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-102"><a href="#cb52-102" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">threshold =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>),</span>
-<span id="cb52-103"><a href="#cb52-103" aria-hidden="true" tabindex="-1"></a>                     <span class="at">accuracy =</span> <span class="cn">NA</span>, <span class="at">sensitivity =</span> <span class="cn">NA</span>, <span class="at">specificity =</span> <span class="cn">NA</span>,</span>
-<span id="cb52-104"><a href="#cb52-104" aria-hidden="true" tabindex="-1"></a>                     <span class="at">n_miss =</span> <span class="cn">NA</span>, <span class="at">n_reject =</span> <span class="cn">NA</span>)</span>
-<span id="cb52-105"><a href="#cb52-105" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> default_pred<span class="sc">$</span>default</span>
-<span id="cb52-106"><a href="#cb52-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-107"><a href="#cb52-107" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(thr_result)) {</span>
-<span id="cb52-108"><a href="#cb52-108" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(default_pred<span class="sc">$</span>prob <span class="sc">&gt;</span> thr_result<span class="sc">$</span>threshold[i])</span>
-<span id="cb52-109"><a href="#cb52-109" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>accuracy[i]    <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred <span class="sc">==</span> y)</span>
-<span id="cb52-110"><a href="#cb52-110" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>sensitivity[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred[y <span class="sc">==</span> <span class="dv">1</span>] <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb52-111"><a href="#cb52-111" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>specificity[i] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pred[y <span class="sc">==</span> <span class="dv">0</span>] <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb52-112"><a href="#cb52-112" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>n_miss[i]      <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">0</span>)</span>
-<span id="cb52-113"><a href="#cb52-113" aria-hidden="true" tabindex="-1"></a>  thr_result<span class="sc">$</span>n_reject[i]    <span class="ot">&lt;-</span> <span class="fu">sum</span>(y <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> pred <span class="sc">==</span> <span class="dv">1</span>)</span>
-<span id="cb52-114"><a href="#cb52-114" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb52-115"><a href="#cb52-115" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-116"><a href="#cb52-116" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 3. 비용으로 임계값 정하기 ----</span></span>
-<span id="cb52-117"><a href="#cb52-117" aria-hidden="true" tabindex="-1"></a>thr_result <span class="ot">&lt;-</span> thr_result <span class="sc">|&gt;</span></span>
-<span id="cb52-118"><a href="#cb52-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cost =</span> <span class="dv">5</span> <span class="sc">*</span> n_miss <span class="sc">+</span> <span class="dv">1</span> <span class="sc">*</span> n_reject)</span>
-<span id="cb52-119"><a href="#cb52-119" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-120"><a href="#cb52-120" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span> <span class="fu">slice_min</span>(cost)</span>
-<span id="cb52-121"><a href="#cb52-121" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-122"><a href="#cb52-122" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
-<span id="cb52-123"><a href="#cb52-123" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> threshold, <span class="at">y =</span> cost)) <span class="sc">+</span></span>
-<span id="cb52-124"><a href="#cb52-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>()</span>
-<span id="cb52-125"><a href="#cb52-125" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-126"><a href="#cb52-126" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 4. ROC 곡선과 AUC ----</span></span>
-<span id="cb52-127"><a href="#cb52-127" aria-hidden="true" tabindex="-1"></a><span class="fu">roc_table</span>(default_pred<span class="sc">$</span>default, default_pred<span class="sc">$</span>prob) <span class="sc">|&gt;</span></span>
-<span id="cb52-128"><a href="#cb52-128" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity)) <span class="sc">+</span></span>
-<span id="cb52-129"><a href="#cb52-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb52-130"><a href="#cb52-130" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb52-131"><a href="#cb52-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>()</span>
-<span id="cb52-132"><a href="#cb52-132" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-133"><a href="#cb52-133" aria-hidden="true" tabindex="-1"></a><span class="fu">auc</span>(default_pred<span class="sc">$</span>default, default_pred<span class="sc">$</span>prob)</span>
-<span id="cb52-134"><a href="#cb52-134" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-135"><a href="#cb52-135" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 5. 5-겹 교차검증 ----</span></span>
-<span id="cb52-136"><a href="#cb52-136" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
-<span id="cb52-137"><a href="#cb52-137" aria-hidden="true" tabindex="-1"></a>credit_cv <span class="ot">&lt;-</span> credit <span class="sc">|&gt;</span></span>
-<span id="cb52-138"><a href="#cb52-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fold =</span> <span class="fu">sample</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">n</span>())))</span>
-<span id="cb52-139"><a href="#cb52-139" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-140"><a href="#cb52-140" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb52-141"><a href="#cb52-141" aria-hidden="true" tabindex="-1"></a>  <span class="at">c0 =</span> bad <span class="sc">~</span> <span class="dv">1</span>,</span>
-<span id="cb52-142"><a href="#cb52-142" aria-hidden="true" tabindex="-1"></a>  <span class="at">c1 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount,</span>
-<span id="cb52-143"><a href="#cb52-143" aria-hidden="true" tabindex="-1"></a>  <span class="at">c2 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount <span class="sc">+</span> Seniority <span class="sc">+</span> Records <span class="sc">+</span> Job,</span>
-<span id="cb52-144"><a href="#cb52-144" aria-hidden="true" tabindex="-1"></a>  <span class="at">c3 =</span> bad <span class="sc">~</span> Income <span class="sc">+</span> Amount <span class="sc">+</span> Seniority <span class="sc">+</span> Records <span class="sc">+</span> Job <span class="sc">+</span></span>
-<span id="cb52-145"><a href="#cb52-145" aria-hidden="true" tabindex="-1"></a>             Home <span class="sc">+</span> Marital <span class="sc">+</span> Time <span class="sc">+</span> Age <span class="sc">+</span> Expenses <span class="sc">+</span> Assets <span class="sc">+</span> Debt <span class="sc">+</span> Price</span>
-<span id="cb52-146"><a href="#cb52-146" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb52-147"><a href="#cb52-147" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-148"><a href="#cb52-148" aria-hidden="true" tabindex="-1"></a>cv_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">model =</span> <span class="fu">names</span>(models),</span>
-<span id="cb52-149"><a href="#cb52-149" aria-hidden="true" tabindex="-1"></a>                    <span class="at">train_auc =</span> <span class="cn">NA</span>, <span class="at">cv_auc =</span> <span class="cn">NA</span>, <span class="at">cv_accuracy =</span> <span class="cn">NA</span>)</span>
-<span id="cb52-150"><a href="#cb52-150" aria-hidden="true" tabindex="-1"></a>prob_cv <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">bad =</span> credit_cv<span class="sc">$</span>bad)</span>
-<span id="cb52-151"><a href="#cb52-151" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-152"><a href="#cb52-152" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(models)) {</span>
-<span id="cb52-153"><a href="#cb52-153" aria-hidden="true" tabindex="-1"></a>  fit_all <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[j]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit_cv)</span>
-<span id="cb52-154"><a href="#cb52-154" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>train_auc[j] <span class="ot">&lt;-</span> <span class="fu">auc</span>(credit_cv<span class="sc">$</span>bad, <span class="fu">predict</span>(fit_all, <span class="at">type =</span> <span class="st">"response"</span>))</span>
-<span id="cb52-155"><a href="#cb52-155" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-156"><a href="#cb52-156" aria-hidden="true" tabindex="-1"></a>  prob <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">nrow</span>(credit_cv))</span>
-<span id="cb52-157"><a href="#cb52-157" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) {</span>
-<span id="cb52-158"><a href="#cb52-158" aria-hidden="true" tabindex="-1"></a>    cv_train <span class="ot">&lt;-</span> credit_cv <span class="sc">|&gt;</span> <span class="fu">filter</span>(fold <span class="sc">!=</span> k)</span>
-<span id="cb52-159"><a href="#cb52-159" aria-hidden="true" tabindex="-1"></a>    cv_test  <span class="ot">&lt;-</span> credit_cv <span class="sc">|&gt;</span> <span class="fu">filter</span>(fold <span class="sc">==</span> k)</span>
-<span id="cb52-160"><a href="#cb52-160" aria-hidden="true" tabindex="-1"></a>    fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[j]], <span class="at">family =</span> binomial, <span class="at">data =</span> cv_train)</span>
-<span id="cb52-161"><a href="#cb52-161" aria-hidden="true" tabindex="-1"></a>    prob[credit_cv<span class="sc">$</span>fold <span class="sc">==</span> k] <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> cv_test, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb52-162"><a href="#cb52-162" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb52-163"><a href="#cb52-163" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>cv_auc[j]      <span class="ot">&lt;-</span> <span class="fu">auc</span>(credit_cv<span class="sc">$</span>bad, prob)</span>
-<span id="cb52-164"><a href="#cb52-164" aria-hidden="true" tabindex="-1"></a>  cv_result<span class="sc">$</span>cv_accuracy[j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">as.integer</span>(prob <span class="sc">&gt;</span> <span class="fl">0.5</span>) <span class="sc">==</span> credit_cv<span class="sc">$</span>bad)</span>
-<span id="cb52-165"><a href="#cb52-165" aria-hidden="true" tabindex="-1"></a>  prob_cv[[<span class="fu">names</span>(models)[j]]] <span class="ot">&lt;-</span> prob</span>
-<span id="cb52-166"><a href="#cb52-166" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb52-167"><a href="#cb52-167" aria-hidden="true" tabindex="-1"></a>cv_result</span>
-<span id="cb52-168"><a href="#cb52-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-169"><a href="#cb52-169" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
-<span id="cb52-170"><a href="#cb52-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c1) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c1"</span>),</span>
-<span id="cb52-171"><a href="#cb52-171" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c2) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c2"</span>),</span>
-<span id="cb52-172"><a href="#cb52-172" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_table</span>(prob_cv<span class="sc">$</span>bad, prob_cv<span class="sc">$</span>c3) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"c3"</span>)</span>
-<span id="cb52-173"><a href="#cb52-173" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb52-174"><a href="#cb52-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span> <span class="sc">-</span> specificity, <span class="at">y =</span> sensitivity, <span class="at">color =</span> model)) <span class="sc">+</span></span>
-<span id="cb52-175"><a href="#cb52-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb52-176"><a href="#cb52-176" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb52-177"><a href="#cb52-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_equal</span>()</span>
-<span id="cb52-178"><a href="#cb52-178" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-179"><a href="#cb52-179" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- 6. 새 신청자 예측 (임계값 1/(1+5)) ----</span></span>
-<span id="cb52-180"><a href="#cb52-180" aria-hidden="true" tabindex="-1"></a>fit_final <span class="ot">&lt;-</span> <span class="fu">glm</span>(models[[<span class="st">"c3"</span>]], <span class="at">family =</span> binomial, <span class="at">data =</span> credit)</span>
-<span id="cb52-181"><a href="#cb52-181" aria-hidden="true" tabindex="-1"></a>new_applicant <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Income =</span> <span class="dv">130</span>, <span class="at">Amount =</span> <span class="dv">1000</span>, <span class="at">Seniority =</span> <span class="dv">5</span>, <span class="at">Records =</span> <span class="st">"no"</span>,</span>
-<span id="cb52-182"><a href="#cb52-182" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Job =</span> <span class="st">"fixed"</span>, <span class="at">Home =</span> <span class="st">"rent"</span>, <span class="at">Marital =</span> <span class="st">"married"</span>, <span class="at">Time =</span> <span class="dv">48</span>,</span>
-<span id="cb52-183"><a href="#cb52-183" aria-hidden="true" tabindex="-1"></a>                        <span class="at">Age =</span> <span class="dv">35</span>, <span class="at">Expenses =</span> <span class="dv">60</span>, <span class="at">Assets =</span> <span class="dv">0</span>, <span class="at">Debt =</span> <span class="dv">0</span>, <span class="at">Price =</span> <span class="dv">1300</span>)</span>
-<span id="cb52-184"><a href="#cb52-184" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(fit_final, <span class="at">newdata =</span> new_applicant, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb52-185"><a href="#cb52-185" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-186"><a href="#cb52-186" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-187"><a href="#cb52-187" aria-hidden="true" tabindex="-1"></a><span class="co"># 7. 결과 저장</span></span>
-<span id="cb52-188"><a href="#cb52-188" aria-hidden="true" tabindex="-1"></a><span class="co"># =====================================================================</span></span>
-<span id="cb52-189"><a href="#cb52-189" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-190"><a href="#cb52-190" aria-hidden="true" tabindex="-1"></a>cv_result <span class="sc">|&gt;</span></span>
-<span id="cb52-191"><a href="#cb52-191" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"output/week11_cv_result.csv"</span>)</span>
-<span id="cb52-192"><a href="#cb52-192" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-193"><a href="#cb52-193" aria-hidden="true" tabindex="-1"></a>thr_result <span class="sc">|&gt;</span></span>
-<span id="cb52-194"><a href="#cb52-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">write_csv</span>(<span class="st">"output/week11_threshold.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
 
 
 </section>
