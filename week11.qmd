@@ -1,0 +1,917 @@
+---
+title: "11주차. 예측하기 (2): 이산적 결과 변수"
+execute:
+  echo: true
+  message: false
+  warning: false
+number-sections: true
+---
+
+## 도입
+
+- 이번 주의 질문: 결과가 숫자가 아니라 "예/아니오"일 때 무엇이 달라지는가?
+  - 이 고객이 카드 대금을 연체할까? 이 대출 신청을 승인해도 될까? 이 메일은 스팸일까?
+  - 결과 변수가 두 값(0과 1) 중 하나만 갖는 경우: 이산적(discrete) 결과 변수, 그중에서도 이항(binary) 결과 변수
+
+- 핵심 아이디어
+  - 모형이 예측하는 것은 "예/아니오"가 아니라 "예"일 확률(probability)
+  - 확률을 "예/아니오"라는 결정으로 바꾸는 기준(임계값)은 통계가 아니라 의사결정의 문제
+  - 지난주의 RMSE 대신 쓸 오차 지표가 필요함
+
+- 지난주와 같은 점
+  - 예측력은 모형을 만들 때 쓰지 않은 자료로 측정
+  - 기준선(baseline) 모형과 비교
+  - 모형은 교차검증으로 고름
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(skimr)
+library(broom)
+library(modeldata)     # credit_data (지난주에 설치)
+```
+
+- 새로 설치할 패키지: 없음
+
+
+## 확률을 예측하기
+
+### 데이터: 신용카드 연체
+
+- [Default.csv](data/Default.csv): 신용카드 고객 10,000명. 교재 *An Introduction to Statistical Learning*의 `ISLR2` 패키지에 들어 있는 `Default`를 csv로 저장한 것
+  - 실제 고객 자료가 아니라 교재 저자들이 만든 시뮬레이션 자료
+  - `default`: 연체 여부 (Yes, No)
+  - `student`: 학생 여부 (Yes, No)
+  - `balance`: 월말 카드 잔액 (달러)
+  - `income`: 연소득 (달러)
+
+```{r}
+default <- read_csv("data/Default.csv")
+
+default |>
+  skim()
+```
+
+- `default`는 문자("Yes", "No")로 읽힘. 연체이면 1, 아니면 0인 숫자 변수로 바꿈
+  - `default == "Yes"`는 TRUE/FALSE, `as.integer()`는 TRUE를 1, FALSE를 0으로 바꿈
+
+```{r}
+default <- default |>
+  mutate(default = as.integer(default == "Yes"))
+
+default |>
+  tabyl(default)
+```
+
+- 연체한 고객은 333명, 3.33%. 결과가 드문(rare) 자료
+
+### 선형확률모형(linear probability model)
+
+- 8주차의 `lm()`을 0/1 결과 변수에 그대로 쓰면: 예측값을 "연체할 확률"로 읽을 수 있음
+  - 0/1 변수의 평균은 1의 비율이므로, $x$가 주어졌을 때 $y$의 평균은 $y = 1$일 확률
+
+```{r}
+fit_lpm <- lm(default ~ balance, data = default)
+
+tidy(fit_lpm)
+```
+
+```{r}
+default |>
+  mutate(pred = predict(fit_lpm)) |>
+  summarize(min_pred = min(pred),
+            max_pred = max(pred),
+            share_negative = mean(pred < 0))
+```
+
+- 예측값의 31%가 0보다 작음: "연체할 확률이 −7%"는 말이 되지 않음
+
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+
+default |>
+  ggplot(aes(x = balance, y = default)) +
+  geom_jitter(height = 0.03, alpha = 0.1) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(x = "카드 잔액 (달러)", y = "연체 여부 (1 = 연체)")
+```
+
+- `geom_jitter(height = 0.03)`: 점을 위아래로 조금씩 흔들어 겹치지 않게 그림. 실제 값은 0 또는 1
+- 확률은 0과 1 사이여야 하므로 직선 대신 0과 1 사이에 머무는 S자 곡선이 필요
+
+### 로지스틱 회귀(logistic regression)
+
+- 로지스틱 회귀 모형
+
+$$ \Pr(y = 1 \mid x) = \frac{1}{1 + e^{-(b_0 + b_1 x)}} $$
+
+  - 괄호 안의 $b_0 + b_1 x$는 어떤 값이든 될 수 있지만, 전체 값은 항상 0과 1 사이
+  - $b_1 > 0$이면 $x$가 클수록 확률이 커지고, $b_1 < 0$이면 작아짐
+
+- `glm(y ~ x, family = binomial, data = )`
+  - `glm`: 일반화 선형모형(generalized linear model). `lm()`과 사용법이 거의 같음
+  - `family = binomial`: 결과 변수가 0/1이라는 뜻. 빠뜨리면 `lm()`과 같은 결과가 나옴
+
+```{r}
+fit_bal <- glm(default ~ balance, family = binomial, data = default)
+
+tidy(fit_bal)
+```
+
+- 잔액의 계수가 양수: 잔액이 클수록 연체할 확률이 큼
+- 계수의 크기를 해석하는 방법(오즈비, odds ratio)은 이 강의에서는 다루지 않음
+  - 이번 주의 관심은 지난주와 마찬가지로 계수가 아니라 예측값, 즉 예측 확률
+
+### `predict()`로 확률 구하기
+
+- `predict(fit, newdata = , type = "response")`: 확률을 예측
+
+```{r}
+new_balance <- tibble(balance = c(1000, 1500, 2000, 2500))
+
+new_balance |>
+  mutate(prob = predict(fit_bal, newdata = new_balance, type = "response"))
+```
+
+- 잔액이 1,000달러이면 연체 확률 0.6%, 2,000달러이면 59%
+- 주의: `type = "response"`를 빼면 확률이 아니라 괄호 안의 값 $b_0 + b_1 x$가 나옴
+
+```{r}
+predict(fit_bal, newdata = new_balance)    # 확률이 아님 (음수도 나옴)
+```
+
+- 선형확률모형과 로지스틱 회귀의 비교
+
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+
+default |>
+  mutate(lpm = predict(fit_lpm),
+         logit = predict(fit_bal, type = "response")) |>
+  ggplot(aes(x = balance)) +
+  geom_jitter(aes(y = default), height = 0.03, alpha = 0.1) +
+  geom_line(aes(y = lpm), color = "gray40", linetype = "dashed") +
+  geom_line(aes(y = logit), color = "blue", linewidth = 0.8) +
+  labs(x = "카드 잔액 (달러)", y = "연체 여부 / 예측 확률",
+       subtitle = "점선: 선형확률모형, 파란 선: 로지스틱 회귀")
+```
+
+- 로지스틱 회귀의 예측 확률은 잔액이 작은 구간에서 0에 붙어 있다가 1,500달러 근처부터 빠르게 커짐
+
+### 계수의 부호는 무엇을 함께 넣느냐에 따라 바뀔 수 있다
+
+- 학생 여부만 넣은 모형과 잔액을 함께 넣은 모형
+
+```{r}
+glm(default ~ student, family = binomial, data = default) |>
+  tidy()
+
+glm(default ~ balance + student, family = binomial, data = default) |>
+  tidy()
+```
+
+- 학생만 넣으면 학생의 계수가 양수, 잔액을 함께 넣으면 음수
+  - 학생의 연체율(4.3%)은 학생이 아닌 고객(2.9%)보다 높음
+  - 하지만 학생은 평균적으로 잔액이 큼. 잔액이 같은 고객끼리 비교하면 학생이 덜 연체함
+
+```{r}
+default |>
+  group_by(student) |>
+  summarize(mean_balance = mean(balance),
+            default_rate = mean(default))
+```
+
+- 8주차 다중회귀의 "다른 조건이 같다면"과 같은 이야기. 예측 확률은 두 모형 모두 계산할 수 있지만, 계수의 의미는 다름
+
+
+## 확률에서 결정으로: 임계값(threshold)
+
+### 혼동행렬(confusion matrix)
+
+- 이제 잔액, 소득, 학생 여부를 모두 넣은 모형을 사용
+
+```{r}
+fit_def <- glm(default ~ balance + income + student, family = binomial, data = default)
+
+default_pred <- default |>
+  mutate(prob = predict(fit_def, type = "response"))
+```
+
+- 카드사는 확률이 아니라 결정(한도를 줄일지 말지)이 필요함
+- 가장 단순한 규칙: 예측 확률이 0.5보다 크면 "연체"로 예측
+
+```{r}
+default_pred <- default_pred |>
+  mutate(pred = as.integer(prob > 0.5))
+
+default_pred |>
+  tabyl(default, pred)
+```
+
+- 실제(행) × 예측(열)의 2×2 표: 혼동행렬
+
+|  | 예측: 정상 (0) | 예측: 연체 (1) |
+| :--- | :---: | :---: |
+| 실제: 정상 (0) | 맞음 | 잘못 거절 |
+| 실제: 연체 (1) | 놓침 | 맞음 |
+
+- 정확도(accuracy): 맞게 예측한 비율
+
+```{r}
+default_pred |>
+  summarize(accuracy = mean(pred == default))
+```
+
+- 이 절에서는 개념을 보이기 위해 모형을 추정한 자료에서 바로 계산함. 실제로 모형을 평가할 때는 지난주처럼 추정에 쓰지 않은 자료를 사용해야 함 (4절)
+
+### 정확도의 함정: 기준선과 비교
+
+- 정확도 97.3%는 높아 보이지만, 비교 대상이 필요함
+- 가장 단순한 예측: 모든 고객을 "정상"으로 예측. 연체율이 3.33%이므로 정확도는 96.7%
+
+```{r}
+default_pred |>
+  summarize(accuracy_model = mean(pred == default),
+            accuracy_baseline = mean(default == 0))
+```
+
+- 모형은 기준선보다 0.6%p 나을 뿐
+- 혼동행렬을 다시 보면: 실제 연체자 333명 중 105명만 연체로 예측했고 228명은 놓침
+- 결과가 드물 때는 정확도만으로 모형을 평가할 수 없음
+
+### 민감도(sensitivity)와 특이도(specificity)
+
+- 두 종류의 오류를 따로 봄
+  - 민감도: 실제 연체자 중 연체로 예측한 비율 (연체자를 잡아내는 능력)
+  - 특이도: 실제 정상 고객 중 정상으로 예측한 비율 (정상 고객을 괴롭히지 않는 능력)
+
+```{r}
+default_pred |>
+  summarize(sensitivity = mean(pred[default == 1] == 1),
+            specificity = mean(pred[default == 0] == 0))
+```
+
+- `pred[default == 1]`: `default`가 1인 행의 `pred`만 골라냄 (base R의 인덱싱)
+- 특이도는 99.6%이지만 민감도는 31.5%
+
+### 임계값을 바꾸면
+
+- 임계값을 0.5가 아니라 더 낮게 잡으면 연체로 예측하는 고객이 늘어남
+  - 민감도는 올라가고 특이도는 내려감
+- 임계값을 0.01부터 0.99까지 바꾸어 가며 계산 (지난주의 `for` 루프)
+
+```{r}
+thr_result <- tibble(threshold = seq(0.01, 0.99, by = 0.01),
+                     accuracy = NA, sensitivity = NA, specificity = NA,
+                     n_miss = NA, n_reject = NA)
+
+y <- default_pred$default
+
+for (i in 1:nrow(thr_result)) {
+  pred <- as.integer(default_pred$prob > thr_result$threshold[i])
+
+  thr_result$accuracy[i]    <- mean(pred == y)
+  thr_result$sensitivity[i] <- mean(pred[y == 1] == 1)
+  thr_result$specificity[i] <- mean(pred[y == 0] == 0)
+  thr_result$n_miss[i]      <- sum(y == 1 & pred == 0)   # 놓친 연체자 수
+  thr_result$n_reject[i]    <- sum(y == 0 & pred == 1)   # 잘못 거절한 정상 고객 수
+}
+
+thr_result |>
+  filter(threshold %in% c(0.05, 0.1, 0.2, 0.3, 0.5))
+```
+
+- 임계값을 0.5에서 0.2로 낮추면 민감도가 31.5%에서 61.0%로 오르고, 특이도는 99.6%에서 97.1%로 내려감
+- 두 종류의 오류를 동시에 줄일 수는 없음 → 어느 쪽을 얼마나 줄일지 정해야 함
+
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+
+thr_result |>
+  pivot_longer(c(sensitivity, specificity), names_to = "measure", values_to = "value") |>
+  ggplot(aes(x = threshold, y = value, color = measure)) +
+  geom_line() +
+  labs(x = "임계값", y = NULL, color = NULL) +
+  theme(legend.position = "top")
+```
+
+
+## 비용으로 임계값 정하기
+
+### 두 오류의 비용은 다르다
+
+- 카드사 입장에서
+  - 연체할 고객을 정상으로 판단(놓침): 받지 못한 대금만큼 손실
+  - 정상 고객을 연체로 판단(잘못 거절): 한도를 줄였으므로 그 고객에게서 얻을 수수료와 이자 수입을 잃음
+- 보통 놓침의 비용이 훨씬 큼
+- 가정: 놓침 1건의 비용이 잘못 거절 1건의 비용의 5배
+
+$$ \text{총비용} = 5 \times (\text{놓침의 수}) + 1 \times (\text{잘못 거절의 수}) $$
+
+```{r}
+thr_result <- thr_result |>
+  mutate(cost = 5 * n_miss + 1 * n_reject)
+
+thr_result |>
+  slice_min(cost)
+```
+
+- `slice_min(변수)`: 그 변수가 가장 작은 행
+- 총비용이 가장 작은 임계값은 0.21. 0.5일 때(1,180)보다 총비용이 약 23% 작음
+  - 모두 승인하면(놓침 333건) 총비용은 $5 \times 333 = 1{,}665$
+
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+
+thr_result |>
+  ggplot(aes(x = threshold, y = cost)) +
+  geom_line() +
+  geom_vline(xintercept = 0.5, linetype = "dotted") +
+  labs(x = "임계값", y = "총비용 (잘못 거절 1건 = 1)",
+       caption = "점선: 임계값 0.5")
+```
+
+- 곡선의 바닥이 평평함: 0.15에서 0.25 사이는 총비용이 913~935로, 어느 값을 골라도 크게 다르지 않음
+
+### 비용 비율이 바뀌면
+
+- 비용 비율을 5배가 아니라 10배, 20배로 가정하면 최적 임계값은 0.10, 0.05로 내려감 (직접 확인해 보기)
+- 정답인 임계값은 자료가 아니라 비용 구조가 정함
+- 참고: 예측 확률 $p$가 정확하다면, 연체로 판단해 얻는 기대 절약 $5p$가 잘못 거절의 기대 비용 $1 \times (1-p)$보다 클 때 거절하는 것이 이득
+  - $5p > 1 - p$, 즉 $p > 1/6 \approx 0.17$. 일반적으로 비용 비율이 $c$이면 임계값은 $1/(1+c)$
+  - 자료에서 찾은 0.21은 이 값에 가까움 (예측 확률이 정확히 맞지는 않으므로 완전히 같지는 않음)
+
+
+## 신용 심사 자료: 교차검증과 ROC 곡선
+
+### 데이터: 대출 심사 결과
+
+- `credit_data` (modeldata 패키지): 대출을 받은 4,454명의 결과
+  - 스페인의 한 금융회사 자료로 알려져 있음. 금액 변수의 단위는 자료 설명에 나와 있지 않음
+
+| 변수 | 내용 |
+| :--- | :--- |
+| `Status` | 대출 결과: bad (부실), good (정상) |
+| `Seniority` | 현 직장 근속연수 |
+| `Home` | 주거 형태 (owner, rent, parents, priv, other, ignore) |
+| `Time` | 대출 기간 (개월) |
+| `Age` | 나이 |
+| `Marital` | 혼인 상태 (married, single, separated, widow, divorced) |
+| `Records` | 기록 존재 여부 (no, yes). 자료 설명에는 "existence of records"로만 되어 있음 |
+| `Job` | 고용 형태 (fixed, freelance, partime, others) |
+| `Expenses` | 지출 |
+| `Income` | 소득 |
+| `Assets` | 자산 |
+| `Debt` | 부채 |
+| `Amount` | 대출액 |
+| `Price` | 구매하려는 물건의 가격 |
+
+```{r}
+credit_data |>
+  skim()
+```
+
+- 주의: `Status`의 수준(level) 순서는 bad, good
+  - `glm()`은 두 번째 수준을 1로 보므로 `Status`를 그대로 넣으면 good일 확률을 모형화함
+  - 부실이면 1인 변수 `bad`를 따로 만들어 사용
+
+```{r}
+credit <- credit_data |>
+  mutate(bad = as.integer(Status == "bad")) |>
+  select(-Status)
+
+credit |>
+  tabyl(bad)
+```
+
+- 부실 비율 28.2%. 모두 "정상"으로 예측하는 기준선의 정확도는 71.8%
+
+### 결측치
+
+- 결측이 하나라도 있는 행이 415개. 대부분 `Income`의 결측 (381개)
+
+```{r}
+credit |>
+  mutate(any_na = !complete.cases(credit)) |>
+  group_by(any_na) |>
+  summarize(n = n(), bad_rate = mean(bad))
+```
+
+- `complete.cases()`: 결측이 하나도 없는 행이면 TRUE
+- 결측이 있는 행의 부실 비율은 54.9%로, 결측이 없는 행(25.4%)의 두 배가 넘음
+  - 소득을 밝히지 않은 신청자가 더 위험함. 결측 자체가 정보일 수 있음
+  - 결측 행을 빼면 남은 자료는 원래 자료보다 덜 위험한 사람들로 구성됨
+- 이번 주에는 결측 행을 빼고 사용하되, 이 점을 기억해 둠 (4,039명)
+
+```{r}
+credit <- credit |>
+  drop_na()
+
+nrow(credit)
+```
+
+- 결측 행을 뺀 뒤의 부실 비율은 25.4%. 이제 기준선의 정확도는 74.6%
+
+- 주거 형태 중 `ignore`는 19명뿐. 지난주의 동네처럼, 교차검증에서 학습 자료에 이 범주가 없으면 예측할 수 없으므로 `other`와 묶어 둠
+
+```{r}
+credit <- credit |>
+  mutate(Home = fct_lump_min(Home, min = 30, other_level = "other"))
+
+credit |>
+  count(Home)
+```
+
+### 정확도 대신: ROC 곡선
+
+- 정확도로 모형을 비교하려면 임계값을 하나 정해야 함. 그런데 임계값은 비용 구조에 따라 달라짐
+- 임계값을 정하지 않고 모형을 비교하는 방법: 임계값을 0부터 1까지 모두 바꾸어 보는 것
+- ROC 곡선(receiver operating characteristic curve): 임계값을 바꾸면서 가로축에 1 − 특이도(정상 고객을 잘못 거절한 비율), 세로축에 민감도(부실을 잡아낸 비율)를 찍어 이은 곡선
+  - 3절에서 만든 `thr_result` 표를 그림으로 그린 것
+
+```{r}
+#| fig-width: 4.5
+#| fig-height: 4.5
+
+thr_result |>
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line(color = "blue") +
+  geom_abline(linetype = "dashed") +
+  coord_equal() +
+  labs(x = "1 - 특이도 (잘못 거절한 비율)", y = "민감도 (잡아낸 비율)",
+       subtitle = "카드 연체 모형의 ROC 곡선")
+```
+
+- 왼쪽 아래(임계값 1: 아무도 거절하지 않음)에서 오른쪽 위(임계값 0: 모두 거절)로 가는 곡선
+- 점선(대각선): 예측 확률을 무작위로 주는 모형. 기준선
+- 곡선이 왼쪽 위로 붙을수록 좋은 모형: 정상 고객을 조금만 거절해도 부실을 많이 잡아냄
+
+### AUC
+
+- AUC(area under the curve): ROC 곡선 아래의 면적. 0.5(대각선)이면 무작위 예측과 같고, 1이면 완벽
+- AUC의 의미: 부실 1명과 정상 1명을 무작위로 뽑았을 때, 모형이 부실 쪽에 더 높은 확률을 줄 확률
+  - 모형이 사람들의 순서를 얼마나 잘 매기는지를 나타냄. 임계값과 상관없음
+- 아래 함수로 계산. 함수를 정의한 부분은 이해하지 않아도 됨
+
+```{r}
+auc <- function(y, prob) {
+  r  <- rank(prob)
+  n1 <- sum(y == 1)
+  n0 <- sum(y == 0)
+  (sum(r[y == 1]) - n1 * (n1 + 1) / 2) / (n1 * n0)
+}
+
+auc(default_pred$default, default_pred$prob)
+```
+
+- 카드 연체 모형의 AUC는 0.95
+  - 위 그림은 임계값을 0.01 간격으로만 바꾸어 그린 것이라, 그림의 면적은 이 값보다 조금 작음 (0.94)^[예측 확률이 대부분 0 근처에 몰려 있어서 0.01 간격으로는 낮은 쪽을 거칠게 지나가기 때문입니다. `auc()` 함수는 모든 예측값을 임계값으로 쓴 것과 같은 값을 계산합니다.]
+
+### 5-겹 교차검증
+
+- 지난주와 같은 방식으로 겹 번호를 붙임
+
+```{r}
+set.seed(1)
+credit_cv <- credit |>
+  mutate(fold = sample(rep(1:5, length.out = n())))
+```
+
+- 비교할 모형
+
+| 이름 | 설명변수 | 계수의 수 |
+| :--- | :--- | ---: |
+| `c0` | 없음 (기준선) | 1 |
+| `c1` | 소득, 대출액 | 3 |
+| `c2` | + 근속연수, 기록, 고용 형태 | 7 |
+| `c3` | 13개 변수 모두 | 22 |
+
+```{r}
+models <- list(
+  c0 = bad ~ 1,
+  c1 = bad ~ Income + Amount,
+  c2 = bad ~ Income + Amount + Seniority + Records + Job,
+  c3 = bad ~ Income + Amount + Seniority + Records + Job +
+             Home + Marital + Time + Age + Expenses + Assets + Debt + Price
+)
+```
+
+- 지난주와 달라지는 점
+  - `lm()` 대신 `glm(family = binomial)`, `predict()`에 `type = "response"`
+  - 겹마다 오차를 계산하는 대신, 각 관측치가 평가 겹에 들어갔을 때의 예측 확률을 모아 두었다가 마지막에 AUC를 한 번 계산
+    - 지난주의 "모든 관측치의 평가 오차를 모아 RMSE를 한 번 계산하는 것"과 같은 구조
+  - 교차검증 예측 확률은 나중에 쓰기 위해 `prob_cv`라는 표에 모형별로 저장
+
+```{r}
+cv_result <- tibble(model = names(models),
+                    train_auc = NA, cv_auc = NA, cv_accuracy = NA)
+
+prob_cv <- tibble(bad = credit_cv$bad)
+
+for (j in 1:length(models)) {
+
+  # (1) 전체 자료로 추정한 학습 AUC (비교용)
+  fit_all <- glm(models[[j]], family = binomial, data = credit_cv)
+  cv_result$train_auc[j] <- auc(credit_cv$bad, predict(fit_all, type = "response"))
+
+  # (2) 5-겹 교차검증: 평가 겹의 예측 확률을 모음
+  prob <- numeric(nrow(credit_cv))
+  for (k in 1:5) {
+    cv_train <- credit_cv |> filter(fold != k)
+    cv_test  <- credit_cv |> filter(fold == k)
+    fit <- glm(models[[j]], family = binomial, data = cv_train)
+    prob[credit_cv$fold == k] <- predict(fit, newdata = cv_test, type = "response")
+  }
+
+  cv_result$cv_auc[j]      <- auc(credit_cv$bad, prob)
+  cv_result$cv_accuracy[j] <- mean(as.integer(prob > 0.5) == credit_cv$bad)
+  prob_cv[[names(models)[j]]] <- prob
+}
+
+cv_result |>
+  mutate(across(-model, \(x) round(x, 3)))
+```
+
+- `prob[credit_cv$fold == k] <- ...`: `prob` 중 k번 겹에 해당하는 자리에만 예측 확률을 채워 넣음
+- `prob_cv[[이름]] <- prob`: `prob_cv` 표에 그 이름의 열을 추가
+
+- 결과 읽기
+  - 변수를 늘릴수록 교차검증 AUC가 커짐: `c3`(0.83)가 가장 좋음
+  - 학습 AUC와 교차검증 AUC의 차이가 작음: 이 정도의 모형에서는 과적합이 거의 없음 (지난주 `m5`와 비교)
+  - 정확도(임계값 0.5)로는 차이가 잘 보이지 않음. `c1`의 정확도는 기준선(74.6%)과 거의 같지만 AUC로는 기준선보다 분명히 나음
+  - `c0`의 교차검증 AUC가 정확히 0.5가 아닌 이유: 기준선 모형은 각 겹 안에서 모든 사람에게 같은 확률을 주지만, 그 값이 겹마다 조금씩 다름. 그 차이로 생긴 우연한 순서일 뿐 의미는 없음
+
+- 교차검증 예측 확률로 그린 ROC 곡선
+  - 모형마다 임계값을 바꾸어 가며 민감도와 1 − 특이도를 계산해야 하므로, 아래 함수로 표를 만듦. 함수를 정의한 부분은 이해하지 않아도 됨 (3절의 `for` 루프와 같은 일을 함)
+
+```{r}
+roc_table <- function(y, prob) {
+  thr <- seq(0, 1, by = 0.01)
+  tibble(threshold = thr,
+         sensitivity = map_dbl(thr, \(t) mean(prob[y == 1] > t)),
+         specificity = map_dbl(thr, \(t) mean(prob[y == 0] <= t)))
+}
+```
+
+```{r}
+#| fig-width: 5
+#| fig-height: 5
+
+bind_rows(
+  roc_table(prob_cv$bad, prob_cv$c1) |> mutate(model = "c1"),
+  roc_table(prob_cv$bad, prob_cv$c2) |> mutate(model = "c2"),
+  roc_table(prob_cv$bad, prob_cv$c3) |> mutate(model = "c3")
+) |>
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_line() +
+  geom_abline(linetype = "dashed") +
+  coord_equal() +
+  labs(x = "1 - 특이도 (잘못 거절한 비율)", y = "민감도 (잡아낸 비율)", color = "모형") +
+  theme(legend.position = "top")
+```
+
+- `c3`의 곡선이 대부분의 구간에서 가장 왼쪽 위에 있음
+
+### 고른 모형으로 심사하기
+
+- 모형 선택: 교차검증 AUC가 가장 큰 `c3`
+- 임계값 선택: 3절과 같이 비용으로. 부실 대출을 승인하는 비용이 정상 고객을 거절하는 비용의 5배라고 가정
+  - 이때 확률은 학습 자료의 예측 확률이 아니라 교차검증 예측 확률(`prob_cv$c3`)을 사용: 새 신청자에게 모형이 줄 확률에 더 가까움
+
+```{r}
+cost_result <- tibble(threshold = seq(0.01, 0.99, by = 0.01), cost = NA)
+
+for (i in 1:nrow(cost_result)) {
+  pred <- as.integer(prob_cv$c3 > cost_result$threshold[i])
+  n_miss   <- sum(prob_cv$bad == 1 & pred == 0)
+  n_reject <- sum(prob_cv$bad == 0 & pred == 1)
+  cost_result$cost[i] <- 5 * n_miss + 1 * n_reject
+}
+
+cost_result |>
+  slice_min(cost)
+```
+
+- 총비용이 가장 작은 임계값은 0.16: 부실 확률이 16%를 넘으면 거절
+  - 3절의 이론값 $1/(1+5) \approx 0.17$과 거의 같음
+  - 부실 확률이 16%만 넘어도 거절하는 이유: 부실 대출 1건의 손실이 정상 고객 5명을 거절하는 손실과 같다고 가정했기 때문
+
+- 실제로 심사할 때는 지난주처럼 고른 모형을 전체 자료로 다시 추정해서 사용
+
+```{r}
+fit_final <- glm(models[["c3"]], family = binomial, data = credit)
+
+new_applicant <- tibble(Income = 130, Amount = 1000, Seniority = 5, Records = "no",
+                        Job = "fixed", Home = "rent", Marital = "married", Time = 48,
+                        Age = 35, Expenses = 60, Assets = 0, Debt = 0, Price = 1300)
+
+predict(fit_final, newdata = new_applicant, type = "response")
+```
+
+- 이 신청자의 부실 확률은 약 21%. 임계값 0.16보다 크므로 거절
+  - 임계값 0.5를 썼다면 승인했을 신청자. 비용 가정이 결정을 바꿈
+- 이 모형의 예측 성능으로 보고할 숫자는 교차검증 AUC (학습 AUC가 아님)
+
+### 생각해 볼 문제
+
+- 이 자료에는 대출을 받은 사람만 들어 있음
+  - 과거에 거절된 신청자는 부실이 될지 알 수 없으므로 자료에 없음
+  - 이 모형을 모든 신청자에게 적용해도 될까?
+- 예측력이 좋다면 어떤 변수든 써도 될까?
+  - 예를 들어 나이나 혼인 상태로 대출을 거절하는 것은 공정한가?
+
+
+## 정리
+
+| 하고 싶은 일 | 사용할 코드 |
+| :--- | :--- |
+| 0/1 변수 만들기 | `mutate(y = as.integer(x == "Yes"))` |
+| 로지스틱 회귀 | `glm(y ~ x, family = binomial, data = )` |
+| 확률 예측 | `predict(fit, newdata = , type = "response")` |
+| 임계값으로 분류 | `mutate(pred = as.integer(prob > 0.5))` |
+| 혼동행렬 | `tabyl(y, pred)` |
+| 정확도, 민감도, 특이도 | `mean(pred == y)`, `mean(pred[y == 1] == 1)`, `mean(pred[y == 0] == 0)` |
+| 가장 작은 행 | `slice_min(cost)` |
+| AUC | 본문의 `auc(y, prob)` 함수 |
+| ROC 곡선 | 본문의 `roc_table(y, prob)` 함수 + `geom_line()` |
+
+- 이산적 결과를 예측할 때의 체크리스트 (지난주 체크리스트에 추가)
+  - `predict()`에 `type = "response"`를 넣었는가?
+  - 결과가 드물다면, 모두 다수 범주로 예측하는 기준선과 비교했는가?
+  - 정확도만 보지 않고 민감도와 특이도, 또는 AUC를 보았는가?
+  - 임계값을 왜 그 값으로 정했는지 설명할 수 있는가?
+
+
+## 더 공부할 주제
+
+- 의사결정나무(decision tree)
+  - "소득이 얼마 미만이고 기록이 있으면 거절"과 같은 규칙의 나무로 예측. 결과를 읽기 쉽고, 범주형 변수를 그대로 쓸 수 있음
+  - 나무를 여러 개 합친 랜덤 포레스트(random forest), 부스팅(boosting)은 예측력이 좋은 방법으로 널리 쓰임
+  - R: `rpart` 패키지
+- ROC 곡선과 AUC를 계산해 주는 패키지: `pROC`, `yardstick`
+  - 둘 다 어느 쪽을 1(사건)로 볼지 정하는 기본 설정이 있어, 지정하지 않으면 엉뚱한 값이 나올 수 있음
+    - `pROC::roc()`: `levels = c(0, 1), direction = "<"`를 지정
+    - `yardstick::roc_auc()`: 결과 변수를 factor로 바꾸고 `event_level`을 확인
+- 계수의 해석: 오즈비(odds ratio)
+- 결과 범주가 셋 이상인 경우: 다항 로짓(multinomial logit)
+
+
+## 실습
+
+::: {.callout-important title="주의사항"}
+
+- 마감: 11월 16일 (월) 오후 6시
+
+- 아래 문제 1에 대한 답안을 작성하고 week11_ex_학번.R과 week11_ex_학번.docx를 E-class로 제출하세요.
+
+- 위의 분석을 수행하는 데 사용한 코드는 아래 "참고"에 포함되어 있으니 잘 읽어보고 연습한 후 문제에 답변할 때 활용하세요.
+
+:::
+
+- 데이터: [email.csv](data/email.csv) (3,921통)
+  - 2012년 첫 3개월 동안 한 사람이 받은 메일. 8주차에 사용한 `openintro` 패키지의 `email`을 csv로 저장한 것
+  - 스팸은 367통 (9.4%)
+
+| 변수 | 내용 |
+| :--- | :--- |
+| `spam` | 스팸 여부 (1 = 스팸) |
+| `to_multiple` | 받는 사람이 여러 명인지 (1 = 여러 명) |
+| `winner` | 본문에 "winner"라는 단어가 있는지 (yes, no) |
+| `format` | HTML 형식인지 (1 = HTML) |
+| `re_subj` | 제목이 "Re:"로 시작하는지 (1 = 예) |
+| `attach` | 첨부 파일 수 |
+| `number` | 본문의 숫자 (none: 없음, small: 작은 숫자만, big: 100만 이상의 숫자가 있음) |
+| `num_char` | 본문의 글자 수 (천 자) |
+| `line_breaks` | 본문의 줄 수 |
+
+  - 자료에는 이 밖의 변수도 있으나 문제에서는 위의 변수만 사용
+
+1. `spam`을 예측하는 아래 모형들을 5-겹 교차검증으로 비교하시오. 겹 번호를 붙이기 전에 `set.seed()`에 본인 학번의 마지막 네 자리를 넣으시오.
+
+   - `e0`: `spam ~ 1` (기준선)
+   - `e1`: `spam ~ to_multiple + winner + format + re_subj + attach + number`
+   - `e2`: `spam ~ to_multiple + winner + format + re_subj + attach + number + num_char + line_breaks`
+
+   (1) 각 모형의 학습 AUC와 교차검증 AUC를 하나의 표로 정리하고, 교차검증 AUC를 기준으로 모형을 하나 고르시오.
+
+   (2) (1)에서 고른 모형의 교차검증 예측 확률로 임계값 0.5에서 혼동행렬을 만들고 정확도, 민감도, 특이도를 계산하시오. 모든 메일을 "스팸 아님"으로 예측하는 기준선과 정확도를 비교하여 해석하시오.
+
+   (3) "스팸이 아닌 메일을 스팸으로 분류하는 실수"와 "스팸을 걸러내지 못하는 실수" 중 어느 쪽이 몇 배 더 비싸다고 보는지 본인의 기준을 정하고 그 이유를 한두 문장으로 쓰시오. 그 기준에서 총비용이 가장 작은 임계값을 (2)와 같은 교차검증 예측 확률로 찾으시오.
+
+## 참고
+
+```{r}
+#| code-fold: true
+#| eval: false
+#| code-summary: "R 스크립트 코드 보기/접기"
+
+# =====================================================================
+# 1. 환경 준비
+# =====================================================================
+
+library(tidyverse)
+library(janitor)
+library(skimr)
+library(broom)
+library(modeldata)     # credit_data
+
+# AUC 계산 함수 (정의 부분은 이해하지 않아도 됨)
+auc <- function(y, prob) {
+  r  <- rank(prob)
+  n1 <- sum(y == 1)
+  n0 <- sum(y == 0)
+  (sum(r[y == 1]) - n1 * (n1 + 1) / 2) / (n1 * n0)
+}
+
+# ROC 곡선용 표를 만드는 함수 (정의 부분은 이해하지 않아도 됨)
+roc_table <- function(y, prob) {
+  thr <- seq(0, 1, by = 0.01)
+  tibble(threshold = thr,
+         sensitivity = map_dbl(thr, \(t) mean(prob[y == 1] > t)),
+         specificity = map_dbl(thr, \(t) mean(prob[y == 0] <= t)))
+}
+
+# =====================================================================
+# 2. 데이터 불러오기
+# =====================================================================
+
+default <- read_csv("data/Default.csv")
+credit_data            # modeldata 패키지에 포함
+
+# =====================================================================
+# 3. 데이터의 특성 파악
+# =====================================================================
+
+default |> skim()
+default |> tabyl(default)
+
+credit_data |> skim()
+credit_data |> tabyl(Status)
+
+# =====================================================================
+# 4. 데이터 변형
+# =====================================================================
+
+default <- default |>
+  mutate(default = as.integer(default == "Yes"))
+
+credit <- credit_data |>
+  mutate(bad = as.integer(Status == "bad")) |>
+  select(-Status)
+
+# 결측이 있는 행과 없는 행의 부실 비율 비교
+credit |>
+  mutate(any_na = !complete.cases(credit)) |>
+  group_by(any_na) |>
+  summarize(n = n(), bad_rate = mean(bad))
+
+credit <- credit |>
+  drop_na() |>
+  mutate(Home = fct_lump_min(Home, min = 30, other_level = "other"))
+
+# =====================================================================
+# 5. 시각화
+# =====================================================================
+
+default |>
+  ggplot(aes(x = balance, y = default)) +
+  geom_jitter(height = 0.03, alpha = 0.1) +
+  geom_smooth(method = "lm", se = FALSE)
+
+# =====================================================================
+# 6. 모형 추정
+# =====================================================================
+
+# ---- 1. 선형확률모형과 로지스틱 회귀 ----
+fit_lpm <- lm(default ~ balance, data = default)
+fit_bal <- glm(default ~ balance, family = binomial, data = default)
+tidy(fit_bal)
+
+new_balance <- tibble(balance = c(1000, 1500, 2000, 2500))
+new_balance |>
+  mutate(prob = predict(fit_bal, newdata = new_balance, type = "response"))
+
+glm(default ~ student, family = binomial, data = default) |> tidy()
+glm(default ~ balance + student, family = binomial, data = default) |> tidy()
+
+# ---- 2. 임계값, 혼동행렬 ----
+fit_def <- glm(default ~ balance + income + student, family = binomial, data = default)
+
+default_pred <- default |>
+  mutate(prob = predict(fit_def, type = "response"),
+         pred = as.integer(prob > 0.5))
+
+default_pred |> tabyl(default, pred)
+
+default_pred |>
+  summarize(accuracy    = mean(pred == default),
+            baseline    = mean(default == 0),
+            sensitivity = mean(pred[default == 1] == 1),
+            specificity = mean(pred[default == 0] == 0))
+
+thr_result <- tibble(threshold = seq(0.01, 0.99, by = 0.01),
+                     accuracy = NA, sensitivity = NA, specificity = NA,
+                     n_miss = NA, n_reject = NA)
+y <- default_pred$default
+
+for (i in 1:nrow(thr_result)) {
+  pred <- as.integer(default_pred$prob > thr_result$threshold[i])
+  thr_result$accuracy[i]    <- mean(pred == y)
+  thr_result$sensitivity[i] <- mean(pred[y == 1] == 1)
+  thr_result$specificity[i] <- mean(pred[y == 0] == 0)
+  thr_result$n_miss[i]      <- sum(y == 1 & pred == 0)
+  thr_result$n_reject[i]    <- sum(y == 0 & pred == 1)
+}
+
+# ---- 3. 비용으로 임계값 정하기 ----
+thr_result <- thr_result |>
+  mutate(cost = 5 * n_miss + 1 * n_reject)
+
+thr_result |> slice_min(cost)
+
+thr_result |>
+  ggplot(aes(x = threshold, y = cost)) +
+  geom_line()
+
+# ---- 4. ROC 곡선과 AUC ----
+thr_result |>
+  ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+  geom_line() +
+  geom_abline(linetype = "dashed") +
+  coord_equal()
+
+auc(default_pred$default, default_pred$prob)
+
+# ---- 5. 5-겹 교차검증 ----
+set.seed(1)
+credit_cv <- credit |>
+  mutate(fold = sample(rep(1:5, length.out = n())))
+
+models <- list(
+  c0 = bad ~ 1,
+  c1 = bad ~ Income + Amount,
+  c2 = bad ~ Income + Amount + Seniority + Records + Job,
+  c3 = bad ~ Income + Amount + Seniority + Records + Job +
+             Home + Marital + Time + Age + Expenses + Assets + Debt + Price
+)
+
+cv_result <- tibble(model = names(models),
+                    train_auc = NA, cv_auc = NA, cv_accuracy = NA)
+prob_cv <- tibble(bad = credit_cv$bad)
+
+for (j in 1:length(models)) {
+  fit_all <- glm(models[[j]], family = binomial, data = credit_cv)
+  cv_result$train_auc[j] <- auc(credit_cv$bad, predict(fit_all, type = "response"))
+
+  prob <- numeric(nrow(credit_cv))
+  for (k in 1:5) {
+    cv_train <- credit_cv |> filter(fold != k)
+    cv_test  <- credit_cv |> filter(fold == k)
+    fit <- glm(models[[j]], family = binomial, data = cv_train)
+    prob[credit_cv$fold == k] <- predict(fit, newdata = cv_test, type = "response")
+  }
+  cv_result$cv_auc[j]      <- auc(credit_cv$bad, prob)
+  cv_result$cv_accuracy[j] <- mean(as.integer(prob > 0.5) == credit_cv$bad)
+  prob_cv[[names(models)[j]]] <- prob
+}
+cv_result
+
+bind_rows(
+  roc_table(prob_cv$bad, prob_cv$c1) |> mutate(model = "c1"),
+  roc_table(prob_cv$bad, prob_cv$c2) |> mutate(model = "c2"),
+  roc_table(prob_cv$bad, prob_cv$c3) |> mutate(model = "c3")
+) |>
+  ggplot(aes(x = 1 - specificity, y = sensitivity, color = model)) +
+  geom_line() +
+  geom_abline(linetype = "dashed") +
+  coord_equal()
+
+# ---- 6. 비용 기준 임계값과 새 신청자 예측 ----
+cost_result <- tibble(threshold = seq(0.01, 0.99, by = 0.01), cost = NA)
+for (i in 1:nrow(cost_result)) {
+  pred <- as.integer(prob_cv$c3 > cost_result$threshold[i])
+  cost_result$cost[i] <- 5 * sum(prob_cv$bad == 1 & pred == 0) +
+                         1 * sum(prob_cv$bad == 0 & pred == 1)
+}
+cost_result |> slice_min(cost)
+
+fit_final <- glm(models[["c3"]], family = binomial, data = credit)
+new_applicant <- tibble(Income = 130, Amount = 1000, Seniority = 5, Records = "no",
+                        Job = "fixed", Home = "rent", Marital = "married", Time = 48,
+                        Age = 35, Expenses = 60, Assets = 0, Debt = 0, Price = 1300)
+predict(fit_final, newdata = new_applicant, type = "response")
+
+# =====================================================================
+# 7. 결과 저장
+# =====================================================================
+
+cv_result |>
+  write_csv("output/week11_cv_result.csv")
+
+thr_result |>
+  write_csv("output/week11_threshold.csv")
+```
