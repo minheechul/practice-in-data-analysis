@@ -664,7 +664,7 @@ predict(fit_final, newdata = new_applicant, type = "response")
 
 ::: {.callout-important title="주의사항"}
 
-- 마감: 11월 16일 (월) 오후 6시
+- 마감: 11월 19일 (목) 오후 6시
 
 - 아래 문제 1에 대한 답안을 작성하고 week11_ex_학번.R과 week11_ex_학번.docx를 E-class로 제출하세요.
 
