@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://minheechul.github.io/practice-in-data-analysis/week13.html</loc>
+    <lastmod>2026-11-14T02:07:22.822Z</lastmod>
+  </url>
+  <url>
     <loc>https://minheechul.github.io/practice-in-data-analysis/week11.html</loc>
     <lastmod>2026-11-14T00:24:16.515Z</lastmod>
   </url>
@@ -47,5 +51,9 @@
   <url>
     <loc>https://minheechul.github.io/practice-in-data-analysis/week10.html</loc>
     <lastmod>2026-11-03T10:13:30.189Z</lastmod>
+  </url>
+  <url>
+    <loc>https://minheechul.github.io/practice-in-data-analysis/week12.html</loc>
+    <lastmod>2026-11-14T01:59:08.305Z</lastmod>
   </url>
 </urlset>

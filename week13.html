@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>13주차. 인과관계 보여주기 (2): 관찰연구 – Practice in Data Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-43081d808c96cc46af55a3a816ae9eed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Practice in Data Analysis</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./syllabus.html"> 
+<span class="menu-text">강의계획서</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./schedules.html"> 
+<span class="menu-text">일정</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">13주차. 인과관계 보여주기 (2): 관찰연구</li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">강의자료</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">1주차. 도구 배우기 (1): 소개</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">2주차. 도구 배우기 (2): 데이터 변형하기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">3주차. 도구 배우기 (3): 그래프 그리기</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">5주차. 도구 적용하기 (1): 근로자 수준 데이터</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">6주차. 도구 적용하기 (2): 시계열 데이터</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">7주차. 도구 적용하기 (3): 무역 데이터</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">8주차. 회귀분석</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">10주차. 예측하기 (1): 연속적 결과 변수</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">11주차. 예측하기 (2): 이산적 결과 변수</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#도입" id="toc-도입" class="nav-link active" data-scroll-target="#도입"><span class="header-section-number">1</span> 도입</a></li>
+  <li><a href="#관찰연구와-교란요인" id="toc-관찰연구와-교란요인" class="nav-link" data-scroll-target="#관찰연구와-교란요인"><span class="header-section-number">2</span> 관찰연구와 교란요인</a>
+  <ul class="collapse">
+  <li><a href="#관찰연구observational-study" id="toc-관찰연구observational-study" class="nav-link" data-scroll-target="#관찰연구observational-study"><span class="header-section-number">2.1</span> 관찰연구(observational study)</a></li>
+  <li><a href="#교란요인confounder" id="toc-교란요인confounder" class="nav-link" data-scroll-target="#교란요인confounder"><span class="header-section-number">2.2</span> 교란요인(confounder)</a></li>
+  <li><a href="#관찰연구에서-흔한-두-가지-비교" id="toc-관찰연구에서-흔한-두-가지-비교" class="nav-link" data-scroll-target="#관찰연구에서-흔한-두-가지-비교"><span class="header-section-number">2.3</span> 관찰연구에서 흔한 두 가지 비교</a></li>
+  </ul></li>
+  <li><a href="#최저임금과-고용-이중차분" id="toc-최저임금과-고용-이중차분" class="nav-link" data-scroll-target="#최저임금과-고용-이중차분"><span class="header-section-number">3</span> 최저임금과 고용: 이중차분</a>
+  <ul class="collapse">
+  <li><a href="#데이터" id="toc-데이터" class="nav-link" data-scroll-target="#데이터"><span class="header-section-number">3.1</span> 데이터</a></li>
+  <li><a href="#처치가-실제로-일어났는가" id="toc-처치가-실제로-일어났는가" class="nav-link" data-scroll-target="#처치가-실제로-일어났는가"><span class="header-section-number">3.2</span> 처치가 실제로 일어났는가</a></li>
+  <li><a href="#교란요인-점검-체인-구성" id="toc-교란요인-점검-체인-구성" class="nav-link" data-scroll-target="#교란요인-점검-체인-구성"><span class="header-section-number">3.3</span> 교란요인 점검: 체인 구성</a></li>
+  <li><a href="#결과-변수-정규직-비율" id="toc-결과-변수-정규직-비율" class="nav-link" data-scroll-target="#결과-변수-정규직-비율"><span class="header-section-number">3.4</span> 결과 변수: 정규직 비율</a></li>
+  <li><a href="#두-가지-단순-비교" id="toc-두-가지-단순-비교" class="nav-link" data-scroll-target="#두-가지-단순-비교"><span class="header-section-number">3.5</span> 두 가지 단순 비교</a></li>
+  <li><a href="#이중차분" id="toc-이중차분" class="nav-link" data-scroll-target="#이중차분"><span class="header-section-number">3.6</span> 이중차분</a></li>
+  <li><a href="#층별-비교-버거킹만" id="toc-층별-비교-버거킹만" class="nav-link" data-scroll-target="#층별-비교-버거킹만"><span class="header-section-number">3.7</span> 층별 비교: 버거킹만</a></li>
+  <li><a href="#회귀로-같은-값-구하기" id="toc-회귀로-같은-값-구하기" class="nav-link" data-scroll-target="#회귀로-같은-값-구하기"><span class="header-section-number">3.8</span> 회귀로 같은 값 구하기</a></li>
+  <li><a href="#결과-변수를-바꾸면" id="toc-결과-변수를-바꾸면" class="nav-link" data-scroll-target="#결과-변수를-바꾸면"><span class="header-section-number">3.9</span> 결과 변수를 바꾸면</a></li>
+  <li><a href="#이중차분의-핵심-가정-평행추세" id="toc-이중차분의-핵심-가정-평행추세" class="nav-link" data-scroll-target="#이중차분의-핵심-가정-평행추세"><span class="header-section-number">3.10</span> 이중차분의 핵심 가정: 평행추세</a></li>
+  </ul></li>
+  <li><a href="#평행추세를-그림으로-확인하기-장기기증-등록" id="toc-평행추세를-그림으로-확인하기-장기기증-등록" class="nav-link" data-scroll-target="#평행추세를-그림으로-확인하기-장기기증-등록"><span class="header-section-number">4</span> 평행추세를 그림으로 확인하기: 장기기증 등록</a>
+  <ul class="collapse">
+  <li><a href="#데이터-1" id="toc-데이터-1" class="nav-link" data-scroll-target="#데이터-1"><span class="header-section-number">4.1</span> 데이터</a></li>
+  <li><a href="#처치-이전의-추세-비교" id="toc-처치-이전의-추세-비교" class="nav-link" data-scroll-target="#처치-이전의-추세-비교"><span class="header-section-number">4.2</span> 처치 이전의 추세 비교</a></li>
+  <li><a href="#이중차분-추정" id="toc-이중차분-추정" class="nav-link" data-scroll-target="#이중차분-추정"><span class="header-section-number">4.3</span> 이중차분 추정</a></li>
+  </ul></li>
+  <li><a href="#정리" id="toc-정리" class="nav-link" data-scroll-target="#정리"><span class="header-section-number">5</span> 정리</a></li>
+  <li><a href="#더-공부할-주제" id="toc-더-공부할-주제" class="nav-link" data-scroll-target="#더-공부할-주제"><span class="header-section-number">6</span> 더 공부할 주제</a></li>
+  <li><a href="#실습" id="toc-실습" class="nav-link" data-scroll-target="#실습"><span class="header-section-number">7</span> 실습</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">13주차. 인과관계 보여주기 (2): 관찰연구</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="도입" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="도입"><span class="header-section-number">1</span> 도입</h2>
+<ul>
+<li>이번 주의 질문: 실험을 할 수 없을 때, 처치의 효과를 알기 위해 무엇과 비교해야 하는가?
+<ul>
+<li>최저임금을 올리면 고용이 줄어들까? 정부가 실험 삼아 지역별로 최저임금을 무작위로 정할 수는 없음</li>
+<li>사회과학의 많은 질문은 윤리적, 현실적 이유로 실험이 어려움</li>
+</ul></li>
+<li>지난주에 본 것
+<ul>
+<li>무작위 배정을 하면 평균 차이가 곧 처치효과</li>
+<li>NSW 처치군을 CPS 사람들과 비교하면 공변량을 넣어도 실험 결과를 되찾지 못함: 회귀는 자료에 있는 변수만 조정할 수 있음</li>
+</ul></li>
+<li>이번 주의 흐름
+<ul>
+<li>관찰연구에서 흔히 하는 두 가지 단순 비교와 각각의 문제</li>
+<li>두 비교를 합친 이중차분(difference-in-differences, DiD)</li>
+<li>이중차분이 기대는 가정과 그 가정을 그림으로 점검하는 방법</li>
+</ul></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<!-- - 새로 설치할 패키지: 없음 -->
+</section>
+<section id="관찰연구와-교란요인" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="관찰연구와-교란요인"><span class="header-section-number">2</span> 관찰연구와 교란요인</h2>
+<section id="관찰연구observational-study" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="관찰연구observational-study"><span class="header-section-number">2.1</span> 관찰연구(observational study)</h3>
+<ul>
+<li>연구자가 처치를 배정하지 않고, 자연스럽게 일어난 일을 관찰한 자료로 비교하는 연구</li>
+<li>처치를 받은 집단과 받지 않은 집단이 처치 외에도 여러 면에서 다를 수 있음</li>
+</ul>
+</section>
+<section id="교란요인confounder" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="교란요인confounder"><span class="header-section-number">2.2</span> 교란요인(confounder)</h3>
+<ul>
+<li>처치 이전에 정해진 변수로, 처치 여부와 결과 모두와 관련된 것
+<ul>
+<li>지난주의 예: 처치 전 소득. NSW 참여자는 소득이 낮았고(처치와 관련), 처치 전 소득은 1978년 소득과도 관련됨</li>
+</ul></li>
+<li>교란요인이 있으면 집단 간 차이를 처치 때문이라고 말할 수 없음 (교란 편의, confounding bias)</li>
+<li>회귀나 층별 비교로 교란요인을 조정할 수 있지만, 관측되지 않은 교란요인은 조정할 수 없음</li>
+</ul>
+</section>
+<section id="관찰연구에서-흔한-두-가지-비교" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="관찰연구에서-흔한-두-가지-비교"><span class="header-section-number">2.3</span> 관찰연구에서 흔한 두 가지 비교</h3>
+<ul>
+<li>처치 후 집단 비교: 처치 이후 시점에서 처치 집단과 비교 집단을 비교
+<ul>
+<li>문제: 두 집단이 원래부터 달랐을 수 있음</li>
+</ul></li>
+<li>전후 비교: 같은 집단의 처치 전과 처치 후를 비교
+<ul>
+<li>시간이 지나도 변하지 않는 그 집단만의 특성은 저절로 조정됨</li>
+<li>문제: 그 사이에 처치 외에 다른 일(경기 변화 등)이 일어났을 수 있음</li>
+</ul></li>
+<li>이중차분: 두 비교를 합쳐 각각의 문제를 함께 해결하려는 방법</li>
+</ul>
+</section>
+</section>
+<section id="최저임금과-고용-이중차분" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="최저임금과-고용-이중차분"><span class="header-section-number">3</span> 최저임금과 고용: 이중차분</h2>
+<section id="데이터" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="데이터"><span class="header-section-number">3.1</span> 데이터</h3>
+<ul>
+<li>Card and Krueger (1994)의 연구
+<ul>
+<li>1992년 4월, 미국 뉴저지(NJ) 주는 최저임금을 시간당 4.25달러에서 5.05달러로 올림</li>
+<li>이웃한 펜실베이니아(PA) 주의 동부 지역은 최저임금이 그대로였음. 두 지역은 경제 여건이 비슷함</li>
+<li>두 주의 패스트푸드 매장을 인상 전(2~3월)과 인상 후(11~12월)에 조사</li>
+<li>처치: 최저임금 인상. 처치 집단은 NJ 매장, 비교 집단은 PA 매장</li>
+</ul></li>
+<li><a href="data/minwage.csv">minwage.csv</a>: 358개 매장. Imai, <em>Quantitative Social Science</em>의 자료
+<ul>
+<li>원래 조사는 410개 매장. 이 자료는 그중 일부</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">변수</th>
+<th style="text-align: left;">내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>chain</code></td>
+<td style="text-align: left;">체인 (burgerking, kfc, roys, wendys)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>location</code></td>
+<td style="text-align: left;">위치 (PA, centralNJ, northNJ, shoreNJ, southNJ)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>wageBefore</code>, <code>wageAfter</code></td>
+<td style="text-align: left;">인상 전, 후의 시작 시급 (달러)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>fullBefore</code>, <code>fullAfter</code></td>
+<td style="text-align: left;">인상 전, 후의 정규직 직원 수</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>partBefore</code>, <code>partAfter</code></td>
+<td style="text-align: left;">인상 전, 후의 시간제 직원 수</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>한 행이 한 매장이고, 인상 전과 후의 값이 서로 다른 열에 들어 있음: 넓은(wide) 형태</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/minwage.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>minwage <span class="sc">|&gt;</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">minwage</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">358</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">chain</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">location</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 11%">
+<col style="width: 16%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">wageBefore</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.62</td>
+<td style="text-align: right;">0.35</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">4.99</td>
+<td style="text-align: right;">5.75</td>
+<td style="text-align: left;">▇▃▃▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wageAfter</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4.99</td>
+<td style="text-align: right;">0.26</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">5.05</td>
+<td style="text-align: right;">5.05</td>
+<td style="text-align: right;">5.05</td>
+<td style="text-align: right;">6.25</td>
+<td style="text-align: left;">▁▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">fullBefore</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.47</td>
+<td style="text-align: right;">8.70</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.12</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">12.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: left;">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fullAfter</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8.36</td>
+<td style="text-align: right;">7.81</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: right;">12.00</td>
+<td style="text-align: right;">40.00</td>
+<td style="text-align: left;">▇▃▁▁▁</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">partBefore</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">18.75</td>
+<td style="text-align: right;">10.29</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">11.00</td>
+<td style="text-align: right;">16.25</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: left;">▆▇▅▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">partAfter</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">18.69</td>
+<td style="text-align: right;">10.57</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">11.00</td>
+<td style="text-align: right;">17.00</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">60.00</td>
+<td style="text-align: left;">▆▇▅▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><code>location</code>에서 주를 나타내는 변수를 만듦</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="ot">&lt;-</span> minwage <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">state =</span> <span class="fu">if_else</span>(location <span class="sc">==</span> <span class="st">"PA"</span>, <span class="st">"PA"</span>, <span class="st">"NJ"</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>minwage <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(state)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> state   n   percent
+    NJ 291 0.8128492
+    PA  67 0.1871508</code></pre>
+</div>
+</div>
+</section>
+<section id="처치가-실제로-일어났는가" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="처치가-실제로-일어났는가"><span class="header-section-number">3.2</span> 처치가 실제로 일어났는가</h3>
+<ul>
+<li>새 최저임금(5.05달러)보다 시급이 낮은 매장의 비율</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">below_before =</span> <span class="fu">mean</span>(wageBefore <span class="sc">&lt;</span> <span class="fl">5.05</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">below_after =</span> <span class="fu">mean</span>(wageAfter <span class="sc">&lt;</span> <span class="fl">5.05</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">.by =</span> state)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  state below_before below_after
+  &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+1 PA           0.940     0.955  
+2 NJ           0.911     0.00344</code></pre>
+</div>
+</div>
+<ul>
+<li>NJ: 인상 전 91% → 인상 후 0.3%. 법이 실제로 지켜졌음</li>
+<li>PA: 인상 전후 모두 94~96%. PA 매장은 처치를 받지 않았음</li>
+<li>처치가 실제로 달라졌는지부터 확인하는 것이 먼저</li>
+</ul>
+</section>
+<section id="교란요인-점검-체인-구성" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="교란요인-점검-체인-구성"><span class="header-section-number">3.3</span> 교란요인 점검: 체인 구성</h3>
+<ul>
+<li>체인마다 직원 구성이 다를 수 있음. 두 주의 체인 구성이 다르면 교란요인이 됨</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="sc">|&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tabyl</span>(chain, state) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_percentages</span>(<span class="st">"col"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_rounding</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      chain    NJ    PA
+ burgerking 0.405 0.463
+        kfc 0.223 0.149
+       roys 0.251 0.224
+     wendys 0.120 0.164</code></pre>
+</div>
+</div>
+<ul>
+<li><code>adorn_percentages("col")</code>: 열(주)마다 합이 1이 되도록 비율로 바꿈</li>
+<li>구성이 조금 다름 (예: 버거킹 NJ 41%, PA 46%; KFC NJ 22%, PA 15%)</li>
+<li>같은 체인끼리만 비교해 볼 수 있음 (층별 비교, subclassification). 아래에서 버거킹만 따로 계산</li>
+</ul>
+</section>
+<section id="결과-변수-정규직-비율" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="결과-변수-정규직-비율"><span class="header-section-number">3.4</span> 결과 변수: 정규직 비율</h3>
+<ul>
+<li>결과 변수로 직원 중 정규직의 비율을 사용</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="ot">&lt;-</span> minwage <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fullpropBefore =</span> fullBefore <span class="sc">/</span> (fullBefore <span class="sc">+</span> partBefore),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">fullpropAfter =</span> fullAfter <span class="sc">/</span> (fullAfter <span class="sc">+</span> partAfter))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ul>
+<li>인건비가 오르면 매장이 정규직을 줄이고 시간제로 바꿀 수 있다는 질문</li>
+<li>고용의 수준(몇 명을 고용했는가)이 아니라 구성(정규직이 얼마나 되는가)에 대한 질문이라는 점에 주의. 다른 결과 변수는 뒤에서 비교</li>
+</ul>
+</section>
+<section id="두-가지-단순-비교" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="두-가지-단순-비교"><span class="header-section-number">3.5</span> 두 가지 단순 비교</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fullprop_means <span class="ot">&lt;-</span> minwage <span class="sc">|&gt;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">before =</span> <span class="fu">mean</span>(fullpropBefore),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">after =</span> <span class="fu">mean</span>(fullpropAfter),</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">.by =</span> state)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>fullprop_means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  state before after
+  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1 PA     0.310 0.272
+2 NJ     0.297 0.320</code></pre>
+</div>
+</div>
+<ul>
+<li>처치 후 집단 비교: 인상 후 NJ 0.320 − PA 0.272 = 0.048
+<ul>
+<li>그런데 인상 전에도 두 주는 달랐음 (NJ 0.297, PA 0.310)</li>
+</ul></li>
+<li>NJ 전후 비교: 0.320 − 0.297 = 0.023
+<ul>
+<li>그런데 같은 기간에 PA의 비율은 0.310에서 0.272로 내려감. 처치가 없어도 시간에 따라 변하는 부분이 있음</li>
+</ul></li>
+</ul>
+</section>
+<section id="이중차분" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="이중차분"><span class="header-section-number">3.6</span> 이중차분</h3>
+<ul>
+<li>아이디어: NJ의 변화에서, 처치가 없었어도 생겼을 변화를 뺌
+<ul>
+<li>처치가 없었을 때의 변화는 PA의 변화로 추정</li>
+</ul></li>
+</ul>
+<p><span class="math display">\[
+\text{DiD} = (\bar{Y}_{\text{NJ, 후}} - \bar{Y}_{\text{NJ, 전}}) - (\bar{Y}_{\text{PA, 후}} - \bar{Y}_{\text{PA, 전}})
+\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fullprop_means <span class="sc">|&gt;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> after <span class="sc">-</span> before)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  state before after  change
+  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+1 PA     0.310 0.272 -0.0377
+2 NJ     0.297 0.320  0.0239</code></pre>
+</div>
+</div>
+<ul>
+<li>NJ의 변화 0.023 − PA의 변화 (−0.038) = 0.062</li>
+<li>최저임금 인상이 정규직 비율을 6.2%p 높였다고 추정. 인상 때문에 정규직을 줄였다는 증거는 없음</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week13_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>점선: NJ가 처치를 받지 않고 PA와 같은 만큼 변했다면 갔을 경로. 실제 NJ(인상 후)와 점선의 끝 사이의 거리가 이중차분 추정치</li>
+</ul>
+</section>
+<section id="층별-비교-버거킹만" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="층별-비교-버거킹만"><span class="header-section-number">3.7</span> 층별 비교: 버거킹만</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(chain <span class="sc">==</span> <span class="st">"burgerking"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">before =</span> <span class="fu">mean</span>(fullpropBefore),</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">after =</span> <span class="fu">mean</span>(fullpropAfter),</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">.by =</span> state) <span class="sc">|&gt;</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> after <span class="sc">-</span> before)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+  state before after  change
+  &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;
+1 PA     0.350 0.321 -0.0288
+2 NJ     0.311 0.358  0.0465</code></pre>
+</div>
+</div>
+<ul>
+<li>버거킹만 보면: (0.358 − 0.311) − (0.321 − 0.350) = 0.076. 결론은 같은 방향</li>
+<li>이중차분은 시간이 지나도 변하지 않는 매장의 특성(체인 등)을 이미 빼 주므로, 체인 구성의 차이는 큰 문제가 되지 않음</li>
+</ul>
+</section>
+<section id="회귀로-같은-값-구하기" class="level3" data-number="3.8">
+<h3 data-number="3.8" class="anchored" data-anchor-id="회귀로-같은-값-구하기"><span class="header-section-number">3.8</span> 회귀로 같은 값 구하기</h3>
+<ul>
+<li>이중차분은 회귀로도 계산할 수 있음</li>
+</ul>
+<p><span class="math display">\[
+Y = b_0 + b_1 \cdot \text{NJ} + b_2 \cdot \text{after} + b_3 \cdot (\text{NJ} \times \text{after})
+\]</span></p>
+<ul>
+<li><code>NJ</code>: NJ 매장이면 1, <code>after</code>: 인상 후 관측이면 1</li>
+<li>교호작용 항의 계수 <span class="math inline">\(b_3\)</span>이 이중차분 추정치 (8주차의 교호작용)</li>
+<li>이렇게 추정하려면 한 행이 “매장 × 시점”인 긴(long) 형태의 자료가 필요함
+<ul>
+<li>지금은 한 행에 인상 전과 후가 함께 들어 있음 → 행 하나를 둘로 나눠야 함</li>
+</ul></li>
+<li>변환은 두 단계
+<ol type="1">
+<li><code>pivot_longer()</code>: <code>...Before</code>, <code>...After</code> 열을 모두 길게 펴면서, 열 이름을 변수 이름(<code>wage</code>, <code>full</code>, …)과 시점(<code>Before</code>, <code>After</code>)으로 나눔</li>
+<li><code>pivot_wider()</code>: 변수 이름을 다시 열로 펼침</li>
+</ol></li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>minwage_long <span class="ot">&lt;-</span> minwage <span class="sc">|&gt;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">ends_with</span>(<span class="fu">c</span>(<span class="st">"Before"</span>, <span class="st">"After"</span>)),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">"variable"</span>, <span class="st">"period"</span>),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_pattern =</span> <span class="st">"(.*)(Before|After)"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> variable, <span class="at">values_from =</span> value)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>minwage_long <span class="sc">|&gt;</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 9
+  chain  location state    id period  wage  full  part fullprop
+  &lt;chr&gt;  &lt;chr&gt;    &lt;chr&gt; &lt;int&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;
+1 wendys PA       PA        1 Before  5       20    20    0.5  
+2 wendys PA       PA        1 After   5.25     0    36    0    
+3 wendys PA       PA        2 Before  5.5      6    26    0.188
+4 wendys PA       PA        2 After   4.75    28     3    0.903</code></pre>
+</div>
+</div>
+<ul>
+<li><code>id</code>: 같은 매장의 두 행을 구별하기 위해 먼저 매장 번호를 붙임</li>
+<li><code>names_pattern = "(.*)(Before|After)"</code>: 열 이름 <code>fullBefore</code>를 괄호 두 개로 나누어 <code>full</code>과 <code>Before</code>로 만듦</li>
+<li>358개 매장 × 2시점 = 716행</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>minwage_long <span class="ot">&lt;-</span> minwage_long <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nj =</span> <span class="fu">as.integer</span>(state <span class="sc">==</span> <span class="st">"NJ"</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">after =</span> <span class="fu">as.integer</span>(period <span class="sc">==</span> <span class="st">"After"</span>))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>fit_did <span class="ot">&lt;-</span> <span class="fu">lm</span>(fullprop <span class="sc">~</span> nj <span class="sc">*</span> after, <span class="at">data =</span> minwage_long)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(fit_did, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 7
+  term        estimate std.error statistic  p.value conf.low conf.high
+  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)   0.310     0.0295    10.5   4.11e-24   0.252     0.368 
+2 nj           -0.0134    0.0327    -0.411 6.81e- 1  -0.0777    0.0508
+3 after        -0.0377    0.0417    -0.903 3.67e- 1  -0.120     0.0442
+4 nj:after      0.0616    0.0463     1.33  1.84e- 1  -0.0293    0.152 </code></pre>
+</div>
+</div>
+<ul>
+<li><code>nj * after</code>: <code>nj</code>, <code>after</code>, 그리고 둘의 교호작용 항(<code>nj:after</code>)을 모두 넣음</li>
+<li><code>nj:after</code>의 계수 0.062: 위에서 손으로 계산한 값과 같음</li>
+<li>각 계수의 의미
+<ul>
+<li>절편: PA, 인상 전의 평균 (0.310)</li>
+<li><code>nj</code>: 인상 전 NJ와 PA의 차이</li>
+<li><code>after</code>: PA의 전후 변화</li>
+<li><code>nj:after</code>: NJ의 변화가 PA의 변화보다 얼마나 더 큰가 (이중차분)</li>
+</ul></li>
+<li>회귀를 쓰면 신뢰구간도 얻을 수 있음: 0을 포함함. 정규직 비율이 늘었다고 확신하기는 어려움
+<ul>
+<li>같은 매장을 두 번 관측했다는 점을 고려하면 표준오차를 다르게 계산해야 하지만 이 강의에서는 다루지 않음</li>
+</ul></li>
+</ul>
+</section>
+<section id="결과-변수를-바꾸면" class="level3" data-number="3.9">
+<h3 data-number="3.9" class="anchored" data-anchor-id="결과-변수를-바꾸면"><span class="header-section-number">3.9</span> 결과 변수를 바꾸면</h3>
+<ul>
+<li>정규직 비율은 고용의 구성에 대한 질문. 고용의 수준을 보면 어떨까?</li>
+<li>같은 계산을 결과 변수만 바꾸어 반복</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>minwage_long <span class="ot">&lt;-</span> minwage_long <span class="sc">|&gt;</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fte =</span> full <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> part)   <span class="co"># 시간제 직원은 0.5명으로 계산</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>did_by_outcome <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="fu">c</span>(<span class="st">"fullprop"</span>, <span class="st">"fte"</span>, <span class="st">"full"</span>, <span class="st">"part"</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">c</span>(<span class="st">"정규직 비율"</span>, <span class="st">"정규직 + 0.5 × 시간제"</span>, <span class="st">"정규직 수"</span>, <span class="st">"시간제 수"</span>),</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">did =</span> <span class="cn">NA</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(did_by_outcome)) {</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  f <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(did_by_outcome<span class="sc">$</span>outcome[i], <span class="st">"~ nj * after"</span>))</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(f, <span class="at">data =</span> minwage_long)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  did_by_outcome<span class="sc">$</span>did[i] <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="st">"nj:after"</span>]</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>did_by_outcome</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  outcome  description               did
+  &lt;chr&gt;    &lt;chr&gt;                   &lt;dbl&gt;
+1 fullprop 정규직 비율            0.0616
+2 fte      정규직 + 0.5 × 시간제  2.45  
+3 full     정규직 수              2.93  
+4 part     시간제 수             -0.962 </code></pre>
+</div>
+</div>
+<ul>
+<li><code>as.formula(paste(...))</code>: 문자열을 이어 붙여 회귀식을 만듦. 결과 변수만 바꾸어 같은 회귀를 반복할 때 사용</li>
+<li>어느 결과 변수로 보아도 NJ의 고용이 PA보다 줄었다는 증거는 없음
+<ul>
+<li>정규직 + 0.5 × 시간제로 보면 NJ가 상대적으로 2.4명 늘어남</li>
+<li>원래 논문은 관리자까지 포함한 고용 수로 같은 방향의 결과를 보고함 (이 자료에는 관리자 수가 없음)</li>
+</ul></li>
+<li>무엇을 결과 변수로 볼지는 분석하는 사람이 정하는 것. 결과 변수에 따라 답하는 질문(구성인가 수준인가)이 달라짐</li>
+</ul>
+</section>
+<section id="이중차분의-핵심-가정-평행추세" class="level3" data-number="3.10">
+<h3 data-number="3.10" class="anchored" data-anchor-id="이중차분의-핵심-가정-평행추세"><span class="header-section-number">3.10</span> 이중차분의 핵심 가정: 평행추세</h3>
+<ul>
+<li>이중차분은 “처치가 없었다면 NJ도 PA와 같은 만큼 변했을 것”이라고 가정함
+<ul>
+<li>평행추세 가정(parallel trends assumption): 처치가 없었을 때 두 집단의 결과가 같은 추세로 움직임</li>
+<li>두 집단의 수준은 달라도 됨. 변화가 같아야 함</li>
+</ul></li>
+<li>이 가정은 처치 이후에 대해서는 확인할 수 없음 (반사실이므로)</li>
+<li>처치 이전에 여러 시점의 자료가 있으면, 적어도 처치 전에 두 집단이 같은 추세였는지는 확인할 수 있음</li>
+<li>최저임금 자료는 인상 전과 후 두 시점뿐이라 이 확인을 할 수 없음</li>
+</ul>
+</section>
+</section>
+<section id="평행추세를-그림으로-확인하기-장기기증-등록" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="평행추세를-그림으로-확인하기-장기기증-등록"><span class="header-section-number">4</span> 평행추세를 그림으로 확인하기: 장기기증 등록</h2>
+<section id="데이터-1" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="데이터-1"><span class="header-section-number">4.1</span> 데이터</h3>
+<ul>
+<li>미국 캘리포니아 주는 2011년 3분기부터 운전면허 발급 때 장기기증 등록 여부를 묻는 방식을 바꿈
+<ul>
+<li>등록할지를 반드시 고르도록 하는 방식(active choice)으로 바꿈</li>
+<li>질문: 이 변화가 장기기증 등록률을 높였는가? (Kessler and Roth 2014)</li>
+</ul></li>
+<li><a href="data/organ.csv">organ.csv</a>: 27개 주 × 6분기 (2010년 4분기 ~ 2012년 1분기). <code>causaldata</code> 패키지의 <code>organ_donations</code>를 csv로 저장한 것
+<ul>
+<li>처치 집단: 캘리포니아. 비교 집단: 이런 변화가 없었던 26개 주</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">변수</th>
+<th style="text-align: left;">내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>State</code></td>
+<td style="text-align: left;">주</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Quarter</code></td>
+<td style="text-align: left;">분기 (예: Q42010은 2010년 4분기)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>Rate</code></td>
+<td style="text-align: left;">장기기증 등록률</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>Quarter_Num</code></td>
+<td style="text-align: left;">분기 번호 (1 = 2010년 4분기, …, 6 = 2012년 1분기)</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>organ <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/organ.csv"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>organ <span class="sc">|&gt;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">skim</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">organ</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">162</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">State</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Quarter</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 12%">
+<col style="width: 17%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Rate</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">0.15</td>
+<td style="text-align: right;">0.12</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">0.44</td>
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: left;">▃▆▇▇▂</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Quarter_Num</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.50</td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">2.00</td>
+<td style="text-align: right;">3.50</td>
+<td style="text-align: right;">5.00</td>
+<td style="text-align: right;">6.00</td>
+<td style="text-align: left;">▇▃▃▃▃</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>처치 시작: 2011년 3분기 = <code>Quarter_Num</code> 4. 처치 이전 3분기, 이후 3분기</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>organ <span class="ot">&lt;-</span> organ <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ca =</span> <span class="fu">as.integer</span>(State <span class="sc">==</span> <span class="st">"California"</span>),</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">after =</span> <span class="fu">as.integer</span>(Quarter_Num <span class="sc">&gt;=</span> <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="처치-이전의-추세-비교" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="처치-이전의-추세-비교"><span class="header-section-number">4.2</span> 처치 이전의 추세 비교</h3>
+<ul>
+<li>캘리포니아와 비교 집단(나머지 26개 주의 평균)의 분기별 추이</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>organ_trend <span class="ot">&lt;-</span> organ <span class="sc">|&gt;</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">rate =</span> <span class="fu">mean</span>(Rate), <span class="at">.by =</span> <span class="fu">c</span>(ca, Quarter_Num)) <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">group =</span> <span class="fu">if_else</span>(ca <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"캘리포니아"</span>, <span class="st">"비교 집단"</span>))</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>organ_trend <span class="sc">|&gt;</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">id_cols =</span> Quarter_Num, <span class="at">names_from =</span> group, <span class="at">values_from =</span> rate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  Quarter_Num `비교 집단` 캘리포니아
+        &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+1           1       0.444      0.267
+2           2       0.442      0.273
+3           3       0.449      0.274
+4           4       0.460      0.264
+5           5       0.456      0.261
+6           6       0.461      0.264</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>organ_trend <span class="sc">|&gt;</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Quarter_Num, <span class="at">y =</span> rate, <span class="at">color =</span> group)) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">3.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"10Q4"</span>, <span class="st">"11Q1"</span>, <span class="st">"11Q2"</span>, <span class="st">"11Q3"</span>, <span class="st">"11Q4"</span>, <span class="st">"12Q1"</span>)) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"분기"</span>, <span class="at">y =</span> <span class="st">"장기기증 등록률"</span>, <span class="at">color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption =</span> <span class="st">"점선: 캘리포니아의 제도 변경 (2011년 3분기)"</span>) <span class="sc">+</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="week13_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="576"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>수준은 크게 다름 (캘리포니아 약 0.27, 비교 집단 약 0.44~0.46): 이중차분에서는 문제가 아님</li>
+<li>처치 이전 세 분기 동안 두 집단 모두 거의 변화가 없거나 조금 올라감: 평행추세 가정을 받아들일 만한 근거</li>
+<li>처치 이후: 비교 집단은 조금 높아진 수준을 유지하는데, 캘리포니아는 오히려 조금 내려감</li>
+</ul>
+</section>
+<section id="이중차분-추정" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="이중차분-추정"><span class="header-section-number">4.3</span> 이중차분 추정</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>organ <span class="sc">|&gt;</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">rate =</span> <span class="fu">mean</span>(Rate), <span class="at">.by =</span> <span class="fu">c</span>(ca, after)) <span class="sc">|&gt;</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(ca, after)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+     ca after  rate
+  &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
+1     0     0 0.445
+2     0     1 0.459
+3     1     0 0.271
+4     1     1 0.263</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>fit_organ <span class="ot">&lt;-</span> <span class="fu">lm</span>(Rate <span class="sc">~</span> ca <span class="sc">*</span> after, <span class="at">data =</span> organ)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">coef</span>(fit_organ)[<span class="st">"ca:after"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   ca:after 
+-0.02245897 </code></pre>
+</div>
+</div>
+<ul>
+<li>이중차분 추정치 −0.022: 새 방식이 등록률을 2.2%p 낮춘 것으로 추정
+<ul>
+<li>등록을 늘리려던 제도 변경이 오히려 등록률을 낮춘 것으로 보임</li>
+</ul></li>
+<li>처치를 받은 주가 캘리포니아 하나뿐이어서, 이 강의에서 배운 방식으로는 표준오차를 제대로 계산할 수 없음. 그래서 신뢰구간은 보고하지 않음</li>
+<li>이 그림이 평행추세를 증명하는 것은 아님: 처치 이후에도 같은 추세였을지는 여전히 가정. 다만 처치 이전 추세가 비슷하다는 것은 가정을 믿을 근거가 됨</li>
+</ul>
+</section>
+</section>
+<section id="정리" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="정리"><span class="header-section-number">5</span> 정리</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">하고 싶은 일</th>
+<th style="text-align: left;">사용할 코드</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">열마다 비율로 바꾸기</td>
+<td style="text-align: left;"><code>tabyl(x, group)</code> 후 <code>adorn_percentages("col")</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">집단, 시점별 평균</td>
+<td style="text-align: left;"><code>summarize(mean_y = mean(y), .by = c(group, period))</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">넓은 형태를 긴 형태로</td>
+<td style="text-align: left;"><code>pivot_longer(names_to = c("variable", "period"), names_pattern = )</code> 후 <code>pivot_wider()</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">이중차분 추정</td>
+<td style="text-align: left;"><code>lm(y ~ treat * after, data = )</code>의 <code>treat:after</code> 계수</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">결과 변수를 바꾸어 같은 회귀 반복</td>
+<td style="text-align: left;"><code>as.formula(paste(y, "~ treat * after"))</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>관찰연구에서 인과효과를 주장할 때의 체크리스트 (지난주 체크리스트에 추가)
+<ul>
+<li>처치가 실제로 처치 집단에서만 일어났는가?</li>
+<li>비교 집단은 처치가 없었을 때의 처치 집단을 대신할 수 있는가? 왜 그 집단을 골랐는가?</li>
+<li>처치 이전의 추세가 비슷한가? 확인할 자료가 있는가?</li>
+<li>같은 시기에 처치 집단에만 일어난 다른 일은 없는가?</li>
+<li>결과 변수가 내가 묻고 싶은 질문에 맞는가?</li>
+</ul></li>
+</ul>
+</section>
+<section id="더-공부할-주제" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="더-공부할-주제"><span class="header-section-number">6</span> 더 공부할 주제</h2>
+<ul>
+<li>실험이 아닌 자료로 인과효과를 추정하는 다른 방법들
+<ul>
+<li>회귀 불연속(regression discontinuity): 점수가 기준선을 넘으면 처치를 받는 경우(예: 장학금, 지원 자격), 기준선 바로 위와 바로 아래를 비교</li>
+<li>도구변수(instrumental variable): 처치에는 영향을 주지만 결과에는 처치를 통해서만 영향을 주는 변수를 이용</li>
+<li>매칭(matching), 성향점수(propensity score): 처치 집단과 관측된 특성이 비슷한 사람을 골라 비교. 지난주의 NSW와 CPS 자료가 대표적인 연습 사례</li>
+<li>합성통제(synthetic control): 처치 집단이 하나일 때 여러 비교 집단을 가중 평균해 비교 대상을 만듦. 이번 주의 캘리포니아처럼 처치 집단이 하나인 경우에 쓰임</li>
+</ul></li>
+<li>참고서
+<ul>
+<li>Huntington-Klein, <em>The Effect</em> (온라인 무료: <a href="https://theeffectbook.net" class="uri">https://theeffectbook.net</a>)</li>
+<li>Cunningham, <em>Causal Inference: The Mixtape</em> (온라인 무료: <a href="https://mixtape.scunning.com" class="uri">https://mixtape.scunning.com</a>)</li>
+</ul></li>
+</ul>
+</section>
+<section id="실습" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="실습"><span class="header-section-number">7</span> 실습</h2>
+<div class="callout callout-style-default callout-important callout-titled" title="주의사항">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>주의사항
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>마감: 12월 3일 (목) 오후 6시</p></li>
+<li><p>아래 문제 1에 대한 답안을 작성하고 week13_ex_학번.R과 week13_ex_학번.docx를 E-class로 제출하세요.</p></li>
+<li><p>위의 분석에 사용한 코드를 잘 읽어보고 연습한 후 문제에 답변할 때 활용하세요.</p></li>
+</ul>
+</div>
+</div>
+<ul>
+<li>데이터: <a href="data/kielmc.csv">kielmc.csv</a> (321채)
+<ul>
+<li>미국 매사추세츠 주의 한 도시에서 거래된 주택. 1978년 이후 쓰레기 소각장이 들어선다는 소문이 돌기 시작했고, 1981년에 건설이 시작됨 (Kiel and McClain 1995)</li>
+<li>1978년과 1981년에 팔린 주택. 두 해에 팔린 집은 서로 다른 집임</li>
+<li><code>wooldridge</code> 패키지의 <code>kielmc</code> 중 일부 변수를 csv로 저장한 것</li>
+</ul></li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">변수</th>
+<th style="text-align: left;">내용</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>year</code></td>
+<td style="text-align: left;">거래 연도 (1978, 1981)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>nearinc</code></td>
+<td style="text-align: left;">소각장 예정지에서 3마일(약 4.8km) 이내 (1 = 예)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>dist</code></td>
+<td style="text-align: left;">소각장 예정지까지의 거리 (피트)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>price</code></td>
+<td style="text-align: left;">거래 가격 (달러)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rprice</code></td>
+<td style="text-align: left;">1978년 달러로 환산한 거래 가격. 결과 변수</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>age</code></td>
+<td style="text-align: left;">주택의 나이 (년)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>rooms</code>, <code>baths</code></td>
+<td style="text-align: left;">방 수, 욕실 수</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>area</code>, <code>land</code></td>
+<td style="text-align: left;">주택 면적, 대지 면적 (제곱피트)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>nbh</code></td>
+<td style="text-align: left;">동네 (1~6)</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li><p>소각장 건설이 주변 주택 가격에 미친 효과를 분석하시오.</p>
+<ol type="1">
+<li><p>연도와 <code>nearinc</code>별로 관측치 수와 <code>rprice</code>의 평균을 2×2 표로 정리하시오.</p></li>
+<li><p>1981년 자료만 사용해 소각장 근처 주택과 나머지 주택의 평균 가격 차이를 계산하시오. 이 차이를 소각장의 효과로 볼 수 없는 이유를 1978년 자료를 근거로 설명하시오.</p></li>
+<li><p>(1)의 표로 이중차분 추정치를 계산하고, <code>lm(rprice ~ nearinc * y81)</code>로 같은 값을 얻는지 확인하시오 (<code>y81</code>은 1981년이면 1인 변수로 직접 만드시오). 추정치를 95% 신뢰구간과 함께 보고하고 해석하시오.</p></li>
+<li><p>소각장 근처 주택과 나머지 주택의 나이, 면적을 연도별로 비교하시오. (3)의 회귀에 <code>age</code>, <code>area</code>, <code>land</code>, <code>rooms</code>, <code>baths</code>를 공변량으로 넣어 다시 추정하고, 이중차분 추정치가 어떻게 바뀌는지 보고하시오.</p></li>
+<li><p>이 분석에서 평행추세 가정이란 무엇을 뜻하는지 이 자료의 상황에 맞게 설명하고, 이 자료로 그 가정을 확인할 수 있는지 쓰시오.</p></li>
+</ol></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/minheechul\.github\.io\/practice-in-data-analysis\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
