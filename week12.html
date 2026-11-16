@@ -177,7 +177,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">12주차. 인과관계 보여주기 (1): 무작위통제실험</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./week01.html">강의자료</a></li><li class="breadcrumb-item"><a href="./week12.html">12주차. 인과관계 보여주기 (1): 무작위통제실험</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -260,6 +260,12 @@ window.Quarto = {
  <span class="menu-text">11주차. 예측하기 (2): 이산적 결과 변수</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./week12.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">12주차. 인과관계 보여주기 (1): 무작위통제실험</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -308,7 +314,7 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./week01.html">강의자료</a></li><li class="breadcrumb-item"><a href="./week12.html">12주차. 인과관계 보여주기 (1): 무작위통제실험</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">12주차. 인과관계 보여주기 (1): 무작위통제실험</h1>
 </div>
@@ -372,7 +378,7 @@ window.Quarto = {
 <li>사람 <span class="math inline">\(i\)</span>에 대한 처치의 효과: <span class="math inline">\(Y_i(1) - Y_i(0)\)</span></li>
 <li>인과추론의 근본 문제: 한 사람에 대해 두 잠재적 결과 중 하나만 관측됨
 <ul>
-<li>직업훈련을 받은 사람이 훈련을 받지 않았다면 소득이 얼마였을지는 볼 수 없음</li>
+<li>직업훈련을 받은 사람이 만약 훈련을 받지 않았다면 소득이 얼마였을지는 관찰할 수 없음</li>
 </ul></li>
 </ul>
 </section>
@@ -421,18 +427,21 @@ window.Quarto = {
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>five <span class="sc">|&gt;</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_y =</span> <span class="fu">mean</span>(y), <span class="at">.by =</span> treat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treat) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_y =</span> <span class="fu">mean</span>(y)) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   treat mean_y
   &lt;dbl&gt;  &lt;dbl&gt;
-1     1     18
-2     0     24</code></pre>
+1     0     24
+2     1     18</code></pre>
 </div>
 </div>
 <ul>
-<li>평균 차이: 18 − 24 = −6. 실제 평균 효과는 +3인데 부호까지 반대</li>
-<li>왜? 처치를 받은 두 사람(1, 2번)은 처치가 없었어도 결과가 낮은 사람들(11, 12)
+<li><p><code>group_by()</code>로 집단을 묶어 <code>summarize()</code>로 요약한 뒤에는 <code>ungroup()</code>으로 묶음을 풀어 둠. 묶음이 남아 있으면 뒤에 이어지는 <code>mutate()</code>, <code>filter()</code> 등이 집단별로 계산될 수 있기 때문</p></li>
+<li><p>평균 차이: 18 − 24 = −6. 실제 평균 효과는 +3인데 부호까지 반대</p></li>
+<li><p>왜? 처치를 받은 두 사람(1, 2번)은 처치가 없었어도 결과가 낮은 사람들(11, 12)</p>
 <ul>
 <li>처치를 받지 않은 세 사람의 <span class="math inline">\(Y(0)\)</span> 평균은 24</li>
 </ul></li>
@@ -454,8 +463,9 @@ window.Quarto = {
 <li>처치받은 사람의 평균 효과: (5 + 8) / 2 = 6.5</li>
 <li>선택편의: 처치가 없었을 때의 결과가 처음부터 12.5만큼 달랐음</li>
 </ul></li>
-<li>선택편의는 관측되지 않는 <span class="math inline">\(Y(0)\)</span>에 관한 것이라 자료로 직접 계산할 수 없음</li>
+<li><span class="math inline">\(\overline{Y(0)}_{\,T=1}\)</span>는 관측되지 않으므로 자료로 계산할 수 있는 것은 평균 차이일 뿐, 그중 얼마가 효과이고 얼마가 선택편의인지 계산할 수 없음</li>
 </ul>
+<!-- 선택편의 뿐 아니라 ATT도 직접 계산할 수 없으니 다르게 서술할 필요 -->
 </section>
 <section id="무작위-배정" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="무작위-배정"><span class="header-section-number">2.4</span> 무작위 배정</h3>
@@ -672,13 +682,15 @@ window.Quarto = {
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>resume <span class="sc">|&gt;</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">call_rate =</span> <span class="fu">mean</span>(call), <span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.by =</span> race)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(race) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">call_rate =</span> <span class="fu">mean</span>(call), <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 3
   race  call_rate     n
   &lt;chr&gt;     &lt;dbl&gt; &lt;int&gt;
-1 white    0.0965  2435
-2 black    0.0645  2435</code></pre>
+1 black    0.0645  2435
+2 white    0.0965  2435</code></pre>
 </div>
 </div>
 <ul>
@@ -993,22 +1005,23 @@ window.Quarto = {
 <ul>
 <li>처치 전에 정해진 특성(공변량, covariate)의 평균을 두 집단에서 비교
 <ul>
-<li>무작위 배정이 잘 되었다면 비슷해야 함</li>
+<li>무작위 배정은 평균적으로 두 집단을 비슷하게 만듦</li>
 </ul></li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>balance_nsw <span class="ot">&lt;-</span> nsw <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(age, educ, black, hisp, marr, nodegree, re74, re75), mean),</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">.by =</span> treat)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>balance_nsw</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treat) <span class="sc">|&gt;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(age, educ, black, hisp, marr, nodegree, re74, re75), mean),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>balance_nsw</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 10
   treat   age  educ black   hisp  marr nodegree  re74  re75     n
   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt;
-1     1  25.8  10.3 0.843 0.0595 0.189    0.708 2096. 1532.   185
-2     0  25.1  10.1 0.827 0.108  0.154    0.835 2107. 1267.   260</code></pre>
+1     0  25.1  10.1 0.827 0.108  0.154    0.835 2107. 1267.   260
+2     1  25.8  10.3 0.843 0.0595 0.189    0.708 2096. 1532.   185</code></pre>
 </div>
 </div>
 <ul>
@@ -1020,25 +1033,22 @@ window.Quarto = {
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> treat, <span class="at">values_from =</span> value, <span class="at">names_prefix =</span> <span class="st">"treat_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 9 × 3
-  variable   treat_1  treat_0
-  &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;
-1 age        25.8      25.1  
-2 educ       10.3      10.1  
-3 black       0.843     0.827
-4 hisp        0.0595    0.108
-5 marr        0.189     0.154
-6 nodegree    0.708     0.835
-7 re74     2096.     2107.   
-8 re75     1532.     1267.   
-9 n         185       260    </code></pre>
+  variable  treat_0   treat_1
+  &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;
+1 age        25.1     25.8   
+2 educ       10.1     10.3   
+3 black       0.827    0.843 
+4 hisp        0.108    0.0595
+5 marr        0.154    0.189 
+6 nodegree    0.835    0.708 
+7 re74     2107.    2096.    
+8 re75     1267.    1532.    
+9 n         260      185     </code></pre>
 </div>
 </div>
 <ul>
 <li>나이, 교육, 처치 전 소득이 거의 같음</li>
-<li>고등학교 졸업장이 없는 비율(71% vs 84%)은 차이가 조금 있음
-<ul>
-<li>무작위 배정이라도 표본이 작으면 우연히 이 정도 차이는 생길 수 있음</li>
-</ul></li>
+<li>고등학교 졸업장이 없는 비율(71% vs 84%)은 어느 정도 차이가 있는데, 우연에 의한 것인지 아니면 무작위 배정에 문제가 있는지는 명확하지 않음</li>
 </ul>
 </section>
 <section id="효과-추정" class="level3" data-number="4.3">
@@ -1048,15 +1058,18 @@ window.Quarto = {
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>nsw <span class="sc">|&gt;</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_re78 =</span> <span class="fu">mean</span>(re78), <span class="at">.by =</span> treat)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treat) <span class="sc">|&gt;</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_re78 =</span> <span class="fu">mean</span>(re78)) <span class="sc">|&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 2
   treat mean_re78
   &lt;dbl&gt;     &lt;dbl&gt;
-1     1     6349.
-2     0     4555.</code></pre>
+1     0     4555.
+2     1     6349.</code></pre>
 </div>
 </div>
+<!-- group_by 사용 -->
 <ul>
 <li><p>처치군 6,349달러, 대조군 4,555달러. 차이는 1,794달러</p></li>
 <li><p>회귀로 같은 값과 신뢰구간을 구함</p></li>
@@ -1093,9 +1106,8 @@ window.Quarto = {
 <li>추정치가 1,794달러에서 1,676달러로 조금 바뀜
 <ul>
 <li>무작위 배정이면 공변량은 처치 여부와 관련이 없으므로, 넣든 넣지 않든 추정치가 크게 바뀌지 않아야 함</li>
-<li>조금 바뀐 것은 균형표에서 본 우연한 차이(졸업장 등)를 조정했기 때문</li>
 </ul></li>
-<li>실험에서 공변량을 넣는 이유는 편의를 없애기 위해서가 아니라 결과의 다른 변동을 설명해 추정을 더 정확하게 하기 위해서. 이 자료에서는 표준오차가 줄지 않았음 (633 → 639)</li>
+<li>실험에서 공변량을 넣는 이유는 편의를 없애기 위해서가 아니라 결과의 다른 변동을 설명해 추정을 더 정확하게 하기 위함</li>
 </ul>
 </section>
 <section id="결과-보고하기" class="level3" data-number="4.4">
@@ -1153,24 +1165,25 @@ window.Quarto = {
 <h3 data-number="5.2" class="anchored" data-anchor-id="균형표"><span class="header-section-number">5.2</span> 균형표</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nsw_cps <span class="sc">|&gt;</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(age, educ, black, hisp, marr, nodegree, re74, re75), mean),</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">.by =</span> treat) <span class="sc">|&gt;</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>treat, <span class="at">names_to =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> treat, <span class="at">values_from =</span> value, <span class="at">names_prefix =</span> <span class="st">"treat_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treat) <span class="sc">|&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">c</span>(age, educ, black, hisp, marr, nodegree, re74, re75), mean),</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>treat, <span class="at">names_to =</span> <span class="st">"variable"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> treat, <span class="at">values_from =</span> value, <span class="at">names_prefix =</span> <span class="st">"treat_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 9 × 3
-  variable   treat_1    treat_0
-  &lt;chr&gt;        &lt;dbl&gt;      &lt;dbl&gt;
-1 age        25.8       33.2   
-2 educ       10.3       12.0   
-3 black       0.843      0.0735
-4 hisp        0.0595     0.0720
-5 marr        0.189      0.712 
-6 nodegree    0.708      0.296 
-7 re74     2096.     14017.    
-8 re75     1532.     13651.    
-9 n         185      15992     </code></pre>
+  variable    treat_0   treat_1
+  &lt;chr&gt;         &lt;dbl&gt;     &lt;dbl&gt;
+1 age         33.2      25.8   
+2 educ        12.0      10.3   
+3 black        0.0735    0.843 
+4 hisp         0.0720    0.0595
+5 marr         0.712     0.189 
+6 nodegree     0.296     0.708 
+7 re74     14017.     2096.    
+8 re75     13651.     1532.    
+9 n        15992       185     </code></pre>
 </div>
 </div>
 <ul>
@@ -1275,7 +1288,7 @@ window.Quarto = {
 <ul>
 <li>회귀는 자료에 있는 변수만 조정할 수 있음</li>
 </ul></li>
-<li>이 비교는 LaLonde (1986)의 유명한 연구를 단순하게 재현한 것: 실험 결과를 알고 있을 때, 관측 자료로 같은 답을 얻기가 얼마나 어려운지를 보여 줌</li>
+<li>이 비교는 LaLonde (1986)의 연구를 단순하게 재현한 것: 같은 처치군도 누구와 비교하느냐에 따라 결과가 크게 달라짐. 처치군의 반사실 결과(처치군에 처치가 없었을 경우 결과)를 나타낼 수 있는 비교집단을 선택하는 것이 핵심적인 문제.</li>
 </ul>
 </section>
 <section id="좋은-비교집단이란" class="level3" data-number="5.4">
@@ -1303,11 +1316,11 @@ window.Quarto = {
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">집단별 평균</td>
-<td style="text-align: left;"><code>summarize(mean_y = mean(y), .by = treat)</code></td>
+<td style="text-align: left;"><code>group_by(treat)</code> → <code>summarize(mean_y = mean(y))</code> → <code>ungroup()</code></td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">여러 변수의 평균을 한 번에</td>
-<td style="text-align: left;"><code>summarize(across(c(x1, x2), mean), .by = treat)</code></td>
+<td style="text-align: left;"><code>group_by(treat)</code> → <code>summarize(across(c(x1, x2), mean))</code> → <code>ungroup()</code></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">균형표 모양으로 바꾸기</td>
@@ -1350,7 +1363,7 @@ window.Quarto = {
 </div>
 <div class="callout-body-container callout-body">
 <ul>
-<li><p>마감: 11월 26일 (목) 오후 6시</p></li>
+<li><p>마감: 11월 23일 (월) 오후 6시</p></li>
 <li><p>아래 문제 1에 대한 답안을 작성하고 week12_ex_학번.R과 week12_ex_학번.docx를 E-class로 제출하세요.</p></li>
 <li><p>위의 분석에 사용한 코드를 잘 읽어보고 연습한 후 문제에 답변할 때 활용하세요.</p></li>
 </ul>
