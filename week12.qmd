@@ -45,7 +45,8 @@ library(broom)
   - $Y_i$: 실제로 관측된 결과. 처치를 받았으면 $Y_i(1)$, 받지 않았으면 $Y_i(0)$
 - 사람 $i$에 대한 처치의 효과: $Y_i(1) - Y_i(0)$
 - 인과추론의 근본 문제: 한 사람에 대해 두 잠재적 결과 중 하나만 관측됨
-  - 직업훈련을 받은 사람이 훈련을 받지 않았다면 소득이 얼마였을지는 볼 수 없음
+  - 직업훈련을 받은 사람이 만약 훈련을 받지 않았다면 소득이 얼마였을지는 관찰할 수 없음 
+
 
 ### 예: 다섯 명
 
@@ -75,8 +76,12 @@ five |>
 
 ```{r}
 five |>
-  summarize(mean_y = mean(y), .by = treat)
+  group_by(treat) |>
+  summarize(mean_y = mean(y)) |>
+  ungroup()
 ```
+
+- `group_by()`로 집단을 묶어 `summarize()`로 요약한 뒤에는 `ungroup()`으로 묶음을 풀어 둠. 묶음이 남아 있으면 뒤에 이어지는 `mutate()`, `filter()` 등이 집단별로 계산될 수 있기 때문
 
 - 평균 차이: 18 − 24 = −6. 실제 평균 효과는 +3인데 부호까지 반대
 - 왜? 처치를 받은 두 사람(1, 2번)은 처치가 없었어도 결과가 낮은 사람들(11, 12)
@@ -95,7 +100,9 @@ $$
 - 다섯 명의 예: −6 = 6.5 + (11.5 − 24)
   - 처치받은 사람의 평균 효과: (5 + 8) / 2 = 6.5
   - 선택편의: 처치가 없었을 때의 결과가 처음부터 12.5만큼 달랐음
-- 선택편의는 관측되지 않는 $Y(0)$에 관한 것이라 자료로 직접 계산할 수 없음
+- $\overline{Y(0)}_{\,T=1}$는 관측되지 않으므로 자료로 계산할 수 있는 것은 평균 차이일 뿐, 그중 얼마가 효과이고 얼마가 선택편의인지 계산할 수 없음
+
+<!-- 선택편의 뿐 아니라 ATT도 직접 계산할 수 없으니 다르게 서술할 필요 -->
 
 ### 무작위 배정
 
@@ -137,7 +144,9 @@ resume |>
 
 ```{r}
 resume |>
-  summarize(call_rate = mean(call), n = n(), .by = race)
+  group_by(race) |>
+  summarize(call_rate = mean(call), n = n()) |>
+  ungroup()
 ```
 
 - 회신율: 백인 이름 9.7%, 흑인 이름 6.4%. 차이는 3.2%p
@@ -198,13 +207,14 @@ nsw |>
 ### 무작위 배정이 잘 되었는지 확인: 균형표
 
 - 처치 전에 정해진 특성(공변량, covariate)의 평균을 두 집단에서 비교
-  - 무작위 배정이 잘 되었다면 비슷해야 함
+  - 무작위 배정은 평균적으로 두 집단을 비슷하게 만듦
 
 ```{r}
 balance_nsw <- nsw |>
+  group_by(treat) |>
   summarize(across(c(age, educ, black, hisp, marr, nodegree, re74, re75), mean),
-            n = n(),
-            .by = treat)
+            n = n()) |>
+  ungroup()
 
 balance_nsw
 ```
@@ -218,8 +228,7 @@ balance_nsw |>
 ```
 
 - 나이, 교육, 처치 전 소득이 거의 같음
-- 고등학교 졸업장이 없는 비율(71% vs 84%)은 차이가 조금 있음
-  - 무작위 배정이라도 표본이 작으면 우연히 이 정도 차이는 생길 수 있음
+- 고등학교 졸업장이 없는 비율(71% vs 84%)은 어느 정도 차이가 있는데, 우연에 의한 것인지 아니면 무작위 배정에 문제가 있는지는 명확하지 않음
 
 ### 효과 추정
 
@@ -227,8 +236,12 @@ balance_nsw |>
 
 ```{r}
 nsw |>
-  summarize(mean_re78 = mean(re78), .by = treat)
+  group_by(treat) |>
+  summarize(mean_re78 = mean(re78)) |>
+  ungroup()
 ```
+
+<!-- group_by 사용 -->
 
 - 처치군 6,349달러, 대조군 4,555달러. 차이는 1,794달러
 
@@ -252,8 +265,7 @@ tidy(fit_nsw2, conf.int = TRUE) |>
 
 - 추정치가 1,794달러에서 1,676달러로 조금 바뀜
   - 무작위 배정이면 공변량은 처치 여부와 관련이 없으므로, 넣든 넣지 않든 추정치가 크게 바뀌지 않아야 함
-  - 조금 바뀐 것은 균형표에서 본 우연한 차이(졸업장 등)를 조정했기 때문
-- 실험에서 공변량을 넣는 이유는 편의를 없애기 위해서가 아니라 결과의 다른 변동을 설명해 추정을 더 정확하게 하기 위해서. 이 자료에서는 표준오차가 줄지 않았음 (633 → 639)
+- 실험에서 공변량을 넣는 이유는 편의를 없애기 위해서가 아니라 결과의 다른 변동을 설명해 추정을 더 정확하게 하기 위함
 
 ### 결과 보고하기
 
@@ -293,9 +305,10 @@ nsw_cps |>
 
 ```{r}
 nsw_cps |>
+  group_by(treat) |>
   summarize(across(c(age, educ, black, hisp, marr, nodegree, re74, re75), mean),
-            n = n(),
-            .by = treat) |>
+            n = n()) |>
+  ungroup() |>
   pivot_longer(-treat, names_to = "variable") |>
   pivot_wider(names_from = treat, values_from = value, names_prefix = "treat_")
 ```
@@ -348,7 +361,7 @@ tidy(fit_obs2, conf.int = TRUE) |> filter(term == "treat")
   - 공변량을 넣으면 부호는 바로잡히지만 실험 추정치의 절반에도 미치지 못하고, 신뢰구간이 0을 포함함
 - 프로그램에 참여한 사람들은 관측된 변수(나이, 학력, 소득 등) 외에도 의욕, 건강, 사정 등 관측되지 않은 면에서 CPS 사람들과 다를 수 있음
   - 회귀는 자료에 있는 변수만 조정할 수 있음
-- 이 비교는 LaLonde (1986)의 유명한 연구를 단순하게 재현한 것: 실험 결과를 알고 있을 때, 관측 자료로 같은 답을 얻기가 얼마나 어려운지를 보여 줌
+- 이 비교는 LaLonde (1986)의 연구를 단순하게 재현한 것: 같은 처치군도 누구와 비교하느냐에 따라 결과가 크게 달라짐. 처치군의 반사실 결과(처치군에 처치가 없었을 경우 결과)를 나타낼 수 있는 비교집단을 선택하는 것이 핵심적인 문제.
 
 ### 좋은 비교집단이란
 
@@ -361,8 +374,8 @@ tidy(fit_obs2, conf.int = TRUE) |> filter(term == "treat")
 
 | 하고 싶은 일 | 사용할 코드 |
 | :--- | :--- |
-| 집단별 평균 | `summarize(mean_y = mean(y), .by = treat)` |
-| 여러 변수의 평균을 한 번에 | `summarize(across(c(x1, x2), mean), .by = treat)` |
+| 집단별 평균 | `group_by(treat)` → `summarize(mean_y = mean(y))` → `ungroup()` |
+| 여러 변수의 평균을 한 번에 | `group_by(treat)` → `summarize(across(c(x1, x2), mean))` → `ungroup()` |
 | 균형표 모양으로 바꾸기 | `pivot_longer()` 후 `pivot_wider()` |
 | 처치효과와 신뢰구간 | `lm(y ~ treat, data = )` 후 `tidy(conf.int = TRUE)` |
 | 공변량을 넣은 추정 | `lm(y ~ treat + x1 + x2, data = )` |
@@ -379,7 +392,7 @@ tidy(fit_obs2, conf.int = TRUE) |> filter(term == "treat")
 
 ::: {.callout-important title="주의사항"}
 
-- 마감: 11월 26일 (목) 오후 6시
+- 마감: 11월 23일 (월) 오후 6시
 
 - 아래 문제 1에 대한 답안을 작성하고 week12_ex_학번.R과 week12_ex_학번.docx를 E-class로 제출하세요.
 

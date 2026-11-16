@@ -101,9 +101,10 @@ minwage |>
 
 ```{r}
 minwage |>
+  group_by(state) |>
   summarize(below_before = mean(wageBefore < 5.05),
-            below_after = mean(wageAfter < 5.05),
-            .by = state)
+            below_after = mean(wageAfter < 5.05)) |>
+  ungroup()
 ```
 
 - NJ: 인상 전 91% → 인상 후 0.3%. 법이 실제로 지켜졌음
@@ -142,9 +143,10 @@ minwage <- minwage |>
 
 ```{r}
 fullprop_means <- minwage |>
+  group_by(state) |>
   summarize(before = mean(fullpropBefore),
-            after = mean(fullpropAfter),
-            .by = state)
+            after = mean(fullpropAfter)) |>
+  ungroup()
 
 fullprop_means
 ```
@@ -202,9 +204,10 @@ did_plot |>
 ```{r}
 minwage |>
   filter(chain == "burgerking") |>
+  group_by(state) |>
   summarize(before = mean(fullpropBefore),
-            after = mean(fullpropAfter),
-            .by = state) |>
+            after = mean(fullpropAfter)) |>
+  ungroup() |>
   mutate(change = after - before)
 ```
 
@@ -342,7 +345,9 @@ organ <- organ |>
 
 ```{r}
 organ_trend <- organ |>
-  summarize(rate = mean(Rate), .by = c(ca, Quarter_Num)) |>
+  group_by(ca, Quarter_Num) |>
+  summarize(rate = mean(Rate)) |>
+  ungroup() |>
   mutate(group = if_else(ca == 1, "캘리포니아", "비교 집단"))
 
 organ_trend |>
@@ -373,7 +378,9 @@ organ_trend |>
 
 ```{r}
 organ |>
-  summarize(rate = mean(Rate), .by = c(ca, after)) |>
+  group_by(ca, after) |>
+  summarize(rate = mean(Rate)) |>
+  ungroup() |>
   arrange(ca, after)
 ```
 
@@ -394,7 +401,7 @@ coef(fit_organ)["ca:after"]
 | 하고 싶은 일 | 사용할 코드 |
 | :--- | :--- |
 | 열마다 비율로 바꾸기 | `tabyl(x, group)` 후 `adorn_percentages("col")` |
-| 집단, 시점별 평균 | `summarize(mean_y = mean(y), .by = c(group, period))` |
+| 집단, 시점별 평균 | `group_by(group, period)` → `summarize(mean_y = mean(y))` → `ungroup()` |
 | 넓은 형태를 긴 형태로 | `pivot_longer(names_to = c("variable", "period"), names_pattern = )` 후 `pivot_wider()` |
 | 이중차분 추정 | `lm(y ~ treat * after, data = )`의 `treat:after` 계수 |
 | 결과 변수를 바꾸어 같은 회귀 반복 | `as.formula(paste(y, "~ treat * after"))` |
