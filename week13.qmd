@@ -65,7 +65,7 @@ library(broom)
   - 이웃한 펜실베이니아(PA) 주의 동부 지역은 최저임금이 그대로였음. 두 지역은 경제 여건이 비슷함
   - 두 주의 패스트푸드 매장을 인상 전(2~3월)과 인상 후(11~12월)에 조사
   - 처치: 최저임금 인상. 처치 집단은 NJ 매장, 비교 집단은 PA 매장
-- [minwage.csv](data/minwage.csv): 358개 매장. Imai, *Quantitative Social Science*의 자료
+- [minwage.csv](data/minwage.csv): 358개 매장. QSS의 자료
   - 원래 조사는 410개 매장. 이 자료는 그중 일부
 
 | 변수 | 내용 |
@@ -103,8 +103,7 @@ minwage |>
 minwage |>
   group_by(state) |>
   summarize(below_before = mean(wageBefore < 5.05),
-            below_after = mean(wageAfter < 5.05)) |>
-  ungroup()
+            below_after = mean(wageAfter < 5.05))
 ```
 
 - NJ: 인상 전 91% → 인상 후 0.3%. 법이 실제로 지켜졌음
@@ -145,8 +144,7 @@ minwage <- minwage |>
 fullprop_means <- minwage |>
   group_by(state) |>
   summarize(before = mean(fullpropBefore),
-            after = mean(fullpropAfter)) |>
-  ungroup()
+            after = mean(fullpropAfter))
 
 fullprop_means
 ```
@@ -207,7 +205,6 @@ minwage |>
   group_by(state) |>
   summarize(before = mean(fullpropBefore),
             after = mean(fullpropAfter)) |>
-  ungroup() |>
   mutate(change = after - before)
 ```
 
@@ -354,6 +351,8 @@ organ_trend |>
   pivot_wider(id_cols = Quarter_Num, names_from = group, values_from = rate)
 ```
 
+- `ungroup()`: 변수 하나로 묶으면 `summarize()` 뒤에 묶음이 저절로 풀리지만, 변수 둘 이상(`ca`, `Quarter_Num`)으로 묶으면 마지막 변수만 풀리고 `ca`로 묶인 채 남음. 이어서 `mutate()` 등 다른 작업을 할 때는 `ungroup()`으로 묶음을 풀어 둠
+
 ```{r}
 #| fig-width: 6
 #| fig-height: 4
@@ -401,7 +400,7 @@ coef(fit_organ)["ca:after"]
 | 하고 싶은 일 | 사용할 코드 |
 | :--- | :--- |
 | 열마다 비율로 바꾸기 | `tabyl(x, group)` 후 `adorn_percentages("col")` |
-| 집단, 시점별 평균 | `group_by(group, period)` → `summarize(mean_y = mean(y))` → `ungroup()` |
+| 집단, 시점별 평균 | `group_by(group, period)` → `summarize(mean_y = mean(y))` → (이어지는 작업이 있으면) `ungroup()` |
 | 넓은 형태를 긴 형태로 | `pivot_longer(names_to = c("variable", "period"), names_pattern = )` 후 `pivot_wider()` |
 | 이중차분 추정 | `lm(y ~ treat * after, data = )`의 `treat:after` 계수 |
 | 결과 변수를 바꾸어 같은 회귀 반복 | `as.formula(paste(y, "~ treat * after"))` |

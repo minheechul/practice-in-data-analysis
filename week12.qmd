@@ -52,39 +52,23 @@ library(broom)
 
 - 신(神)이라서 두 잠재적 결과를 모두 안다고 가정
 
-```{r}
-five <- tibble(
-  id = 1:5,
-  treat = c(1, 1, 0, 0, 0),
-  y1 = c(16, 20, 25, 27, 22),   # 처치를 받았을 때의 결과
-  y0 = c(11, 12, 25, 29, 18)    # 처치를 받지 않았을 때의 결과
-) |>
-  mutate(effect = y1 - y0,
-         y = if_else(treat == 1, y1, y0))   # 실제로 관측되는 결과
+| 사람 | 처치 $T$ | $Y(1)$ | $Y(0)$ | 효과 $Y(1) - Y(0)$ | 관측된 $Y$ |
+| :-: | :-: | :-: | :-: | :-: | :-: |
+| 1 | 1 | 16 | 11 | 5 | 16 |
+| 2 | 1 | 20 | 12 | 8 | 20 |
+| 3 | 0 | 25 | 25 | 0 | 25 |
+| 4 | 0 | 27 | 29 | −2 | 29 |
+| 5 | 0 | 22 | 18 | 4 | 18 |
 
-five
-```
-
+- 관측된 $Y$: 처치를 받은 사람은 $Y(1)$, 받지 않은 사람은 $Y(0)$
 - 표본 평균 처치효과(sample average treatment effect, SATE): 개인별 효과의 평균
-
-```{r}
-five |>
-  summarize(sate = mean(effect))
-```
-
-- 실제로 우리가 볼 수 있는 것은 `treat`와 `y`뿐. 처치를 받은 사람과 받지 않은 사람의 평균 차이를 계산하면
-
-```{r}
-five |>
-  group_by(treat) |>
-  summarize(mean_y = mean(y)) |>
-  ungroup()
-```
-
-- `group_by()`로 집단을 묶어 `summarize()`로 요약한 뒤에는 `ungroup()`으로 묶음을 풀어 둠. 묶음이 남아 있으면 뒤에 이어지는 `mutate()`, `filter()` 등이 집단별로 계산될 수 있기 때문
-
-- 평균 차이: 18 − 24 = −6. 실제 평균 효과는 +3인데 부호까지 반대
-- 왜? 처치를 받은 두 사람(1, 2번)은 처치가 없었어도 결과가 낮은 사람들(11, 12)
+  - (5 + 8 + 0 − 2 + 4) / 5 = 3
+- 실제로 우리가 볼 수 있는 것은 $T$와 관측된 $Y$뿐. 처치를 받은 사람과 받지 않은 사람의 평균 차이를 계산하면
+  - 처치를 받은 사람: (16 + 20) / 2 = 18
+  - 처치를 받지 않은 사람: (25 + 29 + 18) / 3 = 24
+  - 평균 차이: 18 − 24 = −6
+- 실제 평균 효과는 +3인데 평균 차이는 부호까지 반대
+- 왜? 처치를 받은 두 사람(1, 2번)은 처치가 없었어도 결과가 낮은 사람들($Y(0)$ = 11, 12)
   - 처치를 받지 않은 세 사람의 $Y(0)$ 평균은 24
 
 ### 선택편의(selection bias)
@@ -97,12 +81,38 @@ $$
 + \underbrace{\overline{Y(0)}_{\,T=1} - \overline{Y(0)}_{\,T=0}}_{\text{선택편의}}
 $$
 
-- 다섯 명의 예: −6 = 6.5 + (11.5 − 24)
-  - 처치받은 사람의 평균 효과: (5 + 8) / 2 = 6.5
-  - 선택편의: 처치가 없었을 때의 결과가 처음부터 12.5만큼 달랐음
-- $\overline{Y(0)}_{\,T=1}$는 관측되지 않으므로 자료로 계산할 수 있는 것은 평균 차이일 뿐, 그중 얼마가 효과이고 얼마가 선택편의인지 계산할 수 없음
+- 표기: 막대는 평균, 아래첨자는 누구의 평균인지를 나타냄
+  - $\bar{Y}_{T=1}$: 처치를 받은 사람들의 관측된 $Y$ 평균
+  - $\overline{Y(1)}_{T=1}$: 처치를 받은 사람들의 $Y(1)$ 평균
+  - $\overline{Y(0)}_{T=1}$: 처치를 받은 사람들이 처치를 받지 않았다면의 결과 $Y(0)$ 평균 (관측되지 않음)
+  - $\overline{Y(0)}_{T=0}$: 처치를 받지 않은 사람들의 $Y(0)$ 평균
 
-<!-- 선택편의 뿐 아니라 ATT도 직접 계산할 수 없으니 다르게 서술할 필요 -->
+- 위의 식이 나오는 과정을 한 단계씩 보면
+
+1. 관측된 평균 차이
+
+$$
+\bar{Y}_{T=1} - \bar{Y}_{T=0}
+$$
+
+2. 처치를 받은 사람의 관측된 결과는 $Y(1)$, 받지 않은 사람의 관측된 결과는 $Y(0)$이므로
+
+$$
+= \overline{Y(1)}_{T=1} - \overline{Y(0)}_{T=0} \qquad (18 - 24)
+$$
+
+3. 관측되지 않는 $\overline{Y(0)}_{T=1}$을 한 번 빼고 한 번 더함 (값은 바뀌지 않음)
+
+$$
+= \big[\,\overline{Y(1)}_{T=1} - \overline{Y(0)}_{T=1}\,\big] + \big[\,\overline{Y(0)}_{T=1} - \overline{Y(0)}_{T=0}\,\big]
+$$
+
+4. 각 항의 의미
+   - 첫째 항: 처치를 받은 사람들의 평균 효과. 평균의 차이는 차이의 평균과 같으므로 위의 식에서는 $\overline{Y(1) - Y(0)}_{\,T=1}$로 씀. 다섯 명의 예에서 18 − 11.5 = 6.5 (= (5 + 8) / 2)
+   - 둘째 항: 선택편의. 처치가 없었을 때의 결과가 처음부터 얼마나 달랐는가. 11.5 − 24 = −12.5
+
+- 다섯 명의 예: −6 = 6.5 + (−12.5)
+- $\overline{Y(0)}_{T=1}$는 관측되지 않으므로 자료로 계산할 수 있는 것은 평균 차이일 뿐, 그중 얼마가 효과이고 얼마가 선택편의인지 계산할 수 없음
 
 ### 무작위 배정
 
@@ -122,7 +132,7 @@ $$
   - 이력서 내용은 같게 하고, 이름만 흑인에게 흔한 이름과 백인에게 흔한 이름 중 하나를 무작위로 붙임
   - 미국에서는 이름만으로 인종을 짐작하는 경우가 많다는 점을 이용
 - [resume.csv](data/resume.csv): 4,870통의 이력서
-  - Imai, *Quantitative Social Science*의 자료
+  - QSS의 자료
 
 | 변수 | 내용 |
 | :--- | :--- |
@@ -145,8 +155,7 @@ resume |>
 ```{r}
 resume |>
   group_by(race) |>
-  summarize(call_rate = mean(call), n = n()) |>
-  ungroup()
+  summarize(call_rate = mean(call), n = n())
 ```
 
 - 회신율: 백인 이름 9.7%, 흑인 이름 6.4%. 차이는 3.2%p
@@ -167,6 +176,17 @@ tidy(fit_resume, conf.int = TRUE)
 
 - 절편 0.097은 백인 이름의 회신율, `black`의 계수 −0.032는 회신율의 차이
 - 회귀를 쓰면 표준오차와 신뢰구간을 함께 얻을 수 있음: 95% 신뢰구간이 0을 포함하지 않음
+
+- 두 집단의 평균 차이에 대한 t검정과 비교
+
+```{r}
+t.test(call ~ black, data = resume)
+```
+
+- t값 4.11, p값 0.00004: 회귀에서 `black` 계수의 t값, p값과 사실상 같음
+  - `t.test()`의 기본값(Welch 검정)은 두 집단의 분산이 다를 수 있다고 보고 계산하므로 아주 작은 차이가 있을 수 있음. `var.equal = TRUE`를 넣으면 회귀와 정확히 같아짐
+  - `t.test()`는 "0 집단 − 1 집단"(백인 − 흑인)으로 계산하므로 부호가 회귀와 반대. 신뢰구간(0.017 ~ 0.047)도 부호만 반대
+- 처치 변수 하나만 넣은 회귀는 두 집단의 평균 차이 검정과 같은 일을 함. 회귀는 여기에 다른 변수를 함께 넣을 수 있다는 장점이 있음
 
 
 ## 무작위 실험 (2): 직업훈련 프로그램
@@ -213,8 +233,7 @@ nsw |>
 balance_nsw <- nsw |>
   group_by(treat) |>
   summarize(across(c(age, educ, black, hisp, marr, nodegree, re74, re75), mean),
-            n = n()) |>
-  ungroup()
+            n = n())
 
 balance_nsw
 ```
@@ -237,8 +256,7 @@ balance_nsw |>
 ```{r}
 nsw |>
   group_by(treat) |>
-  summarize(mean_re78 = mean(re78)) |>
-  ungroup()
+  summarize(mean_re78 = mean(re78))
 ```
 
 <!-- group_by 사용 -->
@@ -285,7 +303,6 @@ tidy(fit_nsw2, conf.int = TRUE) |>
 - [cps.csv](data/cps.csv): 미국 인구 조사(Current Population Survey, CPS)에서 뽑은 남성 15,992명. 변수는 `nsw.csv`와 같고 모두 `treat = 0`
   - `causaldata` 패키지의 `cps_mixtape`를 csv로 저장한 것
 - NSW 처치군 185명에 CPS 15,992명을 붙여 새로운 비교를 만듦
-  - 이렇게 실험이 아니라 자연스럽게 생긴 자료로 비교하는 연구: 관측 연구(observational study)
 
 ```{r}
 cps <- read_csv("data/cps.csv")
@@ -308,7 +325,6 @@ nsw_cps |>
   group_by(treat) |>
   summarize(across(c(age, educ, black, hisp, marr, nodegree, re74, re75), mean),
             n = n()) |>
-  ungroup() |>
   pivot_longer(-treat, names_to = "variable") |>
   pivot_wider(names_from = treat, values_from = value, names_prefix = "treat_")
 ```
@@ -374,8 +390,8 @@ tidy(fit_obs2, conf.int = TRUE) |> filter(term == "treat")
 
 | 하고 싶은 일 | 사용할 코드 |
 | :--- | :--- |
-| 집단별 평균 | `group_by(treat)` → `summarize(mean_y = mean(y))` → `ungroup()` |
-| 여러 변수의 평균을 한 번에 | `group_by(treat)` → `summarize(across(c(x1, x2), mean))` → `ungroup()` |
+| 집단별 평균 | `group_by(treat)` → `summarize(mean_y = mean(y))` |
+| 여러 변수의 평균을 한 번에 | `group_by(treat)` → `summarize(across(c(x1, x2), mean))` |
 | 균형표 모양으로 바꾸기 | `pivot_longer()` 후 `pivot_wider()` |
 | 처치효과와 신뢰구간 | `lm(y ~ treat, data = )` 후 `tidy(conf.int = TRUE)` |
 | 공변량을 넣은 추정 | `lm(y ~ treat + x1 + x2, data = )` |
@@ -401,7 +417,7 @@ tidy(fit_obs2, conf.int = TRUE) |> filter(term == "treat")
 :::
 
 - 데이터: [social.csv](data/social.csv) (305,866명)
-  - Imai, *Quantitative Social Science*의 자료
+  - QSS의 자료
   - 2006년 미국 미시간 주 예비선거를 앞두고 유권자에게 무작위로 서로 다른 엽서를 보낸 실험 (Gerber, Green, and Larimer 2008)
   - 미국에서는 누가 투표했는지(누구에게 투표했는지가 아니라)가 공개 정보임
   - 엽서의 종류
