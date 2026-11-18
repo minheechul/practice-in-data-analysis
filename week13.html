@@ -408,7 +408,7 @@ window.Quarto = {
 <li>두 주의 패스트푸드 매장을 인상 전(2~3월)과 인상 후(11~12월)에 조사</li>
 <li>처치: 최저임금 인상. 처치 집단은 NJ 매장, 비교 집단은 PA 매장</li>
 </ul></li>
-<li><a href="data/minwage.csv">minwage.csv</a>: 358개 매장. Imai, <em>Quantitative Social Science</em>의 자료
+<li><a href="data/minwage.csv">minwage.csv</a>: 358개 매장. QSS의 자료
 <ul>
 <li>원래 조사는 410개 매장. 이 자료는 그중 일부</li>
 </ul></li>
@@ -678,8 +678,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>minwage <span class="sc">|&gt;</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">below_before =</span> <span class="fu">mean</span>(wageBefore <span class="sc">&lt;</span> <span class="fl">5.05</span>),</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">below_after =</span> <span class="fu">mean</span>(wageAfter <span class="sc">&lt;</span> <span class="fl">5.05</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">below_after =</span> <span class="fu">mean</span>(wageAfter <span class="sc">&lt;</span> <span class="fl">5.05</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 3
   state below_before below_after
@@ -739,10 +738,9 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fullprop_means <span class="ot">&lt;-</span> minwage <span class="sc">|&gt;</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">before =</span> <span class="fu">mean</span>(fullpropBefore),</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">after =</span> <span class="fu">mean</span>(fullpropAfter)) <span class="sc">|&gt;</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>fullprop_means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">after =</span> <span class="fu">mean</span>(fullpropAfter))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>fullprop_means</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 3
   state before after
@@ -809,8 +807,7 @@ window.Quarto = {
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state) <span class="sc">|&gt;</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">before =</span> <span class="fu">mean</span>(fullpropBefore),</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">after =</span> <span class="fu">mean</span>(fullpropAfter)) <span class="sc">|&gt;</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> after <span class="sc">-</span> before)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> after <span class="sc">-</span> before)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 2 × 4
   state before after  change
@@ -1192,6 +1189,9 @@ Y = b_0 + b_1 \cdot \text{NJ} + b_2 \cdot \text{after} + b_3 \cdot (\text{NJ} \t
 6           6       0.461      0.264</code></pre>
 </div>
 </div>
+<ul>
+<li><code>ungroup()</code>: 변수 하나로 묶으면 <code>summarize()</code> 뒤에 묶음이 저절로 풀리지만, 변수 둘 이상(<code>ca</code>, <code>Quarter_Num</code>)으로 묶으면 마지막 변수만 풀리고 <code>ca</code>로 묶인 채 남음. 이어서 <code>mutate()</code> 등 다른 작업을 할 때는 <code>ungroup()</code>으로 묶음을 풀어 둠</li>
+</ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>organ_trend <span class="sc">|&gt;</span></span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Quarter_Num, <span class="at">y =</span> rate, <span class="at">color =</span> group)) <span class="sc">+</span></span>
@@ -1274,7 +1274,7 @@ Y = b_0 + b_1 \cdot \text{NJ} + b_2 \cdot \text{after} + b_3 \cdot (\text{NJ} \t
 </tr>
 <tr class="even">
 <td style="text-align: left;">집단, 시점별 평균</td>
-<td style="text-align: left;"><code>group_by(group, period)</code> → <code>summarize(mean_y = mean(y))</code> → <code>ungroup()</code></td>
+<td style="text-align: left;"><code>group_by(group, period)</code> → <code>summarize(mean_y = mean(y))</code> → (이어지는 작업이 있으면) <code>ungroup()</code></td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">넓은 형태를 긴 형태로</td>
